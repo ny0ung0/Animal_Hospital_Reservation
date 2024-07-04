@@ -6,6 +6,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class LoginController_jun {
 
+	
+	@RequestMapping("/jun")
+	public void jun() {
+		
+	}
+	
 	@RequestMapping("/register_form")
 	public void register_form() {
 		

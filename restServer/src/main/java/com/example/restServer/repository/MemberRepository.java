@@ -6,4 +6,5 @@ import com.example.restServer.entity.Member;
 
 public interface MemberRepository extends JpaRepository<Member,Long>{
 
+	public Member findByNickname(String nickname);
 }
