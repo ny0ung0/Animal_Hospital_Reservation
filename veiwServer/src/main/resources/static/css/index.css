@@ -1,0 +1,13 @@
+@charset "UTF-8";
+
+
+#mainGif {
+    width: 100%;
+    height: 100%;
+    display:block;
+    position: absolute;
+    /* opacity 1로 고치기 */
+    opacity:0;
+    transition: opacity 1s ease-in-out;
+    z-index:9999;
+}
