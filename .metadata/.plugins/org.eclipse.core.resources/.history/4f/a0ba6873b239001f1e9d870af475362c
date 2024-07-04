@@ -1,0 +1,4 @@
+<footer class="footer mt-auto py-3 bg-body-tertiary d-flex" th:fragment="footer">
+    <span class="text-body-secondary">Team3(임현용, 이준형, 유지아, 문송이, 김지선)</span>
+    <span class="text-body-secondary ms-auto">Copyright 2024 gyeonganghalgoyang. All Rights Reserved.</span>
+</footer>

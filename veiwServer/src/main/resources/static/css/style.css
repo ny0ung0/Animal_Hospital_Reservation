@@ -1,0 +1,21 @@
+@charset "UTF-8";
+body{
+	font-family: "Jua", sans-serif;
+}
+.logo_size{
+	width:180px;
+}
+
+.bg-main{
+	background-color : #4C5CB3;
+}
+.bg-hospital-sub{
+	background-color : #aaecde;
+}
+
+.bg-user-sub{
+	background-color : #E3C3FF;
+}
+.user-nav .nav-link{
+	color:#333 !important;
+}

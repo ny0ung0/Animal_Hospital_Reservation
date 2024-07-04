@@ -1,0 +1,12 @@
+package com.example.veiwServer.controller;
+
+import org.springframework.web.bind.annotation.RequestMapping;
+
+public class MyController {
+
+	@RequestMapping("/")
+	public String userRoot() {
+		return "/user/index";
+	}
+	
+}

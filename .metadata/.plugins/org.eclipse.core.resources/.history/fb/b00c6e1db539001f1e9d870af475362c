@@ -1,0 +1,27 @@
+<header class="border-bottom" th:fragment="header">
+	<div class="d-flex bg-hospital-sub p-2 px-3">
+		<div class="ms-auto">
+		<a class="navbar-brand" href="/">로그인</a>
+		<span class="mx-3"> | </span>
+		<a class="navbar-brand" href="/">회원가입</a>
+		</div>
+	</div>
+	<div class="d-flex flex-wrap justify-content-center align-items-center py-3">
+      <a href="/" class="d-flex align-items-center mb-md-0 me-md-auto ps-md-3 link-body-emphasis text-decoration-none">
+      <div class="logo_size">
+        <img src="/images/logo_user.png" class="w-100" alt="로고">
+        </div>
+        
+      </a>
+
+      <ul class="nav nav-pills user-nav">
+        <li class="nav-item"><a href="#" class="nav-link fs-5" aria-current="page">내 정보 수정 </a></li>
+        <li class="nav-item"><a href="#" class="nav-link fs-5">문의내역</a></li>
+        <li class="nav-item"><a href="#" class="nav-link fs-5">예약관리</a></li>
+        <li class="nav-item"><a href="#" class="nav-link fs-5">알림설정</a></li>
+        <li class="nav-item"><a href="#" class="nav-link fs-5">문의채팅</a></li>
+        <li class="nav-item"><a href="#" class="nav-link fs-5">광고계약</a></li>
+        <li class="nav-item"><a href="#" class="nav-link fs-5">고객센터</a></li>
+      </ul>
+	</div>
+</header>

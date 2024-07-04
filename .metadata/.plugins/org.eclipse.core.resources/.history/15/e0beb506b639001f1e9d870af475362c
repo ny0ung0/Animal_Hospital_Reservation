@@ -1,0 +1,27 @@
+package com.example.veiwServer.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+@Controller
+public class MyController {
+
+	@RequestMapping("/")
+	public String userRoot() {
+		System.out.println("user index..");
+		return "/user/index";
+	}
+	
+	@RequestMapping("/hospital")
+	public String hospitalRoot() {
+		System.out.println("hospital index..");
+		return "/hospital/index";
+	}
+	
+	@RequestMapping("/manager")
+	public String adminRoot() {
+		System.out.println("hospital index..");
+		return "/manager/index";
+	}
+	
+}

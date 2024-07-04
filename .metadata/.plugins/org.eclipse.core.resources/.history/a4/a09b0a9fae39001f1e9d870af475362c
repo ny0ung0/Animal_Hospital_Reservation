@@ -1,0 +1,11 @@
+@charset "UTF-8";
+.logo_size{
+	width:180px;
+}
+
+.bg-user{
+	background-color : #4C5CB3;
+}
+.bg-user-sub{
+	background-color : #E3C3FF;
+}
