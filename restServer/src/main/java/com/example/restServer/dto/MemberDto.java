@@ -29,10 +29,10 @@ public class MemberDto {
     private String introduction;
     private String role;
     private String logo;
-    private Boolean isActive;
-    private Boolean isBlacklisted;
     private String token;
     
+    private String status;
+    private String email;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }
