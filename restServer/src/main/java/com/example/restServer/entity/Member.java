@@ -32,9 +32,10 @@ public class Member extends BaseEntity {
     private String introduction;
     private String role;
     private String logo;
-    private Boolean isActive;
-    private Boolean isBlacklisted;
     private String token;
+    
+    private String status;
+    private String email;
 
     // Getters and Setters
 }

@@ -24,7 +24,7 @@ public class LoginController_jun {
 	@PostMapping("/joinUser")
 	public ResponseEntity<?> joinUser(@RequestBody MemberDto memberDto){
 		System.out.println(memberDto);
-		joinService.JoinUser(memberDto);
+		joinService.joinUser(memberDto);
 		
 		return ResponseEntity.ok().body("성공");
 	}

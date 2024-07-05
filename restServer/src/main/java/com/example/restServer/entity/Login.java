@@ -31,8 +31,10 @@ public class Login extends BaseEntity {
 
     @Column(nullable = false)
     private String password;
-
-    private Boolean isApproved;
+    
+    @Column(nullable = false)
+    private String role;
+    
 
     // Getters and Setters
 }
