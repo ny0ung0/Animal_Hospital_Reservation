@@ -30,10 +30,12 @@ public class JoinService {
 		member.setPhone(memberDto.getPhone());
 		member.setNickname(memberDto.getNickname());
 		member.setRole(memberDto.getRole());
+		member.setEmail(memberDto.getEmail());
 		if(loginRepository.existsByUsername(memberDto.getUsername())) {
 			return;
 		}
 		memberRepository.save(member);
+		
 		Member result = memberRepository.findByNickname(memberDto.getNickname());
 		System.out.println(result);
 		Login login = new Login();
