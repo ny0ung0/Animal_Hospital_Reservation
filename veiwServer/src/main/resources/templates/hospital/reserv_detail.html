@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html class="h-100" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>견강할고양</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+<link href="/css/style.css" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Jua&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+<body class="d-flex flex-column h-100">
+<div th:replace="~{hospital/header :: header}"></div>
+<div class="container-xl">
+<input type="text" name="reservId" th:value=${reservId}>
+<div class="d-flex align-items-end">
+	<h1 class="mt-3 mt-md-5 mb-3 mb-md-3">예약 상세 정보</h1>
+	<button class="btn btn-outline-main ms-auto mb-3"><i class="bi bi-bell-fill"></i> 알림 보내기</button>
+</div>
+<div class="border rounded p-3 p-md-4 mb-3">
+	<div class="row">
+		<div class="col-md-6 border-end">
+			<div class="row mb-2">
+				<div class="col-12 fs-5 fw-bold"><span class="badge rounded-pill text-bg-info text-white p-2"><i class="bi bi-calendar-check"></i> <span id="status">대기중</span> 예약</span></div>
+			</div>
+			<div class="row mb-2">
+				<div class="col-4 text-secondary">예약날짜/시간</div>
+				<div class="col-8" id="datetime">2024-07-05 / 09:00</div>
+			</div>
+			<div class="row mb-2">
+				<div class="col-4 text-secondary">예약자명</div>
+				<div class="col-8" id="username">홍길동</div>
+			</div>
+			<div class="row mb-2">
+				<div class="col-4 text-secondary">진료유형</div>
+				<div class="col-8" id="type">건강검진</div>
+			</div>
+			<div class="row mb-2">
+				<div class="col-4 text-secondary">메모</div>
+				<div class="col-8" id="memo">모모모모</div>
+			</div>
+			<div class="row mb-2">
+				<div class="col-4 text-secondary">쿠폰사용여부</div>
+				<div class="col-8" id="couponname">건강검진할인쿠폰</div>
+			</div>
+			<div class="row mb-2">
+				<div class="col-4 text-secondary">포인트 사용 여부</div>
+				<div class="col-8"><span id="point">1000</span>P 사용</div>
+			</div>
+		</div>
+		<div class="col-md-6">
+			<div class="row mb-2">
+				<div class="col-12 fs-5 fw-bold">반려동물 정보</div>
+			</div>
+			<div class="row mb-2">
+				<img id="petPhoto" src="/images/" alt="반려동물사진">
+			</div>
+			<div class="row mb-2">
+				<div class="col-4 text-secondary">종류</div>
+				<div class="col-8" id="petType">강아지</div>
+			</div>
+			<div class="row mb-2">
+				<div class="col-4 text-secondary">이름</div>
+				<div class="col-8" id="petName">이름</div>
+			</div>
+			<div class="row mb-2">
+				<div class="col-4 text-secondary">생년월일</div>
+				<div class="col-8" id="petBirthdate">2020.07.05(4세)</div>
+			</div>
+			<div class="row mb-2">
+				<div class="col-4 text-secondary">성별</div>
+				<div class="col-8" id="petGender">여아</div>
+			</div>
+			<div class="row mb-2">
+				<div class="col-4 text-secondary">중성화 여부</div>
+				<div class="col-8" id="petIsNeutred">Y</div>
+			</div>
+			<div class="row mb-2">
+				<div class="col-4 text-secondary">몸무게</div>
+				<div class="col-8" id="petWeight">5kg</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="clear-fix">
+	<button id="cancleBtn" class="btn btn-danger float-end me-1">예약 취소</button>
+	<button id="confirmedBtn" class="btn btn-main float-end me-1">예약 확정</button>
+	<button id="completeBtn" class="btn btn-main float-end me-1">진료 완료</button>
+</div>
+
+
+</div>
+<div th:replace="~{hospital/footer :: footer}"></div>
+
+<script type="text/javascript" >
+const reservId = document.querySelector("input[name='reservId']").value;
+console.log(reservId);
+fetch("http://localhost:9001/api/v1/reservation/" + reservId, {
+	method : "GET"
+})
+.then(response => response.text())
+.then(data => {
+	const obj = JSON.parse(data);
+	let dateTime = obj.reservationDatetime.replace("T", " ");
+	document.getElementById("status").innerHTML = obj.status;
+	document.getElementById("datetime").innerHTML = dateTime;
+	document.getElementById("username").innerHTML = obj.user.name;
+	document.getElementById("type").innerHTML = obj.type;
+	document.getElementById("memo").innerHTML = obj.memo;
+	document.getElementById("couponname").innerHTML = obj.coupon.name;
+	document.getElementById("point").innerHTML = obj.pointsUsed;
+	document.getElementById("petPhoto").innerHTML = obj.pet.photo;
+	document.getElementById("petType").innerHTML = obj.pet.type;
+	document.getElementById("petName").innerHTML = obj.pet.name;
+	document.getElementById("petBirthdate").innerHTML = obj.pet.birthday;
+	document.getElementById("petGender").innerHTML = obj.pet.gender;
+	document.getElementById("petIsNeutred").innerHTML = obj.pet.isNeutred;
+	document.getElementById("petWeight").innerHTML = obj.pet.weight;
+	
+	if(obj.status == "대기"){
+		document.getElementById("completeBtn").style.display="none";
+	}else if(obj.status == "확정"){
+		document.getElementById("confirmedBtn").style.display="none";
+	}else{
+		document.getElementById("completeBtn").style.display="none";
+		document.getElementById("confirmedBtn").style.display="none";
+		document.getElementById("cancleBtn").style.display="none";
+	}
+})
+.catch(error => console.log(error));
+
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</body>
+</html>

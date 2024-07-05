@@ -1,5 +1,5 @@
 @charset "UTF-8";
-body{
+header, h1{
 	font-family: "Jua", sans-serif;
 }
 .logo_size{
@@ -10,7 +10,7 @@ body{
 	background-color : #4C5CB3;
 }
 .bg-hospital-sub{
-	background-color : #aaecde;
+	background-color : #84e3d0;
 }
 
 .bg-user-sub{
@@ -56,8 +56,8 @@ body{
 
 .btn-hospital-sub {
     --bs-btn-color: #fff;
-    --bs-btn-bg: #99e8d8;
-    --bs-btn-border-color: #99e8d8;
+    --bs-btn-bg: #84e3d0;
+    --bs-btn-border-color: #84e3d0;
     --bs-btn-hover-color: #fff;
     --bs-btn-hover-bg: #7ee2ce;
     --bs-btn-hover-border-color: #7ee2ce;
@@ -67,8 +67,8 @@ body{
     --bs-btn-active-border-color: #7ee2ce;
     --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
     --bs-btn-disabled-color: #fff;
-    --bs-btn-disabled-bg: #99e8d8;
-    --bs-btn-disabled-border-color: #99e8d8;
+    --bs-btn-disabled-bg: #84e3d0;
+    --bs-btn-disabled-border-color: #84e3d0;
 }
 
 .btn-outline-main {
