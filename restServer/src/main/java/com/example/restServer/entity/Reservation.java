@@ -40,7 +40,6 @@ public class Reservation extends BaseEntity {
     private Doctor doctor;
 
     private String status;
-    private Boolean isCompleted;
     private LocalDateTime reservationDatetime;
     private String type;
     private String memo;
@@ -50,6 +49,9 @@ public class Reservation extends BaseEntity {
     private Coupon coupon;
 
     private Integer pointsUsed;
+    
+    private String review;
+    private Integer rating;
 
     // Getters and Setters
 }
