@@ -3,6 +3,8 @@ proj4.defs("EPSG:2097","+proj=tmerc +lat_0=38 +lon_0=127.0028902777778 +k=1 +x_0
 // EPSG:4326 (WGS84) 정의
 proj4.defs("EPSG:4326", "+proj=longlat +datum=WGS84 +no_defs");
 
+var markers = [];
+var infoWindows = [];
 
 const xhttp = new XMLHttpRequest();
 xhttp.onload = function() {
@@ -31,6 +33,7 @@ xhttp.onload = function() {
 		};
 		var marker = new naver.maps.Marker(markerOptions);
 
+		
     // 반경 1km 이내의 병원 필터링
     var nearbyHospitals = hospitals.filter(function(hospital) {
 		//json 내의 위치정보 위도 경도로 변경하기
@@ -47,20 +50,55 @@ xhttp.onload = function() {
  		const projection = map.getProjection();
 	    const distance = projection.getDistance(currentPos, hospitalPos);
 		if(distance <= 1000){
-			new naver.maps.Marker({
+			let markedVet = new naver.maps.Marker({
             map: map,
             position: new naver.maps.LatLng(lat, lng),
-            title: hospital.name,
+            title: hospital["사업장명"],
             icon: {
                 url:'/images/pin_nomal.svg',
                 size: new naver.maps.Size(50, 50),
                 anchor: new naver.maps.Point(12, 37),
             }
         });
+        var infoWindow = new naver.maps.InfoWindow({
+        content: '<div style="width:150px;text-align:center;padding:10px;">'+hospital["사업장명"]+'</div>'
+   		});
+   		
+   		let listItem = document.createElement("div");
+   		listItem.innerHTML= '<button type="button" class="btn btn-main" data-bs-toggle="modal" data-bs-target="#exampleModal">'
+   							+hospital["사업장명"] + '</button> , ' + hospital["소재지전화"]
+   							+ ' , ' + hospital["소재지전체주소"]
+   		 
+   		document.querySelector(".vet_list").appendChild(listItem);
+   		
+   		
+        //marker/infoWindows array에 넣어주기
+		markers.push(markedVet);
+    	infoWindows.push(infoWindow);
 		}
-        return distance <= 1000; // 1km
+       
     });
+    console.log(markers)
+    // 해당 마커의 인덱스를 seq라는 클로저 변수로 저장하는 이벤트 핸들러를 반환합니다.
+	function getClickHandler(seq) {
+	    return function(e) {
+	        var marker = markers[seq],
+	            infoWindow = infoWindows[seq];
+	
+	        if (infoWindow.getMap()) {
+	            infoWindow.close();
+	        } else {
+	            infoWindow.open(map, marker);
+	        }
+	    }
+	}
+	
+	for (var i=0, ii=markers.length; i<ii; i++) {
+	    naver.maps.Event.addListener(markers[i], 'click', getClickHandler(i));
+	}
 });
 }
 xhttp.open("GET", "/json/vet_list.json", true);
 xhttp.send();
+
+
