@@ -7,4 +7,6 @@ import com.example.restServer.entity.Login;
 public interface LoginRepository extends JpaRepository<Login, Long> {
 	
 	public boolean existsByUsername(String username);
+	
+	public Login findByUsername(String username);
 }

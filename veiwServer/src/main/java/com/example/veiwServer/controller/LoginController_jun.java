@@ -16,4 +16,9 @@ public class LoginController_jun {
 	public void register_form() {
 		
 	}
+	
+	@RequestMapping("/login_form")
+	public void login_form() {
+		
+	}
 }
