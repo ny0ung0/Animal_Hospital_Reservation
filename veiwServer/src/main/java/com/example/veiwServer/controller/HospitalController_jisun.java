@@ -20,4 +20,19 @@ public class HospitalController_jisun {
 		return "/hospital/reserv_detail";
 	}
 
+	@RequestMapping("/reserveDocSelect")
+	public String reserveDocSelect() {
+		return "/hospital/reserve_doc_select";
+	}
+	
+	@RequestMapping("/reserveCalender")
+	public String reserveCalender() {
+		return "/hospital/reserve_calender";
+	}
+	
+	@RequestMapping("/reserveSchedule")
+	public String reserveSchedule() {
+		return "/hospital/reserve_schedule";
+	}
+	
 }
