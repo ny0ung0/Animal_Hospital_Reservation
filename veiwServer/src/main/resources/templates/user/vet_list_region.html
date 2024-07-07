@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html class="h-100" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"
+	charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+<title>견강할고양</title>
+<script type="text/javascript"
+	src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=v02baxm8gp"></script>
+
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+	rel="stylesheet"
+	integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+	crossorigin="anonymous">
+<link href="/css/style.css" rel="stylesheet">
+<link href="/css/vet_list_region.css" rel="stylesheet">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link
+	href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Jua&display=swap"
+	rel="stylesheet">
+</head>
+<body class="d-flex flex-column h-100">
+	<img style="display: none" id="mainGif" src="/images/loading.gif">
+	<div th:replace="~{user/header :: header}"></div>
+	<div class="container-xl">
+		<h1 class="mt-3 mt-md-5 mb-3 mb-md-3">지역별 동물병원 리스트</h1>
+		<input type="text" name="search_vet" placeholder="동물병원을 검색해보세요">
+		<input type="button" value="검색">
+		<div class="filter">
+			<div class="cityContainer"></div>
+		</div>
+		<div>
+			<div class="guContainer"></div>
+			<div id="searchBtn" class="btn btn-main">검색하기</div>
+			<div id="resetBtn" class="btn btn-main" onclick="resetFilter()">검색초기화하기</div>
+		</div>
+		<div class="vet_list"></div>
+	</div>
+	<!-- Modal -->
+	<div class="modal fade" id="exampleModal" tabindex="-1"
+		aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h1 class="modal-title fs-5" id="exampleModalLabel">Modal
+						title</h1>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"
+						aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<div id="phone">번호</div>
+					<div id="address">주소</div>
+					<div id="review">리뷰</div>
+					<div id="working_hour">영업시간</div>
+					<div id="point">포인트제휴여부</div>
+					<button class="btn btn-main" onclick="">예약하기</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div th:replace="~{user/footer :: footer}"></div>
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+		crossorigin="anonymous"></script>
+	<script>
+
+const cityContainer = document.querySelector(".cityContainer");
+const guContainer = document.querySelector(".guContainer");
+const searchBtn = document.querySelector("#searchBtn");
+const resetBtn = document.querySelector("#resetBtn");
+const vetContainer = document.querySelector(".vet_list");
+let citiesWithNoGu = new Set();
+let guMap = new Map();
+let activeCity = null;
+let cities = null;
+let gus = null;
+//지역리스트
+function loadRegionList() {
+    fetch('/json/korea-administrative-district.json')
+        .then(response => response.json())
+        .then(data => {
+            data.forEach((cityData, i) => {
+                const city = Object.keys(cityData)[0];
+                cityContainer.innerHTML += "<div class='cities' id='city" + i + "'>" + city + "</div>";
+                cities = document.querySelectorAll(".cities")
+            });
+
+            document.querySelectorAll(".cities").forEach(city => {
+                city.addEventListener("click", function (e) {
+                	guContainer.innerHTML = "";
+                    const cname = e.target.innerText;
+                    const ccode = Number(e.target.id.slice(4));
+                    const guList = Object.values(data[ccode])[0];
+
+                    
+                   if(activeCity === cname){
+            			 activeCity = null;
+            			 guMap.delete(cname);
+            			 e.target.classList.remove('bg-primary');
+            		}else{
+            			 activeCity = cname;
+            			 if (guMap.has(cname) || citiesWithNoGu.has(cname)) {
+                         	//citiesWithNoGu에 있는 cname인지 체크 -> 맞다면 지우고 비활성화, 아니라면 해당 cname에 구가 몇개 있는지 체크 -> 구가 1개만 있을때 비활성화
+                         	if(citiesWithNoGu.has(cname)){
+                         		citiesWithNoGu.delete(cname);
+                         		e.target.classList.remove('bg-primary');
+                         	}else{
+                        			//해당시에 이미 선택되어있는 구 리스트 보여주기
+                        			 guList.forEach((guName) => {
+                                         const guClass = guMap.get(cname).has(guName) ? ' bg-primary' : '';
+                                         guContainer.innerHTML += "<span class='guEl "+ guClass+"' id='gu" + cname + "'>" + guName + "</span> ";
+                                        
+                                   });
+                         	}
+                         } else {
+                             if (guList.length === 0) {
+                                 citiesWithNoGu.add(cname);
+                             } else {
+                                 guMap.set(cname, new Set());
+                                 guList.forEach((guName) => {
+                                	 const guClass = guMap.get(cname).has(guName) ? ' bg-primary' : '';
+                                     guContainer.innerHTML += "<span class='guEl "+ guClass+"' id='gu" + cname + "'>" + guName + "</span> ";
+                                 });
+                             }
+                             e.target.classList.add('bg-primary');
+                         }
+            			 gus = document.querySelectorAll(".guEl")
+            		}
+                    
+                });
+            });
+
+            document.addEventListener("click", function (e) {
+                if (e.target.classList.contains('guEl')) {
+                    const gname = e.target.innerText;
+                    const cityName = e.target.getAttribute("id").substring(2);
+                  
+                   	if(guMap.get(cityName).has(gname)){
+                   		guMap.get(cityName).delete(gname);
+                   		e.target.classList.remove('bg-primary');
+                   	}else{
+                   		guMap.get(cityName).add(gname);
+                   		e.target.classList.add('bg-primary');
+                   	}
+                }
+            });
+        })
+        .catch(error => {
+            console.error('Error fetching data:', error);
+        });
+}
+
+searchBtn.addEventListener("click", function() {
+	vetContainer.innerHTML="";
+    fetchHospitalData(guMap, Array.from(citiesWithNoGu));
+   
+});
+
+
+loadRegionList();
+
+function fetchHospitalData(guMap, noGuCities) {
+    const xhttp = new XMLHttpRequest();
+    xhttp.onload = function () {
+        if (this.status === 200) {
+            try {
+                let jsonData = JSON.parse(this.responseText);
+                let datas = jsonData["동물병원"];
+                datas.forEach(hospital => {
+                    if (hospital["소재지전체주소"] != null) {
+                        let address = hospital["소재지전체주소"].split(" ");
+
+                        if (guMap.has(address[0]) || noGuCities.includes(address[0])) {
+                            if (guMap.get(address[0]).size === 0 || guMap.get(address[0]).has(address[1])) {
+                                addHospitalToList(hospital);
+                            }
+                        }
+                    }
+                });
+            } catch (e) {
+                console.log(e);
+            }
+        } else {
+            alert("Failed to load hospital data");
+        }
+    };
+    xhttp.onerror = function () {
+        alert("Network error while fetching hospital data");
+    };
+    xhttp.ontimeout = function () {
+        alert("Network timeout while fetching hospital data");
+    };
+    xhttp.open("GET", "/json/vet_list.json", true);
+    xhttp.timeout = 5000; // 5초 후 타임아웃
+    xhttp.send();
+}
+
+function addHospitalToList(hospital) {
+    let listItem = document.createElement("div");
+    listItem.innerHTML = '<button type="button" onclick="showModal(event)" class="btn btn-main" data-bs-toggle="modal" data-bs-target="#exampleModal">'
+        + hospital["사업장명"] + '</button> , <span class="phone">' + hospital["소재지전화"]
+        + '</span> , <span class="address">' + hospital["소재지전체주소"] + '</span>';
+
+    document.querySelector(".vet_list").appendChild(listItem);
+}
+ 
+
+//모달에 해당 병원 상세정보 보여주기
+function showModal(e){
+	console.log(e.target.parentElement)
+	console.log(e.target.parentElement.querySelector(".phone").innerText)
+	console.log(e.target.parentElement.querySelector(".address").innerText)
+	
+	document.querySelector("#exampleModalLabel").innerText = e.target.parentElement.querySelector("button").innerText;
+	document.querySelector("#phone").innerHTML = e.target.parentElement.querySelector(".phone").innerText;
+	document.querySelector("#address").innerHTML = e.target.parentElement.querySelector(".address").innerText;
+
+}
+
+function resetFilter(){
+	vetContainer.innerHTML="";
+	guContainer.innerHTML="";
+	guMap.clear();
+	citiesWithNoGu.clear();
+	cities.forEach(city=>{
+		city.classList.remove('bg-primary');
+	})
+	gus.forEach(gu=>{
+		gu.classList.remove('bg-primary');
+	})
+}
+
+</script>
+
+
+
+
+</body>
+
+</html>

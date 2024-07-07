@@ -1,0 +1,35 @@
+@charset "UTF-8";
+
+.cityContainer, .guContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.cities, .guEl {
+    cursor: pointer;
+    padding: 10px 15px;
+    border-radius: 20px;
+    border: 1px solid #ddd;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.cities:hover, .guEl:hover {
+    background-color: #E3C3FF;
+}
+
+.bg-primary {
+    background-color: #4C5CB3 !important;
+    color: #fff !important;
+    border-color: #4C5CB3 !important;
+}
+
+.vet_list div {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.vet_list button {
+    margin-bottom: 10px;
+}
