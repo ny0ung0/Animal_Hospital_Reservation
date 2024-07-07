@@ -11,6 +11,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.example.restServer.filter.JWTFilter;
 import com.example.restServer.filter.LoginFilter;
 import com.example.restServer.security.JWTUtil;
 
@@ -74,11 +75,12 @@ public class Securityconfig {
 		
 		http
 			.authorizeHttpRequests(auth -> auth
-					//.requestMatchers("/", "/login", "/join", "/images/**").permitAll()
+					.requestMatchers("/", "/login", "/joinUser", "/images/**").permitAll()
 					//.requestMatchers("/v3/**","/swagger-ui/**").permitAll()
 					//.requestMatchers("/manager/**").hasRole("MANAGER")
 					//.requestMatchers("/reporter/**", "/api/**").hasAnyRole("REPORTER", "MANAGER")
-					.anyRequest().permitAll());
+					.requestMatchers("/aaa").hasRole("USER")
+					.anyRequest().authenticated());
 			
 		//세션 설정 : Stateless
 		http
@@ -86,7 +88,7 @@ public class Securityconfig {
 					.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 		
 		//token 사용을 위한 Filter 적용(JWTFilter, LoginFilter)
-		//http.addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class);
+		http.addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class);
 		
 		 http
          	.addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration),jwtUtil), UsernamePasswordAuthenticationFilter.class);

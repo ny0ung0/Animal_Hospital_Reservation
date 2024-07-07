@@ -34,7 +34,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
 		// 클라이언트 요청에서 username, password 추출
 		String username = obtainUsername(request);
-		System.out.println(username);
+		System.out.println("로그인필터 유저네임 : "+ username);
 		String password = obtainPassword(request);
 
 		// 스프링 시큐리티에서 username과 password를 검증하기 위해서는 token에 담아야 함
@@ -49,8 +49,9 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 	@Override
 	protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
 			Authentication authentication) {
-		//Authentication은 인증된 사용자의 정보를 세부 정보를 나타냄
+		//Authentication은 인증된 사용자의 세부 정보를 나타냄
 		// UserDetails
+		//System.out.println("successfulAuthentication메서드 들어옴");
 		CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
 
 		String username = customUserDetails.getUsername();
@@ -61,9 +62,12 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
 		String role = auth.getAuthority();
 
-		String token = jwtUtil.createJwt(username, role, 60 * 60 * 10L);
-
+		String token = jwtUtil.createJwt(username, role, 10*60*1000L);
+		
 		response.addHeader("Authorization", "Bearer " + token);
+		response.addHeader("MemberId", customUserDetails.getMemberId()+"");
+		//위에 설정한 헤더 데이터를 클라이언트가 접근할 수 있도록 허용하는 코드
+		response.addHeader("Access-Control-Expose-Headers", "Authorization, MemberId");
 	}
 
 	

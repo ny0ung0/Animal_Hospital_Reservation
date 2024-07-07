@@ -41,6 +41,12 @@
 		</div>
 	</div>
 	<div id="result"></div>
+	<button onclick="tokenTest()">토큰테스트</button>
+	
+	
+	
+	
+	
 	<div th:replace="~{hospital/footer :: footer}"></div>
 	<script
 		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
@@ -51,24 +57,54 @@
 			//alert("로그인들어옴");
 			
 			const frm = document.querySelector("#frmUser");
-			const frm_ = {
-				"username" : frm.username.value,
-				"password" : frm.password.value
-				
-			};
-			const data = JSON.stringify(frm_);
-			alert(data);
-			
+			const formData = new FormData(frm);
+						
 			const xhttp = new XMLHttpRequest();
 			xhttp.onload = function() {
-				alert(this.responseText);
-				var result = this.responseText;
-				document.getElementById("result").innerHTML = result;
+				 if (this.status === 200) {
+	                    alert("로그인 성공");
+	                    const token = this.getResponseHeader("Authorization");
+	                    if (token) {
+	                        localStorage.setItem("token", token);
+	                    }
+	                    const MemberId = this.getResponseHeader("MemberId");
+	                    if (MemberId) {
+	                        localStorage.setItem("MemberId", MemberId);
+	                    }
+	                    
+	                } else if (this.status === 401) {
+	                    alert("로그인 실패 : 아이디,패스워드를 다시 입력해주세요.");
+	                }
 			}
-			xhttp.open("post", "http://localhost:9001/loginUser");
-			xhttp.setRequestHeader("Content-type", "application/json");	
+			xhttp.open("post", "http://localhost:9001/login");
+			xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");	
 
-			xhttp.send(data);
+			xhttp.send(new URLSearchParams(formData).toString());
+		}
+		
+		
+		function tokenTest() {
+			//alert("로그인들어옴");
+			
+			//const frm = document.querySelector("#frmUser");
+			//const formData = new FormData(frm);
+			const token = localStorage.getItem("token");
+			alert(token);
+			const xhttp = new XMLHttpRequest();
+			
+			xhttp.onload = function() {
+				 if (this.status === 200) {
+	                    alert("토큰 성공");
+	                    document.getElementById("result").innerHTML = this.responseText;
+	                    
+	                } else if (this.status === 401) {
+	                    alert("토큰 실패");
+	                }
+			}
+			xhttp.open("post", "http://localhost:9001/aaa");
+			//xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");	
+			xhttp.setRequestHeader("Authorization",token);
+			xhttp.send();
 		}
 	</script>
 
