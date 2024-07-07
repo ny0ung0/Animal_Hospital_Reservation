@@ -22,7 +22,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 				
-				//DB에서 조회
+				//DB에서 조회 
         Login userData = loginRepository.findByUsername(username);
 
         if (userData != null) {
@@ -31,6 +31,6 @@ public class CustomUserDetailsService implements UserDetailsService {
             return new CustomUserDetails(userData);
         }
 
-        return null;
+        throw new UsernameNotFoundException("User not found with username: " + username);
     }
 }

@@ -26,11 +26,11 @@ public class LoginController_jun {
 		return ResponseEntity.ok().body("성공");
 	}
 	
-	@PostMapping("/loginUser")
-	public ResponseEntity<?> joinUser(@RequestBody Login login){
-		System.out.println("로그인 컨트롤러 접속 성공");
+
+	@PostMapping("/aaa")
+	public String aaa() {
+		System.out.println("aaa컨트롤러 들어옴");
 		
-		return ResponseEntity.ok().body("성공");
+		return "aaa 접근성공";
 	}
-	
 }
