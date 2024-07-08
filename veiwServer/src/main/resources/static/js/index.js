@@ -49,7 +49,7 @@ xhttp.onload = function() {
 		//현재 내 위치와 거리가 1km미만인 병원 구하기
  		const projection = map.getProjection();
 	    const distance = projection.getDistance(currentPos, hospitalPos);
-		if(distance <= 1000){
+		if(distance <= 3000){
 			let markedVet = new naver.maps.Marker({
             map: map,
             position: new naver.maps.LatLng(lat, lng),
@@ -70,6 +70,63 @@ xhttp.onload = function() {
    							+ ' , ' + hospital["소재지전체주소"]
    		 
    		document.querySelector(".vet_list").appendChild(listItem);
+   		
+   		//geocoding(내 주변에 뜬 병원의 좌표를 사용해서 내 db에 존재하는 병원인지 체크)
+   		naver.maps.Service.reverseGeocode({
+        coords: new naver.maps.LatLng(lat, lng),
+	    }, function(status, response) {
+	        if (status !== naver.maps.Service.Status.OK) {
+	            return alert('Something wrong!');
+	        }
+	
+	        var result = response.v2, // 검색 결과의 컨테이너
+	            items = result.results, // 검색 결과의 배열
+	            address = result.address; // 검색 결과로 만든 주소
+	
+	   
+	        let addrs = result.address.jibunAddress.split(" ")
+	        let addr = addrs[0]+"//" + addrs[1]
+	       
+	        console.log(hospital["사업장명"])
+	        console.log(addrs)
+	        
+	        
+	        const xhttp = new XMLHttpRequest();
+		    xhttp.onload = function () {
+		        if (this.status === 200) {
+			       	let data = JSON.parse(this.responseText);
+			       	data.forEach(hospital =>{
+		       		let addr = hospital.address.replaceAll("//", " ")
+		       		memVet[hospital.hospitalName] = {"address" : addr, 
+										       		"avgReview" : hospital.avgReview,
+										       		"bookmarked" : hospital.bookmarked,
+										       		"businessNumber" : hospital.businessNumber,
+										       		"email" : hospital.email,
+										       		"introduction" : hospital.introduction,
+										       		"logo" : hospital.logo,
+										       		"representative" : hospital.representative,
+										       		"partnership" : hospital.partnership, 
+										       		"businessHours" : hospital.businessHours};
+			       	})
+		        }
+//		        fetchHospitalData(guMap, Array.from(citiesWithNoGu));
+		    };
+		      
+		 // GET 요청 URL에 쿼리 매개 변수로 데이터 추가
+		    const params = new URLSearchParams();
+		   
+	    	params.append(hospital["사업장명"], addr);
+		   
+		    
+		    const url = "http://localhost:9001/api/v1/near-vet-list?" + params.toString();
+		    xhttp.open("GET", url, true);
+		//    xhttp.setRequestHeader("username", 1);
+		    xhttp.send();
+	        
+	        
+	        
+	        
+	    });
    		
    		
         //marker/infoWindows array에 넣어주기
