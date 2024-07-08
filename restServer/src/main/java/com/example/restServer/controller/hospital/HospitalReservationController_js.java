@@ -20,7 +20,7 @@ import com.example.restServer.repository.ReservationRepository;
 
 @CrossOrigin("*")
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/hospital")
 public class HospitalReservationController_js {
 
 	@Autowired
@@ -81,7 +81,7 @@ public class HospitalReservationController_js {
 		return new ResponseEntity<>(reservation2, HttpStatus.OK);
 	}
 	
-	@GetMapping("/hospital/doctor")
+	@GetMapping("/doctor")
 	public ResponseEntity<List<Doctor>> getDoctorList(){
 		System.out.println("의사 리스트 가져오기");
 		List<Doctor> list =  doctorRepo.findAllByHospitalId(3L);
