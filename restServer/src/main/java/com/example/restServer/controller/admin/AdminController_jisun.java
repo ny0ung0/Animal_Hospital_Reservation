@@ -18,6 +18,9 @@ import com.example.restServer.dto.IMemberLoginDto;
 import com.example.restServer.entity.Member;
 import com.example.restServer.repository.LoginRepository;
 import com.example.restServer.repository.MemberRepository;
+import com.example.restServer.utill.MailService;
+
+import jakarta.annotation.Resource;
 
 @CrossOrigin("*")
 @RestController
@@ -29,6 +32,9 @@ public class AdminController_jisun {
 	
 	@Autowired
 	LoginRepository loginRepo;
+	
+	@Resource(name = "mailService")
+	private MailService mailService;
 
 	@GetMapping("/permit")
 	public ResponseEntity<List<IMemberLoginDto>> getHospitalNonePermit(){
@@ -48,6 +54,14 @@ public class AdminController_jisun {
 	
 	@DeleteMapping("/permit/{id}")
 	public ResponseEntity<String> deletePermitOk(@PathVariable("id") Long id){
+		Optional<Member> result = memberRepo.findById(id);
+		Member member = result.get();
+		if(member.getEmail() != null) {
+			mailService.sendSimpleEmail(member.getEmail());
+		}else {
+			System.out.println("이메일이 없네용");
+		}
+		
 		loginRepo.deleteByMemberId(id);
 		memberRepo.deleteById(id);
 		return new ResponseEntity<>(HttpStatus.OK);
