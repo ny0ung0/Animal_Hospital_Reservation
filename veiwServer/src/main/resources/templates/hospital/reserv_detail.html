@@ -13,7 +13,7 @@
 <body class="d-flex flex-column h-100">
 <div th:replace="~{hospital/header :: header}"></div>
 <div class="container-xl">
-<input type="text" name="reservId" th:value=${reservId}>
+<input type="hidden" name="reservId" th:value=${reservId}>
 <div class="d-flex align-items-end">
 	<h1 class="mt-3 mt-md-5 mb-3 mb-md-3">예약 상세 정보</h1>
 	<button class="btn btn-outline-main ms-auto mb-3"><i class="bi bi-bell-fill"></i> 알림 보내기</button>
@@ -85,11 +85,14 @@
 </div>
 
 <div class="clear-fix">
-	<button id="cancleBtn" class="btn btn-danger float-end me-1">예약 취소</button>
-	<button id="confirmedBtn" class="btn btn-main float-end me-1">예약 확정</button>
-	<button id="completeBtn" class="btn btn-main float-end me-1">진료 완료</button>
+	<button id="cancleBtn" class="btn btn-danger float-end me-1" onclick="statusCancle()">예약 취소</button>
+	<button id="confirmedBtn" class="btn btn-main float-end me-1" onclick="statusConfirmed()">예약 확정</button>
+	<button id="completeBtn" class="btn btn-main float-end me-1" onclick="statusComplete()">진료 완료</button>
 </div>
 
+<div>
+	<a href="/hospital/reservList" class="btn btn-outline-secondary">목록 보기</a>
+</div>
 
 </div>
 <div th:replace="~{hospital/footer :: footer}"></div>
@@ -97,7 +100,7 @@
 <script type="text/javascript" >
 const reservId = document.querySelector("input[name='reservId']").value;
 console.log(reservId);
-fetch("http://localhost:9001/api/v1/reservation/" + reservId, {
+fetch("http://localhost:9001/api/v1/hospital/reservation/" + reservId, {
 	method : "GET"
 })
 .then(response => response.text())
@@ -130,6 +133,48 @@ fetch("http://localhost:9001/api/v1/reservation/" + reservId, {
 	}
 })
 .catch(error => console.log(error));
+
+function statusComplete(){
+	let status = "완료";
+	console.log(status);
+	fetch("http://localhost:9001/api/v1/hospital/reservation/" + reservId + "/"+ status, {
+		method : "PUT"
+	})
+	.then(response => response.text())
+	.then(data => {
+		//console.log(data);
+		location.reload();
+	})
+	.catch(error => console.log(error));
+}
+
+function statusConfirmed(){
+	let status = "확정";
+	console.log(status);
+	fetch("http://localhost:9001/api/v1/hospital/reservation/" + reservId + "/"+ status, {
+		method : "PUT"
+	})
+	.then(response => response.text())
+	.then(data => {
+		//console.log(data);
+		location.reload();
+	})
+	.catch(error => console.log(error));
+}
+
+function statusCancle(){
+	let status = "취소";
+	console.log(status);
+	fetch("http://localhost:9001/api/v1/hospital/reservation/" + reservId + "/"+ status, {
+		method : "PUT"
+	})
+	.then(response => response.text())
+	.then(data => {
+		//console.log(data);
+		location.reload();
+	})
+	.catch(error => console.log(error));
+}
 
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>

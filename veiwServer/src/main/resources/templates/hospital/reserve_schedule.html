@@ -16,10 +16,11 @@
 <div class="container-xl">
 	<h1 class="mt-3 mt-md-5 mb-3 mb-md-3">진료 일정 관리</h1>
 	<hr/>
-	<h4 class="fw-bold mb-3"><span>홍길동</span> 수의사 진료일정</h4>
+	<input type="text" id="doctorId" th:value="${doctorId}">
+	<h4 class="fw-bold mb-3">[[${doctorName}]] 수의사 진료일정</h4>
 	<div class="border p-4 rounded">
 		<div class="date-input-size mb-3 mx-auto">
-			<input type="date" class="form-control" id="" value="2024-07-06">
+			<input type="date" class="form-control" id="" th:value="${date}">
 		</div>
 		<div class="container container-600">
 			<input type="checkbox" class="btn-check" id="btn-check-1-outlined" checked autocomplete="off">
@@ -34,7 +35,7 @@
 </div>
 <div th:replace="~{hospital/footer :: footer}"></div>
 <script type="text/javascript">
-fetch("http://localhost:9001/api/v1/reservation/waiting", {
+fetch("http://localhost:9001/api/v1/hospital/reservation/waiting", {
 	method : "GET",
 	//headers: {
 	   // "Authorization": "application/json",
@@ -68,7 +69,7 @@ fetch("http://localhost:9001/api/v1/reservation/waiting", {
 .catch(error => console.log(error));
 
 
-fetch("http://localhost:9001/api/v1/reservation/confirmed", {
+fetch("http://localhost:9001/api/v1/hospital/reservation/confirmed", {
 	method : "GET",
 	//headers: {
 	   // "Authorization": "application/json",
@@ -102,7 +103,7 @@ fetch("http://localhost:9001/api/v1/reservation/confirmed", {
 .catch(error => console.log(error));
 
 
-fetch("http://localhost:9001/api/v1/reservation/complete", {
+fetch("http://localhost:9001/api/v1/hospital/reservation/complete", {
 	method : "GET",
 	//headers: {
 	   // "Authorization": "application/json",
@@ -137,7 +138,7 @@ fetch("http://localhost:9001/api/v1/reservation/complete", {
 
 
 
-fetch("http://localhost:9001/api/v1/reservation/cancle", {
+fetch("http://localhost:9001/api/v1/hospital/reservation/cancle", {
 	method : "GET",
 	//headers: {
 	   // "Authorization": "application/json",

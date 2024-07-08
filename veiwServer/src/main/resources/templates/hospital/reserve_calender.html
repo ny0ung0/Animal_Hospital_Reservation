@@ -12,6 +12,8 @@
 <script src="/js/index.global.min.js"></script>
 <script>
     	document.addEventListener('DOMContentLoaded', function() {
+    		const doctorId = document.querySelector("#doctorId").value;
+    		const doctorName = document.querySelector("#doctorName").value;
         	var calendarEl = document.getElementById('calendar');
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 // Tool Bar 목록 document : https://fullcalendar.io/docs/toolbar
@@ -23,23 +25,29 @@
 
                 //selectable: true,
                 //selectMirror: true,
+                
+                // 날짜 클릭 이벤트 설정
+		        dateClick: function(info) {
+		            var clickedDate = info.dateStr; // 클릭한 날짜
+		            window.location.href = '/hospital/reserveSchedule?date=' + clickedDate + '&doctorId=' + doctorId + '&doctorName=' + doctorName; // 다른 페이지로 이동, URL에 날짜 포함
+		        }
 
                 //navLinks: true, // can click day/week names to navigate views
                 //editable: true,
-                dayMaxEvents: true, // allow "more" link when too many events
+                //dayMaxEvents: true, // allow "more" link when too many events
                 // 이벤트 객체 필드 document : https://fullcalendar.io/docs/event-object
-                events: [
-                    {
-                    title: '2건',
-                    url: 'http://google.com/',
-                    start: '2024-07-10'
-                    },
-					{
-					title: '1건',
-					url: 'http://google.com/',
-					start: '2024-07-12'
-					}
-                ]
+//                 events: [
+//                     {
+//                     title: '2건',
+//                     url: 'http://google.com/',
+//                     start: '2024-07-10'
+//                     },
+// 					{
+// 					title: '1건',
+// 					url: 'http://google.com/',
+// 					start: '2024-07-12'
+// 					}
+//                 ]
             });
 
             calendar.render();
@@ -52,7 +60,9 @@
 <div class="container-xl">
 	<h1 class="mt-3 mt-md-5 mb-3 mb-md-3">진료 일정 관리</h1>
 	<hr/>
-	<h4 class="fw-bold mb-3"><span>홍길동</span> 수의사 진료일정</h4>
+	<input type="text" id="doctorId" th:value="${doctorId}">
+	<input type="text" id="doctorName" th:value="${doctorName}">
+	<h4 class="fw-bold mb-3">[[${doctorName}]] 수의사 진료일정</h4>
 	<div>
 		<div id="calendar" class="mb-5"></div>
 	</div>
@@ -61,141 +71,7 @@
 <div th:replace="~{hospital/footer :: footer}"></div>
 
 <script type="text/javascript">
-fetch("http://localhost:9001/api/v1/reservation/waiting", {
-	method : "GET",
-	//headers: {
-	   // "Authorization": "application/json",
-	   // "username": "application/json",
-	  //},
-})
-.then(response =>  response.json())
-.then(data => {
-	console.log(data == "");
-	if(data == ""){
-		document.querySelector("#waiting-tab-pane .row").innerHTML = '<div class="col-12 mb-3"><div class="p-5 text-center text-secondary">예약 내역이 없습니다.</div></div>';
-	}else{
-		const objs = data;
-		console.log(objs);
-		objs.forEach(obj =>{
-			let dateTime = obj.reservationDatetime.replace("T", " ");
-			document.querySelector("#waiting-tab-pane .row").innerHTML += 
-				'<div class="col-12 col-md-4 mb-3">'
-				  	+ '<div class="p-3 p-md-4 border rounded">'
-				  		+ '<div class="mb-2"><span class="fw-bold">[예약번호] ' + obj.id  + '</span></div>'
-				  		+ '<div class="mb-2"><span class="fw-bold">진료유형 </span>' + obj.type + '</div>'
-				  		+ '<div class="mb-2"><span class="fw-bold">예약자명 </span>' + obj.user.name + '</div>'
-				  		+ '<div class="mb-2"><span class="fw-bold">예약날짜 </span>' + dateTime + '</div>'
-				  		+ '<div class="d-flex">'
-					  		+ '<a class="btn btn-sm btn-main w-100 me-1" href="/hospital/reservDetail?id=' + obj.id + '">상세보기</a>'
-					  		+ '<button class="btn btn-sm btn-outline-main w-100 ms-1"><i class="bi bi-bell-fill"></i> 알림 보내기</button>'
-				  		+ '</div></div></div>';
-		});
-	}
-})
-.catch(error => console.log(error));
 
-
-fetch("http://localhost:9001/api/v1/reservation/confirmed", {
-	method : "GET",
-	//headers: {
-	   // "Authorization": "application/json",
-	   // "username": "application/json",
-	  //},
-})
-.then(response =>  response.json())
-.then(data => {
-	console.log(data == "");
-	if(data == ""){
-		document.querySelector("#confirmed-tab-pane .row").innerHTML = '<div class="col-12 mb-3"><div class="p-5 text-center text-secondary">예약 내역이 없습니다.</div></div>';
-	}else{
-		const objs = data;
-		console.log(objs);
-		objs.forEach(obj =>{
-			let dateTime = obj.reservationDatetime.replace("T", " ");
-			document.querySelector("#confirmed-tab-pane .row").innerHTML += 
-				'<div class="col-12 col-md-4 mb-3">'
-				  	+ '<div class="p-3 p-md-4 border rounded">'
-				  		+ '<div class="mb-2"><span class="fw-bold">[예약번호] ' + obj.id  + '</span></div>'
-				  		+ '<div class="mb-2"><span class="fw-bold">진료유형 </span>' + obj.type + '</div>'
-				  		+ '<div class="mb-2"><span class="fw-bold">예약자명 </span>' + obj.user.name + '</div>'
-				  		+ '<div class="mb-2"><span class="fw-bold">예약날짜 </span>' + dateTime + '</div>'
-				  		+ '<div class="d-flex">'
-					  		+ '<a class="btn btn-sm btn-main w-100 me-1" href="/hospital/reservDetail?id=' + obj.id + '">상세보기</a>'
-					  		+ '<button class="btn btn-sm btn-outline-main w-100 ms-1"><i class="bi bi-bell-fill"></i> 알림 보내기</button>'
-				  		+ '</div></div></div>';
-		});
-	}
-})
-.catch(error => console.log(error));
-
-
-fetch("http://localhost:9001/api/v1/reservation/complete", {
-	method : "GET",
-	//headers: {
-	   // "Authorization": "application/json",
-	   // "username": "application/json",
-	  //},
-})
-.then(response =>  response.json())
-.then(data => {
-	console.log(data == "");
-	if(data == ""){
-		document.querySelector("#complete-tab-pane .row").innerHTML = '<div class="col-12 mb-3"><div class="p-5 text-center text-secondary">예약 내역이 없습니다.</div></div>';
-	}else{
-		const objs = data;
-		console.log(objs);
-		objs.forEach(obj =>{
-			let dateTime = obj.reservationDatetime.replace("T", " ");
-			document.querySelector("#complete-tab-pane .row").innerHTML += 
-				'<div class="col-12 col-md-4 mb-3">'
-				  	+ '<div class="p-3 p-md-4 border rounded">'
-				  		+ '<div class="mb-2"><span class="fw-bold">[예약번호] ' + obj.id  + '</span></div>'
-				  		+ '<div class="mb-2"><span class="fw-bold">진료유형 </span>' + obj.type + '</div>'
-				  		+ '<div class="mb-2"><span class="fw-bold">예약자명 </span>' + obj.user.name + '</div>'
-				  		+ '<div class="mb-2"><span class="fw-bold">예약날짜 </span>' + dateTime + '</div>'
-				  		+ '<div class="d-flex">'
-					  		+ '<a class="btn btn-sm btn-main w-100 me-1" href="/hospital/reservDetail?id=' + obj.id + '">상세보기</a>'
-					  		+ '<button class="btn btn-sm btn-outline-main w-100 ms-1"><i class="bi bi-bell-fill"></i> 알림 보내기</button>'
-				  		+ '</div></div></div>';
-		});
-	}
-})
-.catch(error => console.log(error));
-
-
-
-fetch("http://localhost:9001/api/v1/reservation/cancle", {
-	method : "GET",
-	//headers: {
-	   // "Authorization": "application/json",
-	   // "username": "application/json",
-	  //},
-})
-.then(response =>  response.json())
-.then(data => {
-	console.log(data == "");
-	if(data == ""){
-		document.querySelector("#cancle-tab-pane .row").innerHTML = '<div class="col-12 mb-3"><div class="p-5 text-center text-secondary">예약 내역이 없습니다.</div></div>';
-	}else{
-		const objs = data;
-		console.log(objs);
-		objs.forEach(obj =>{
-			let dateTime = obj.reservationDatetime.replace("T", " ");
-			document.querySelector("#cancle-tab-pane .row").innerHTML += 
-				'<div class="col-12 col-md-4 mb-3">'
-				  	+ '<div class="p-3 p-md-4 border rounded">'
-				  		+ '<div class="mb-2"><span class="fw-bold">[예약번호] ' + obj.id  + '</span></div>'
-				  		+ '<div class="mb-2"><span class="fw-bold">진료유형 </span>' + obj.type + '</div>'
-				  		+ '<div class="mb-2"><span class="fw-bold">예약자명 </span>' + obj.user.name + '</div>'
-				  		+ '<div class="mb-2"><span class="fw-bold">예약날짜 </span>' + dateTime + '</div>'
-				  		+ '<div class="d-flex">'
-					  		+ '<a class="btn btn-sm btn-main w-100 me-1" href="/hospital/reservDetail?id=' + obj.id + '">상세보기</a>'
-					  		+ '<button class="btn btn-sm btn-outline-main w-100 ms-1"><i class="bi bi-bell-fill"></i> 알림 보내기</button>'
-				  		+ '</div></div></div>';
-		});
-	}
-})
-.catch(error => console.log(error));
 
 
 </script>
