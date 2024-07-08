@@ -87,7 +87,8 @@ function loadRegionList() {
 
 searchBtn.addEventListener("click", function() {
 	vetContainer.innerHTML="";
-    
+	searchResult=[];
+    console.log(memVet)
     //예약되는 병원 + 포인트 제휴병원 여부 보여주기
     const xhttp = new XMLHttpRequest();
     xhttp.onload = function () {
@@ -244,34 +245,34 @@ function sortingReserv(e){
 	console.log(searchResult)
 	console.log(memVet)
 }
-//function sortingPoint(e){
-//	console.log("포인트제휴병원순")
-////	vetContainer.innerHTML="";
-//	
-//	 // searchResult 배열을 memVet 객체의 값을 기준으로 정렬
-//    searchResult.sort((a, b) => {
-//        const aValue = memVet[a.hospitalName];
-//        const bValue = memVet[b.hospitalName];
+
+
+//function sortingPoint(e) {
+//     console.log("포인트제휴병원순");
+//    console.log("memVet:", memVet);
+//    console.log("searchResult before sort:", searchResult);
 //
-//        // a와 b의 partnership과 address 기준으로 정렬
-//        if (aValue && bValue) {
-//            if (aValue.partnership && !bValue.partnership) {
-//                return -1; // a가 먼저
-//            } else if (!aValue.partnership && bValue.partnership) {
-//                return 1; // b가 먼저
-//            } else {
-//                // partnership이 동일하면 address를 기준으로 정렬 (예: 가나다순)
-//                return aValue.address.localeCompare(bValue.address);
-//            }
-//        } else if (aValue) {
-//            return -1; // a가 먼저
-//        } else if (bValue) {
-//            return 1; // b가 먼저
-//        } else {
-//            return 0; // 변경 없음
+//    searchResult.sort((a, b) => {
+//        const aName = a["사업장명"];
+//        const bName = b["사업장명"];
+//        const aValue = memVet[aName];
+//        const bValue = memVet[bName];
+//
+//        const aInMemVet = aValue ? 1 : 0;
+//        const bInMemVet = bValue ? 1 : 0;
+//
+//        // memVet에 있는 요소를 먼저 위로 정렬
+//        if (aInMemVet !== bInMemVet) {
+//            return bInMemVet - aInMemVet;
 //        }
+//
 //    });
-//    console.log(searchResult)
+//
+//    // 정렬된 결과를 vetContainer에 다시 렌더링
+//    vetContainer.innerHTML = "";
+//    searchResult.forEach(hospital => addHospitalToList(hospital));
+//
+//    console.log("searchResult after sort:", searchResult);
 //}
 
 function makeReservation(){

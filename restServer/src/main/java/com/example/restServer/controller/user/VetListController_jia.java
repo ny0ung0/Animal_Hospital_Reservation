@@ -67,20 +67,21 @@ public class VetListController_jia {
 	public ResponseEntity<List<MemVetDto>> nearVetList(@RequestParam Map<String, String> address, HttpServletRequest request) {
 		List<MemVetDto> memList = new ArrayList<>();
 		System.out.println(address);
+//		System.out.println("xxxx");
+	
 		if(request.getHeader("username") != null ) {
 			Long userId = Long.parseLong(request.getHeader("username"));
 			
 			address.forEach((key, value) -> {
-            	List<MemVetDto> list = vetListService.getMemberVetList(key + value+"%", userId);
+            	List<MemVetDto> list = vetListService.getMemberVetList(value+"%", userId);
             	memList.addAll(list);
 	            System.out.println(memList);
 	            System.out.println(memList.size());
 	        });
 		}else {
 			address.forEach((key, value) -> {
-            	List<MemVetDto> list = vetListService.getMemberVetList(key + value+"%", 0L);
+            	List<MemVetDto> list = vetListService.getMemberVetList(value+"%", 0L);
             	memList.addAll(list);
-	        
 	            System.out.println(memList);
 	            System.out.println(memList.size());
 	        });

@@ -28,7 +28,8 @@ public class VetListService {
 	public List<MemVetDto> getMemberVetList(String address, Long userId) {
 		List<Member> result = memRepo.findMemberVetList(address);
 		List<MemVetDto> MemVetList = new ArrayList<>();
-		
+		System.out.println("serviceeee");
+		System.out.println(address);
 		for(int i = 0; i<result.size(); i++) {
 			Member hospital =  result.get(i);
 			Long hospitalId = result.get(i).getId();

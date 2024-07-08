@@ -11,3 +11,72 @@
     transition: opacity 1s ease-in-out;
     z-index:9999;
 }
+
+ #map {
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        position: relative;
+    }
+.mapContainer{
+	position:relative;
+}
+.vet_list {
+    position: absolute;
+    top: 100px;
+    right: -100px;
+    width: 450px;
+    height:500px;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.vet_list div {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    margin-bottom: 10px;
+}
+
+.modal-content {
+    font-family: 'Do Hyeon', sans-serif;
+}
+
+.modal-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.modal-title {
+    color: #333;
+}
+
+.modal-body div {
+    margin-bottom: 10px;
+}
+
+.modal-body button {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    border: none;
+    color: white;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.modal-body button:hover {
+    background-color: #0056b3;
+}
+
+.carousel .carousel-item img {
+    border-radius: 10px;
+}
+
+.carousel-indicators [data-bs-target] {
+    background-color: #007bff;
+}
