@@ -26,13 +26,17 @@ public class HospitalController_jisun {
 	}
 	
 	@RequestMapping("/reserveCalender")
-	public String reserveCalender() {
+	public String reserveCalender(@RequestParam("doctorId")Long doctorId, @RequestParam("doctorName")String doctorName, Model model) {
+		model.addAttribute("doctorId", doctorId);
+		model.addAttribute("doctorName", doctorName);
 		return "/hospital/reserve_calender";
 	}
 	
 	@RequestMapping("/reserveSchedule")
-	public String reserveSchedule(@RequestParam("date")String date, Model model) {
+	public String reserveSchedule(@RequestParam("doctorId")Long doctorId, @RequestParam("date")String date, @RequestParam("doctorName")String doctorName, Model model) {
 		model.addAttribute("date", date);
+		model.addAttribute("doctorId", doctorId);
+		model.addAttribute("doctorName", doctorName);
 		return "/hospital/reserve_schedule";
 	}
 	

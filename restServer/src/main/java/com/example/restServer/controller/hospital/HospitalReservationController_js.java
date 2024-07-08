@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.restServer.entity.Doctor;
 import com.example.restServer.entity.Reservation;
+import com.example.restServer.repository.DoctorRepository;
 import com.example.restServer.repository.ReservationRepository;
 
 @CrossOrigin("*")
@@ -23,6 +25,9 @@ public class HospitalReservationController_js {
 
 	@Autowired
 	ReservationRepository reservationRepo;
+	
+	@Autowired
+	DoctorRepository doctorRepo;
 	
 	@GetMapping("/reservation/waiting")
 	public ResponseEntity<List<Reservation>> getWaitingReservation(){
@@ -74,6 +79,13 @@ public class HospitalReservationController_js {
 		Reservation reservation2 = reservationRepo.save(reservation);
 		System.out.println(reservation2);
 		return new ResponseEntity<>(reservation2, HttpStatus.OK);
+	}
+	
+	@GetMapping("/hospital/doctor")
+	public ResponseEntity<List<Doctor>> getDoctorList(){
+		System.out.println("의사 리스트 가져오기");
+		List<Doctor> list =  doctorRepo.findAllByHospitalId(3L);
+		return new ResponseEntity<>(list, HttpStatus.OK);
 	}
 	
 }
