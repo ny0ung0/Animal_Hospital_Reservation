@@ -100,7 +100,7 @@
 				var result = this.responseText;
 				document.getElementById("result").innerHTML = result;
 			}
-			xhttp.open("post", "http://localhost:9001/joinUser");
+			xhttp.open("post", "http://localhost:9001/api/v1/joinUser");
 			xhttp.setRequestHeader("Content-type", "application/json");	
 
 			xhttp.send(data);
