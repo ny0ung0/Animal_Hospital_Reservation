@@ -31,7 +31,8 @@ public class HospitalController_jisun {
 	}
 	
 	@RequestMapping("/reserveSchedule")
-	public String reserveSchedule() {
+	public String reserveSchedule(@RequestParam("date")String date, Model model) {
+		model.addAttribute("date", date);
 		return "/hospital/reserve_schedule";
 	}
 	

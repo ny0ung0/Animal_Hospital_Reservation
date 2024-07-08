@@ -23,23 +23,29 @@
 
                 //selectable: true,
                 //selectMirror: true,
+                
+                // 날짜 클릭 이벤트 설정
+		        dateClick: function(info) {
+		            var clickedDate = info.dateStr; // 클릭한 날짜
+		            window.location.href = '/hospital/reserveSchedule?date=' + clickedDate; // 다른 페이지로 이동, URL에 날짜 포함
+		        }
 
                 //navLinks: true, // can click day/week names to navigate views
                 //editable: true,
-                dayMaxEvents: true, // allow "more" link when too many events
+                //dayMaxEvents: true, // allow "more" link when too many events
                 // 이벤트 객체 필드 document : https://fullcalendar.io/docs/event-object
-                events: [
-                    {
-                    title: '2건',
-                    url: 'http://google.com/',
-                    start: '2024-07-10'
-                    },
-					{
-					title: '1건',
-					url: 'http://google.com/',
-					start: '2024-07-12'
-					}
-                ]
+//                 events: [
+//                     {
+//                     title: '2건',
+//                     url: 'http://google.com/',
+//                     start: '2024-07-10'
+//                     },
+// 					{
+// 					title: '1건',
+// 					url: 'http://google.com/',
+// 					start: '2024-07-12'
+// 					}
+//                 ]
             });
 
             calendar.render();

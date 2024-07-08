@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -62,6 +63,17 @@ public class HospitalReservationController_js {
 		Reservation reservation = result.get();
 		System.out.println(reservation);
 		return new ResponseEntity<>(reservation, HttpStatus.OK);
+	}
+	
+	@PutMapping("/reservation/{id}/{status}")
+	public ResponseEntity<Reservation> updateReservationStatus(@PathVariable("id") Long id, @PathVariable("status")String status){
+		System.out.println("예약 상태 업데이트");
+		Optional<Reservation> result = reservationRepo.findById(id);
+		Reservation reservation = result.get();
+		reservation.setStatus(status);
+		Reservation reservation2 = reservationRepo.save(reservation);
+		System.out.println(reservation2);
+		return new ResponseEntity<>(reservation2, HttpStatus.OK);
 	}
 	
 }
