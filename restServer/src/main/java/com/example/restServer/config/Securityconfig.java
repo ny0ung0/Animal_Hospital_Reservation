@@ -80,7 +80,7 @@ public class Securityconfig {
 					//.requestMatchers("/manager/**").hasRole("MANAGER")
 					//.requestMatchers("/reporter/**", "/api/**").hasAnyRole("REPORTER", "MANAGER")
 					.requestMatchers("/aaa").hasRole("USER")
-					.anyRequest().authenticated());
+					.anyRequest().permitAll());
 			
 		//세션 설정 : Stateless
 		http
