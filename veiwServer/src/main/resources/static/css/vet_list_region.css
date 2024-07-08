@@ -4,7 +4,7 @@
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
-    margin-bottom: 15px;
+    margin: 15px auto;
 }
 
 .cities, .guEl {
@@ -27,7 +27,9 @@
 
 .vet_list div {
     padding: 10px;
-    border-bottom: 1px solid #ddd;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    margin: 15px auto;
 }
 
 .vet_list button {
