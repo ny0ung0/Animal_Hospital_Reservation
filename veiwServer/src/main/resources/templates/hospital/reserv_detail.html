@@ -100,7 +100,7 @@
 <script type="text/javascript" >
 const reservId = document.querySelector("input[name='reservId']").value;
 console.log(reservId);
-fetch("http://localhost:9001/api/v1/reservation/" + reservId, {
+fetch("http://localhost:9001/api/v1/hospital/reservation/" + reservId, {
 	method : "GET"
 })
 .then(response => response.text())
@@ -137,7 +137,7 @@ fetch("http://localhost:9001/api/v1/reservation/" + reservId, {
 function statusComplete(){
 	let status = "완료";
 	console.log(status);
-	fetch("http://localhost:9001/api/v1/reservation/" + reservId + "/"+ status, {
+	fetch("http://localhost:9001/api/v1/hospital/reservation/" + reservId + "/"+ status, {
 		method : "PUT"
 	})
 	.then(response => response.text())
@@ -151,7 +151,7 @@ function statusComplete(){
 function statusConfirmed(){
 	let status = "확정";
 	console.log(status);
-	fetch("http://localhost:9001/api/v1/reservation/" + reservId + "/"+ status, {
+	fetch("http://localhost:9001/api/v1/hospital/reservation/" + reservId + "/"+ status, {
 		method : "PUT"
 	})
 	.then(response => response.text())
@@ -165,7 +165,7 @@ function statusConfirmed(){
 function statusCancle(){
 	let status = "취소";
 	console.log(status);
-	fetch("http://localhost:9001/api/v1/reservation/" + reservId + "/"+ status, {
+	fetch("http://localhost:9001/api/v1/hospital/reservation/" + reservId + "/"+ status, {
 		method : "PUT"
 	})
 	.then(response => response.text())
