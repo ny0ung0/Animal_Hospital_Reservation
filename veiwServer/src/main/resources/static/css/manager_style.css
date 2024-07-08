@@ -2,3 +2,10 @@
 .logo_size{
 	width:180px;
 }
+.manager-table thead tr td{
+	background-color: #4C5CB3;
+	color:#fff;
+}
+.manager-table td{
+	text-align:center;
+}
