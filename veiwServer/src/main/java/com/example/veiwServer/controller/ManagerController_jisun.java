@@ -25,4 +25,15 @@ public class ManagerController_jisun {
 		return "/manager/user_detail";
 	}
 	
+	@RequestMapping("/vetDetail")
+	public String vetDetail(@RequestParam("id")Long id, Model model) {
+		model.addAttribute("id", id);
+		return "/manager/vet_detail";
+	}
+	
+	@RequestMapping("/vetList")
+	public String vetList() {
+		return "/manager/vet_list";
+	}
+	
 }

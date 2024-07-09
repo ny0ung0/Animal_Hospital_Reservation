@@ -8,7 +8,7 @@
 </head>
 <body class="d-flex flex-nowrap h-100">
 <div th:replace="~{manager/sidemenu :: sidemenu}"></div>
-<div class="w-100 p-5">
+<div class="w-100 p-5 h-100 overflow-auto">
 	<h2>병원 가입 승인</h2>
 	<hr class="w-100"/>
 	<div id="permitTable" class="text-center">
@@ -40,7 +40,7 @@ fetch("http://localhost:9001/api/v1/manager/permit", {
 	const objs = JSON.parse(data);
 	//console.log(objs);
 	if(objs.length === 0){
-		document.querySelector("#permitTable").innerHTML = "승일할 병원 내역이 없습니다.";
+		document.querySelector("#permitTable").innerHTML = "승인할 병원 내역이 없습니다.";
 	}else{
 	
 		let cnt = 1;
