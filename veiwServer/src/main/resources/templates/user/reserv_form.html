@@ -16,7 +16,7 @@
 	integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
 	crossorigin="anonymous">
 <link href="/css/style.css" rel="stylesheet">
-<link href="/css/vet_list_region.css" rel="stylesheet">
+<link href="/css/reserv_form.css" rel="stylesheet">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -34,13 +34,12 @@
 		<div>
 			<span>수의사 선택</span>
 			<select id="vet" class="form-select" aria-label="Default select example">
-			  <option selected>원하는 선생님을 선택해주세요</option>
+			  <option value="default" selected>원하는 선생님을 선택해주세요</option>
 			</select>
 		</div>
 		<div>
 			<span>시간 선택</span>
-			<div>
-			<div>09:00</div><div>09:30</div>
+			<div id="time_slot">
 			</div>
 		</div>
 		<div><span>보호자</span><input type="text" value="로그인한회원이름"></div>
@@ -85,9 +84,17 @@
 <script th:inline="javascript">
 let hosId = "[[${id}]]";
 let today = new Date();
+let selectedDate;
+//0:일, 1:월, 2:화 .... 6:토
+let selectedDay;
+let selectedVet;
 const date = document.querySelector("input[type=date]");
+const vet = document.querySelector("#vet");
+const timeSlot = document.querySelector("#time_slot");
+
 
 function setDateLimit(){
+	//오늘 날짜보다 이전 날짜는 선택할 수 없도록  
 	date.setAttribute("min", today.toISOString().substring(0,10))
 	//max 날짜는 3개월 오늘 날짜 전일
 	today.setMonth(today.getMonth()+2)
@@ -95,11 +102,18 @@ function setDateLimit(){
 }
 setDateLimit();
 
-date.addEventListener("change", function(){
-	console.log("Xxx")
-	//오늘 날짜보다 이전 날짜는 선택할 수 없도록  
-	//min="2024-01-01", max="2024-02-15"
+
+date.addEventListener("change", function(e){
+	if(selectedVet != null){
+		selectedVet="";
+		vet.value= "default";
+	}
+	selectedDate = e.target.value
+	selectedDay = new Date(selectedDate).getDay();
+// 	console.log(selectedDate)
+// 	console.log(selectedDay);
 })
+
 
 
 const xhttp = new XMLHttpRequest();
@@ -109,7 +123,9 @@ xhttp.onload = function() {
 	let vetAvailInfo = data[1];
 	let vetInfo = data[2];
 	let vetNamesNIds = Object.keys(vetAvailInfo);
-
+	let basicHours = JSON.parse(vetInfo[Object.keys(vetInfo)[0]].businessHours);
+	let basicHoursArr = getBasicBusinessHours(basicHours);
+	console.log(data)
   //병원 이름 넣기
   document.querySelector("#vetName").setAttribute("value", Object.keys(vetInfo)[0]);
   //쿠폰 정보 넣기
@@ -137,11 +153,42 @@ xhttp.onload = function() {
 	
 	  let listItem = document.createElement("option");
 	  listItem.setAttribute("value", vetId);
-	  listItem.innerHTML = vetName + ' 선생님';
+	  listItem.innerHTML = vetName + ' 수의사 선생님';
 	  document.querySelector("#vet").appendChild(listItem);
   }
-  //시간 뿌려주기(의사, 날짜 를 선택하는 순간 그에 맞춰서 시간 바꿔주기)
   
+//시간 뿌려주기(의사, 날짜 를 선택하는 순간 그에 맞춰서 시간 바꿔주기)
+// //기본적으로 영업시간에 기준해서 시간 뿌려주기
+
+  vet.addEventListener("change", function(e){
+	  document.querySelector("#time_slot").innerHTML="";
+		selectedVet = e.target.value
+// 		console.log(selectedVet)
+// 		console.log(selectedDate)
+		if(selectedDate == null){
+			alert("진료 예약을 원하는 날짜를 먼저 선택해주세요!")
+		}
+		
+		//해당날짜 기본 타임슬롯보여주기
+		let selectedBasicTime = basicHoursArr[selectedDay]["day"]
+		showDates(selectedBasicTime[0], selectedBasicTime[1], selectedBasicTime[2], selectedBasicTime[3])
+		//해당날짜 해당선생님의 availability보여주기
+		console.log(Object.keys(vetAvailInfo))
+		Object.keys(vetAvailInfo).forEach(key=>{
+			if(key.split("//")[0] == selectedVet){
+// 				console.log(key.split("//")[1])
+// 				console.log(vetAvailInfo[key])
+				
+				for(v of vetAvailInfo[key]){
+					if(convertToTimeZone(v.date, 'Asia/Seoul') == selectedDate){
+						console.log(v.time.slice(0,5))
+						document.querySelector("span[value='"+v.time.slice(0,5)+"']").classList.add("disabled");
+					}
+				}
+			}
+			
+		})
+	})
   
 }
 xhttp.open("GET", "http://localhost:9001/api/v1/user/reservation?id="+hosId, true);
@@ -153,6 +200,108 @@ function formattingDate(date){
 	return newDate;
 }
 
+
+
+
+function convertingDate(basicHours, day){
+	let startTime;
+	let endingTime;
+	let lunchStart;
+	let lunchEnd;
+	//영업하는 날 시간 구하기
+	if(basicHours[day][0].slice(7) !="영업 안함"){
+		startTime = basicHours[day][0].slice(7).split("//")[0];
+		endingTime = basicHours[day][0].slice(7).split("//")[1];
+		//영업하면서&점심시간있음
+		if(basicHours[day][1].slice(7) !="점심시간 없음"){
+			lunchStart = basicHours[day][1].slice(7).split("//")[0];
+			lunchEnd = basicHours["mon"][1].slice(7).split("//")[1];
+		}else{
+			//영업하지만&점심시간없음
+			lunchStart = 0;
+			lunchEnd = 0;
+		}
+	}else{
+		//영업 안 하는 날
+		startTime = 0;
+		endingTime = 0;
+		lunchStart = 0;
+		lunchEnd = 0;
+	}
+	return {day : [startTime, endingTime, lunchStart, lunchEnd]};
+}
+
+function showDates(startTime, endTime, lunchStart, lunchEnd){
+	if(startTime == 0|| endTime == 0 || lunchStart == 0 ||lunchEnd == 0){
+		document.querySelector("#time_slot").innerHTML="<h1>휴무</h1>"
+		return;
+	}
+    // 시간을 분 단위로 변환
+    let [startHour, startMinute] = startTime.split(":").map(Number);
+    let [endHour, endMinute] = endTime.split(":").map(Number);
+    let [lunchStartHour, lunchStartMinute] = lunchStart.split(":").map(Number);
+    let [lunchEndHour, lunchEndMinute] = lunchEnd.split(":").map(Number);
+    
+    let startTotalMinutes = startHour * 60 + startMinute;
+    let endTotalMinutes = endHour * 60 + endMinute;
+    let lunchStartTotalMinutes = lunchStartHour * 60 + lunchStartMinute;
+    let lunchEndTotalMinutes = lunchEndHour * 60 + lunchEndMinute;
+    
+    // 30분 간격으로 버튼 생성
+    let currentMinutes = startTotalMinutes;
+    while (currentMinutes < endTotalMinutes) {
+        let hours = Math.floor(currentMinutes / 60);
+        let minutes = currentMinutes % 60;
+        
+        let timeString = String(hours).padStart(2, '0') + ":" + String(minutes).padStart(2, '0');
+        let listItem = document.createElement("span");
+        listItem.setAttribute("value", timeString);
+        listItem.classList = "time_slot"
+        listItem.innerHTML = timeString;
+        document.querySelector("#time_slot").appendChild(listItem);
+        currentMinutes += 30;
+        
+        if (currentMinutes > lunchStartTotalMinutes && currentMinutes <= lunchEndTotalMinutes) {
+            listItem.classList.add("disabled");
+        } else {
+            listItem.addEventListener("click", function() {
+                // click 이벤트 핸들링
+                console.log("예약 시간: " + timeString);
+            });
+        }
+        listItem.addEventListener("click", function() {
+        	//click이벤트 핸들링
+            console.log("예약 시간: " + timeString);
+        });
+    }
+}
+
+// showDates("09:00", "18:00", "13:00", "14:30")
+
+function getBasicBusinessHours(basicHours){
+	let sun = convertingDate(basicHours, "sun");
+	let mon = convertingDate(basicHours, "mon");
+	let tue = convertingDate(basicHours, "tue");
+	let wed = convertingDate(basicHours, "wed");
+	let thu = convertingDate(basicHours, "thu");
+	let fri = convertingDate(basicHours, "fri");
+	let sat = convertingDate(basicHours, "sat");
+	let hol = convertingDate(basicHours, "hol");
+	return [sun, mon, tue, wed, thu, fri, sat];
+}
+
+function convertToTimeZone(date, timeZone) {
+    // 시간대를 변환한 날짜를 생성
+    const dateInTimeZone = new Date(date.toLocaleString('en-US', { timeZone }));
+
+    // 년, 월, 일을 가져옴
+    const year = dateInTimeZone.getFullYear();
+    const month = String(dateInTimeZone.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 1을 더함
+    const day = String(dateInTimeZone.getDate()).padStart(2, '0');
+
+    // yyyy-MM-dd 형식으로 반환
+    return year+"-"+ month+"-"+day;
+}
 </script>
 
 

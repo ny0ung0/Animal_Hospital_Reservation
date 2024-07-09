@@ -35,6 +35,7 @@ public class ReservationController_jia {
 		//(의사 목록, 시간목록)
 		Map<String, Object> vetAvailInfo =reservationService.getVetAvailInfo(hospitalId);
 		infoList.add(vetAvailInfo);
+		System.out.println(vetAvailInfo);
 		
 		//(병원)
 		Map<String, Object> vetInfo = reservationService.getVetInfo(hospitalId);

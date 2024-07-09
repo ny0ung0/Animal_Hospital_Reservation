@@ -1,0 +1,6 @@
+@charset "UTF-8";
+
+.disabled {
+	pointer-events:none;
+	color:gray;
+}
