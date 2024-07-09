@@ -1,5 +1,7 @@
 package com.example.restServer.controller.admin;
 
+
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -10,11 +12,14 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.restServer.dto.IMemberLoginDto;
+import com.example.restServer.dto.PointAddDto;
 import com.example.restServer.entity.Member;
 import com.example.restServer.entity.Point;
 import com.example.restServer.repository.LoginRepository;
@@ -96,6 +101,19 @@ public class AdminController_jisun {
 	public ResponseEntity<Integer> getUserPointTotal(@PathVariable("userId")Long userId){
 		Integer num = pointRepo.findByUserIdRemainingPoints(userId);
 		return new ResponseEntity<>(num, HttpStatus.OK);
+	}
+	
+	@PostMapping("/point")
+	public ResponseEntity<String> addPoint(@RequestBody PointAddDto pointAddDto){
+		System.out.println("왔냐" + pointAddDto.getUserId());
+		Member member = memberRepo.findById(pointAddDto.getUserId()).get();
+		Point point = new Point();
+		point.setAccumulationDate(new Date());
+		point.setComment(pointAddDto.getComment());
+		point.setPointsAccumulated(pointAddDto.getPointsAccumulated());
+		point.setUser(member);
+		pointRepo.save(point);
+		return new ResponseEntity<>("ok", HttpStatus.OK);
 	}
 	
 }
