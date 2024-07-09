@@ -17,4 +17,12 @@ public interface MemberRepository extends JpaRepository<Member,Long>{
 
 	@Query(value = "SELECT m.*, l.username, l.id AS login_id FROM member m JOIN login l ON m.id = l.member_id WHERE m.role='ROLE_HOSPITAL' AND m.status IS NULL", nativeQuery = true)
 	public List<IMemberLoginDto> findByStatusNull();
+	
+	@Query(value = "SELECT m.*, l.username, l.id AS login_id FROM member m JOIN login l ON m.id = l.member_id WHERE m.status = '승인'", nativeQuery = true)
+	public List<IMemberLoginDto> findAllAddUsername();
+	
+	@Query(value = "SELECT m.*, l.username, l.id AS login_id FROM member m JOIN login l ON m.id = l.member_id WHERE m.status = '승인' AND m.id= :id", nativeQuery = true)
+	public IMemberLoginDto findByIdAddUsername(@Param("id") Long id);
+	
+	 public boolean existsByNickname(String nickname);
 }
