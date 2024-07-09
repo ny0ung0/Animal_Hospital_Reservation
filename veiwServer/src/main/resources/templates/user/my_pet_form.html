@@ -31,11 +31,11 @@
 <div class="row">
     <div class="col-md-6 col-lg-3 mb-3">
         <label for="petType" class="form-label">반려동물 종류</label>
-        <select id="petType" class="form-select">
+        <select id="petType" class="form-select" name="bigtype">
             <option value="">선택하세요</option>
-            <option value="dog">강아지</option>
-            <option value="cat">고양이</option>
-            <option value="other">기타</option>
+            <option value="강아지">강아지</option>
+            <option value="고양이">고양이</option>
+            <option value="기타">기타</option>
         </select>
     </div>
     <div class="col-md-6 col-lg-3 mb-3">
@@ -90,11 +90,13 @@ document.getElementById('petType').addEventListener('change', function() {
     const petType = this.value;
     let options = '';
 
-    if (petType === 'dog') {
+    if (petType === '강아지') {
         options = `
         	<option value="믹스견">믹스견</option>
             <option value="시바견">시바견</option>
             <option value="말티즈">말티즈</option>
+            <option value="포메라니안">포메라니안</option>
+            <option value="치와와">치와와</option>
             <option value="시츄">시츄</option>
             <option value="푸들">푸들</option>
             <option value="불독">불독</option>
@@ -104,7 +106,7 @@ document.getElementById('petType').addEventListener('change', function() {
             <option value="하운드">하운드</option>
             <option value="코카스파니엘">코카스파니엘</option>
         `;
-    } else if (petType === 'cat') {
+    } else if (petType === '고양이') {
         options = `
         	<option value="믹스묘">믹스묘</option>
             <option value="페르시안">페르시안</option>
@@ -118,7 +120,7 @@ document.getElementById('petType').addEventListener('change', function() {
             <option value="러시안블루">러시안블루</option>
             <option value="친칠라">친칠라</option>
         `;
-    } else if (petType === 'other') {
+    } else if (petType === '기타') {
         options = `
             <option value="토끼">토끼</option>
             <option value="햄스터">햄스터</option>
@@ -160,6 +162,7 @@ document.getElementById('regBtn').addEventListener('click', function() {
     }
 
     formData.append('name', document.querySelector('input[name="name"]').value);
+    formData.append('bigtype', document.querySelector('select[name="bigtype"]').value);
     formData.append('type', document.querySelector('select[name="type"]').value);
     formData.append('birthdate', document.querySelector('input[name="birthdate"]').value);
     formData.append('weight', document.querySelector('input[name="weight"]').value);
@@ -173,7 +176,7 @@ document.getElementById('regBtn').addEventListener('click', function() {
     xhttp.onload = function() {
         if (xhttp.status === 200) {
             console.log("반려동물 등록 성공!");
-            alert("반려동물이 성공적으로 등록되었습니다.");
+            alert("나의 반려동물이 성공적으로 등록되었습니다.");
             window.location.href="/user/myPetList";
         } else {
             console.error("반려동물 등록 실패");
