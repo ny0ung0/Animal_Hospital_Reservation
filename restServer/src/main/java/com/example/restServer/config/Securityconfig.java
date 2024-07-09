@@ -8,12 +8,17 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.example.restServer.filter.GlobalExceptionHandler;
 import com.example.restServer.filter.JWTFilter;
 import com.example.restServer.filter.LoginFilter;
 import com.example.restServer.security.JWTUtil;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import jakarta.servlet.http.HttpServletResponse;
 
 @Configuration
 @EnableWebSecurity
@@ -75,12 +80,12 @@ public class Securityconfig {
 		
 		http
 			.authorizeHttpRequests(auth -> auth
-					.requestMatchers("/", "/login", "/joinUser", "/images/**").permitAll()
+					.requestMatchers("/", "/login", "/images/**","api/v1/common/**").permitAll()
 					//.requestMatchers("/v3/**","/swagger-ui/**").permitAll()
-					//.requestMatchers("/manager/**").hasRole("MANAGER")
-					//.requestMatchers("/reporter/**", "/api/**").hasAnyRole("REPORTER", "MANAGER")
-					.requestMatchers("/aaa").hasRole("USER")
-					.anyRequest().permitAll());
+					//.requestMatchers("/hospital/**").hasRole("HOSPITAL")
+					//.requestMatchers("/user/**").hasAnyRole("USER")
+					//.requestMatchers("/aaa").hasRole("USER")
+					.anyRequest().permitAll() );
 			
 		//세션 설정 : Stateless
 		http
@@ -96,4 +101,17 @@ public class Securityconfig {
 
 		return http.build();
 	}
+	
+	
+	
+	@Bean
+    public AuthenticationEntryPoint authenticationEntryPoint() {
+        return (request, response, authException) -> {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json;charset=UTF-8");
+            ObjectMapper objectMapper = new ObjectMapper();
+            response.getWriter().write(objectMapper.writeValueAsString(new GlobalExceptionHandler.ErrorResponse("Unauthorized", authException.getMessage())));
+        };
+    }
+	
 }
