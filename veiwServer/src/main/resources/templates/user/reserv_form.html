@@ -29,50 +29,49 @@
 	<div th:replace="~{user/header :: header}"></div>
 	<div class="container-xl">
 		<h1 class="mt-3 mt-md-5 mb-3 mb-md-3">동물병원 예약 등록</h1>
-		<div><span>동물병원</span><input type="text" id="vetName"></div>
-		<div><span>날짜</span><input type="date" name="reserv_date"></div>
-		<div>
-			<span>수의사 선택</span>
+		<div class="mt-3 item"><div>동물병원</div><input type="text" id="vetName" disabled></div>
+		<div class="mt-3 item"><div>날짜*</div><input type="date" name="reserv_date"></div>
+		<div class="mt-3 item">
+			<div>수의사 선택*</div>
 			<select id="vet" class="form-select" aria-label="Default select example">
 			  <option value="default" selected>원하는 선생님을 선택해주세요</option>
 			</select>
 		</div>
-		<div>
-			<span>시간 선택</span>
+		<div class="mt-3 item">
+			<div>시간 선택*</div>
 			<div id="time_slot">
 			</div>
 		</div>
-		<div><span>보호자</span><input type="text" value="로그인한회원이름"></div>
-		<div>
-			<span>반려동물 선택</span>
+		<div class="mt-3 item"><div>보호자</div><input type="text" value="로그인한회원이름" disabled></div>
+		<div class="mt-3 item">
+			<div>반려동물 선택*</div>
 			<select id="pet" class="form-select" aria-label="Default select example">
-			  <option selected>진료보길 원하는 반려동물을 선택해주세요</option>
+			  <option selecte value="">진료보길 원하는 반려동물을 선택해주세요</option>
 			</select>
 		</div>
-		<div>
-			<span>진료유형</span>
+		<div class="mt-3 item">
+			<div>진료유형*</div>
 			<select id="type" class="form-select" aria-label="Default select example">
-			  <option selected>진료유형을 선택해주세요</option>
+			  <option selected value="">진료유형을 선택해주세요</option>
 			  <option value="일반진료">일반진료</option>
 			  <option value="건강검진">건강검진</option>
 			  <option value="예방접종">예방접종</option>
 			  <option value="스케일링">스케일링</option>
 			</select>
 		</div>
-		<div><span>메모</span><textarea type="text" name="memo"></textarea></div>
-		<div>
-			<span>쿠폰사용</span>
+		<div class="mt-3 item"><div>메모</div><textarea type="text" name="memo"></textarea></div>
+		<div class="mt-3 item">
+			<div>쿠폰사용</div>
 			<select id="coupon" class="form-select" aria-label="Default select example">
 			  <option selected>쿠폰사용 안함</option>
 			</select>
 		</div>
-		<div>
-		<span>포인트 사용</span><span> ※ 1000 포인트 단위로 사용 가능</span><span>보유포인트 <span id="point"></span>P</span>
+		<div class="mt-3 item">
+		<div><span>포인트 사용</span><span>&nbsp &nbsp ※ 1000 포인트 단위로 사용 가능</span><span> &nbsp&nbsp 보유포인트 <span id="point"></span>P</span></div>
 		<input type="text" name="points_used" placeholder="0">
 		</div>
-		<input onclick="submitForm(event)" type="button" value="예약등록">
-		<button onclick="">문의채팅</button>
-	
+		<input class="btn btn-main" onclick=" return submitForm(event)" type="button" value="예약등록">
+		<button class="btn btn-user-sub" onclick="">문의채팅</button>
 	</div>
 	<div th:replace="~{user/footer :: footer}"></div>
 	<script
@@ -89,6 +88,7 @@ let selectedDate;
 let selectedDay;
 let selectedVet;
 let selectedTime;
+let selectedSlot = null; 
 const date = document.querySelector("input[type=date]");
 const vet = document.querySelector("#vet");
 const timeSlot = document.querySelector("#time_slot");
@@ -108,6 +108,7 @@ date.addEventListener("change", function(e){
 	if(selectedVet != null){
 		selectedVet="";
 		vet.value= "default";
+		document.querySelector("#time_slot").innerHTML="";
 	}
 	selectedDate = e.target.value
 	selectedDay = new Date(selectedDate).getDay();
@@ -229,7 +230,7 @@ function convertingDate(basicHours, day){
 
 function showDates(startTime, endTime, lunchStart, lunchEnd){
 	if(startTime == 0|| endTime == 0 || lunchStart == 0 ||lunchEnd == 0){
-		document.querySelector("#time_slot").innerHTML="<h1>휴무</h1>"
+		document.querySelector("#time_slot").innerHTML="<div class='msg'>해당일은 예약가능한 시간이 없습니다🥲</div>"
 		return;
 	}
     // 시간을 분 단위로 변환
@@ -265,10 +266,16 @@ function showDates(startTime, endTime, lunchStart, lunchEnd){
                 console.log("예약 시간: " + timeString);
             });
         }
-        listItem.addEventListener("click", function() {
+        listItem.addEventListener("click", function(e) {
         	//click이벤트 핸들링
             console.log("예약 시간: " + timeString);
         	selectedTime = timeString;
+        	if (selectedSlot) {
+                selectedSlot.style.backgroundColor = ""; 
+            }
+            e.target.style.backgroundColor = "#4C5CB3";
+            
+            selectedSlot = e.target;
         });
     }
 }
@@ -300,7 +307,6 @@ function convertToTimeZone(date, timeZone) {
 
 function submitForm(e){
 	e.preventDefault();
-	console.log("폼 보내야즤")
 	let formData = {
 		"hospitalId": hosId,
 		"doctorId": selectedVet,
@@ -312,14 +318,18 @@ function submitForm(e){
 		"coupon" : document.querySelector("#coupon").value,
 		"point":document.querySelector("input[name=points_used]").value,
 	}
-	
+	if(selectedVet == null || document.querySelector("input[type=date]").value == null 
+			|| selectedTime == null || document.querySelector("#pet").value == ""
+			|| document.querySelector("#type").value == ""){
+		alert("필수 입력값이 비어있습니다. 다시 확인해주세요");
+		return false;
+	}
 	console.log(formData)
 	
 	 const xhttp = new XMLHttpRequest();
 	  xhttp.onload = function() {
-// 	    document.getElementById("demo").innerHTML = this.responseText;
 	    //다른페이지로 이동?ㅎㅎ,,
-	    		
+	    alert("예약이 성공적으로 완료되었습니다");
 	    location.href="/"
 	    }
 	  xhttp.open("POST", "http://localhost:9001/api/v1/user/reservation", true);
