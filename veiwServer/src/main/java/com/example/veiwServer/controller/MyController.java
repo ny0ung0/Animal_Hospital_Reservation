@@ -24,4 +24,17 @@ public class MyController {
 		return "/manager/index";
 	}
 	
+	
+	@RequestMapping("/qnaForm")
+	public String qnaForm() {
+		return "qna_form";
+	}
+	
+	
+	
+	
+	
+	
+	
+	
 }

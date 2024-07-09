@@ -63,6 +63,7 @@ public class MyPetController_songi {
 	        pet.setIsNeutered(petDto.getIsNeutered());
 	        pet.setName(petDto.getName());
 	        pet.setType(petDto.getType());
+	        pet.setBigtype(petDto.getBigtype());
 	        pet.setWeight(petDto.getWeight());
 	        
 	        
@@ -131,6 +132,7 @@ public class MyPetController_songi {
 	        pet.setIsNeutered(petDto.getIsNeutered());
 	        pet.setName(petDto.getName());
 	        pet.setType(petDto.getType());
+	        pet.setBigtype(petDto.getBigtype());
 	        pet.setWeight(petDto.getWeight());
 			
 			

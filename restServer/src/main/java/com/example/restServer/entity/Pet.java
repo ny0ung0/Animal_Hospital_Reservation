@@ -29,7 +29,8 @@ public class Pet extends BaseEntity {
     private Member member;
 
     private String name;
-    private String type;
+    private String bigtype; //ex)강아지
+    private String type; //ex)말티즈
     private String photo;
     private Date birthdate;
     private String gender;

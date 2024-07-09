@@ -16,6 +16,7 @@ import lombok.NoArgsConstructor;
 public class PetDto {
     private String name;
     private String type;
+    private String bigtype;
     private MultipartFile photo;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date birthdate;
