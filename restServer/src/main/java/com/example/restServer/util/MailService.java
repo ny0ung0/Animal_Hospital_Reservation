@@ -1,4 +1,4 @@
-package com.example.restServer.utill;
+package com.example.restServer.util;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;

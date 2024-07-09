@@ -36,4 +36,10 @@ public class ManagerController_jisun {
 		return "/manager/vet_list";
 	}
 	
+	@RequestMapping("/qnaList")
+	public String qnaList() {
+		return "/manager/qna_list";
+	}
+	
+	
 }
