@@ -22,9 +22,11 @@ import com.example.restServer.dto.IMemberLoginDto;
 import com.example.restServer.dto.PointAddDto;
 import com.example.restServer.entity.Member;
 import com.example.restServer.entity.Point;
+import com.example.restServer.entity.Support;
 import com.example.restServer.repository.LoginRepository;
 import com.example.restServer.repository.MemberRepository;
 import com.example.restServer.repository.PointRepository;
+import com.example.restServer.repository.SupportRepository;
 import com.example.restServer.utill.MailService;
 
 import jakarta.annotation.Resource;
@@ -42,6 +44,9 @@ public class AdminController_jisun {
 	
 	@Autowired
 	PointRepository pointRepo;
+	
+	@Autowired
+	SupportRepository supportRepo;
 	
 	@Resource(name = "mailService")
 	private MailService mailService;
@@ -137,6 +142,12 @@ public class AdminController_jisun {
 		point.setUser(member);
 		pointRepo.save(point);
 		return new ResponseEntity<>("ok", HttpStatus.OK);
+	}
+	
+	@GetMapping("/support/qna")
+	public ResponseEntity<List<Support>> getSupportQna(){
+		List<Support> list = supportRepo.findAllByCategoryQna();
+		return new ResponseEntity<>(list, HttpStatus.OK);
 	}
 	
 }
