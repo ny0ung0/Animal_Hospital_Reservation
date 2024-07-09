@@ -104,6 +104,7 @@ function getMemVerList(params, map, currentPos) {
             data.forEach(hospital => {
                 let addr = hospital.address.replaceAll("//", " ");
                 memVet[hospital.hospitalName] = {
+					"id":hospital.id,
                     "address": addr,
                     "avgReview": hospital.avgReview,
                     "bookmarked": hospital.bookmarked,
@@ -126,7 +127,7 @@ function getMemVerList(params, map, currentPos) {
 }
 
 function addHospitalToList(map, currentPos) {
-    console.log(memVet)
+//    console.log(memVet)
     nearVet.forEach(hospital => {
         let x = parseFloat(hospital["좌표정보(x)"]);
         let y = parseFloat(hospital["좌표정보(y)"]);
@@ -163,10 +164,11 @@ function addHospitalToList(map, currentPos) {
 
         let phone = hospital["소재지전화"] ? hospital["소재지전화"] : '';
         let listItem = document.createElement("div");
+      
         listItem.innerHTML = '<button type="button" onclick="showModal(event)" class="btn btn-main" data-bs-toggle="modal" data-bs-target="#exampleModal">'
             + hospital["사업장명"] + '</button> , <span class="phone">' + phone
             + '</span> , <span class="address">' + hospital["소재지전체주소"] + '</span>';
-        document.querySelector(".vet_list").appendChild(listItem);
+        document.querySelector(".inner").appendChild(listItem);
 
         if (memVet[hospital["사업장명"]] != null && memVet[hospital["사업장명"]]["address"] == hospital["소재지전체주소"]) {
             listItem.querySelector("button").classList = "btn btn-user-sub"
@@ -200,6 +202,8 @@ function showModal(e) {
     let hospitalName = e.target.parentElement.querySelector("button").innerText;
     let address = e.target.parentElement.querySelector(".address").innerText;
     if (memVet[hospitalName] != null && memVet[hospitalName]["address"] == address) {
+		//병원 id 심어주기
+		document.querySelector("#hospital_id").innerHTML = memVet[hospitalName]["id"];
         // 영업시간 보여주기
         document.querySelector("#working_hour").style.display = "block";
         document.querySelector("#working_hour").innerHTML = memVet[hospitalName]["businessHours"];
@@ -240,4 +244,9 @@ function showModal(e) {
     document.querySelector("#exampleModalLabel").innerText = hospitalName;
     document.querySelector("#phone").innerHTML = e.target.parentElement.querySelector(".phone").innerText;
     document.querySelector("#address").innerHTML = address;
+}
+
+function makeReservation(e){
+	let id = e.target.parentElement.querySelector("#hospital_id").innerText;
+	location.href="/user/reserv_form?id="+id;
 }

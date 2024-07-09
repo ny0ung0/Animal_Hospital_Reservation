@@ -1,6 +1,6 @@
 package com.example.restServer.entity;
 
-import java.sql.Time;
+import java.time.LocalTime;
 import java.util.Date;
 
 import jakarta.persistence.Entity;
@@ -34,7 +34,7 @@ public class UnavailableTime extends BaseEntity {
     private Member hospital;
 
     private Date date;
-    private Time time;
+    private LocalTime time;
     private String comment;
 
     // Getters and Setters

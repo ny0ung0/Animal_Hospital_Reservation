@@ -96,7 +96,8 @@ searchBtn.addEventListener("click", function() {
 	       	let data = JSON.parse(this.responseText);
 	       	data.forEach(hospital =>{
        		let addr = hospital.address.replaceAll("//", " ")
-       		memVet[hospital.hospitalName] = {"address" : addr, 
+       		memVet[hospital.hospitalName] = {"id":hospital.id,
+											"address" : addr, 
 								       		"avgReview" : hospital.avgReview,
 								       		"bookmarked" : hospital.bookmarked,
 								       		"businessNumber" : hospital.businessNumber,
@@ -184,6 +185,8 @@ function showModal(e){
 	let hospitalName = e.target.parentElement.querySelector("button").innerText;
 	let address = e.target.parentElement.querySelector(".address").innerText;
 	if(memVet[hospitalName] != null && memVet[hospitalName]["address"] == address){
+		//병원 id 심어주기
+		document.querySelector("#hospital_id").innerHTML = memVet[hospitalName]["id"];
 		//영업시간보여주기
 		document.querySelector("#working_hour").style.display="block";
 		document.querySelector("#working_hour").innerHTML = memVet[hospitalName]["businessHours"];
