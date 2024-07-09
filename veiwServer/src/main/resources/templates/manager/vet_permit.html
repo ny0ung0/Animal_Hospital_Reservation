@@ -40,7 +40,7 @@ fetch("http://localhost:9001/api/v1/manager/permit", {
 	const objs = JSON.parse(data);
 	//console.log(objs);
 	if(objs.length === 0){
-		document.querySelector("#permitTable").innerHTML = "승일할 병원 내역이 없습니다.";
+		document.querySelector("#permitTable").innerHTML = "승인할 병원 내역이 없습니다.";
 	}else{
 	
 		let cnt = 1;

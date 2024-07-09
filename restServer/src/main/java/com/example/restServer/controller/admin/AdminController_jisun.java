@@ -79,7 +79,30 @@ public class AdminController_jisun {
 	
 	@GetMapping("/user")
 	public ResponseEntity<List<IMemberLoginDto>> getUserList(){
-		List<IMemberLoginDto> list = memberRepo.findAllAddUsername();
+		List<IMemberLoginDto> list = memberRepo.findAllUserAddUsername();
+		System.out.println(list.toString());
+		return new ResponseEntity<>(list, HttpStatus.OK);
+	}
+	
+	@GetMapping("/hospital")
+	public ResponseEntity<List<IMemberLoginDto>> getHospitalList(){
+		List<IMemberLoginDto> list = memberRepo.findAllHospitalAddUsername();
+		System.out.println(list.toString());
+		return new ResponseEntity<>(list, HttpStatus.OK);
+	}
+	
+	@GetMapping("/hospital/keyword/{keyword}")
+	public ResponseEntity<List<IMemberLoginDto>> getHospitalListBykeyword(@PathVariable("keyword")String keyword){
+		//System.out.println("여기왔냐");
+		List<IMemberLoginDto> list = memberRepo.findAllHospitalAddUsernameByKeyword(keyword);
+		System.out.println(list.toString());
+		return new ResponseEntity<>(list, HttpStatus.OK);
+	}
+	
+	@GetMapping("/user/keyword/{keyword}")
+	public ResponseEntity<List<IMemberLoginDto>> getUserListBykeyword(@PathVariable("keyword")String keyword){
+		//System.out.println("여기왔냐22" + keyword);
+		List<IMemberLoginDto> list = memberRepo.findAllUserAddUsernameByKeyword(keyword);
 		System.out.println(list.toString());
 		return new ResponseEntity<>(list, HttpStatus.OK);
 	}

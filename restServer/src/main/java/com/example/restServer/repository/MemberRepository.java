@@ -18,11 +18,29 @@ public interface MemberRepository extends JpaRepository<Member,Long>{
 	@Query(value = "SELECT m.*, l.username, l.id AS login_id FROM member m JOIN login l ON m.id = l.member_id WHERE m.role='ROLE_HOSPITAL' AND m.status='대기'", nativeQuery = true)
 	public List<IMemberLoginDto> findByStatusWaiting();
 	
-	@Query(value = "SELECT m.*, l.username, l.id AS login_id FROM member m JOIN login l ON m.id = l.member_id WHERE m.status = '승인'", nativeQuery = true)
-	public List<IMemberLoginDto> findAllAddUsername();
+	@Query(value = "SELECT m.*, l.username, l.id AS login_id FROM member m JOIN login l ON m.id = l.member_id WHERE m.role='ROLE_USER' AND m.status = '승인'", nativeQuery = true)
+	public List<IMemberLoginDto> findAllUserAddUsername();
+	
+	@Query(value = "SELECT m.*, l.username, l.id AS login_id FROM member m JOIN login l ON m.id = l.member_id WHERE m.role='ROLE_HOSPITAL' AND m.status = '승인'", nativeQuery = true)
+	public List<IMemberLoginDto> findAllHospitalAddUsername();
 	
 	@Query(value = "SELECT m.*, l.username, l.id AS login_id FROM member m JOIN login l ON m.id = l.member_id WHERE m.status = '승인' AND m.id= :id", nativeQuery = true)
 	public IMemberLoginDto findByIdAddUsername(@Param("id") Long id);
 	
-	 public boolean existsByNickname(String nickname);
+	public boolean existsByNickname(String nickname);
+	 
+	@Query(value = "SELECT m.*, l.username, l.id AS login_id " +
+            "FROM member m JOIN login l ON m.id = l.member_id " +
+            "WHERE m.role = 'ROLE_HOSPITAL' " +
+            "AND m.status = '승인' " +
+            "AND m.hospital_name LIKE %:keyword%", nativeQuery = true)
+	public List<IMemberLoginDto> findAllHospitalAddUsernameByKeyword(@Param("keyword")String keyword);
+	
+	@Query(value = "SELECT m.*, l.username, l.id AS login_id " +
+            "FROM member m JOIN login l ON m.id = l.member_id " +
+            "WHERE m.role = 'ROLE_USER' " +
+            "AND m.status = '승인' " +
+            "AND m.name LIKE %:keyword%", nativeQuery = true)
+	public List<IMemberLoginDto> findAllUserAddUsernameByKeyword(@Param("keyword")String keyword);
+	 
 }
