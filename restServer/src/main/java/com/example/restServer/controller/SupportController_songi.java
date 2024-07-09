@@ -1,9 +1,15 @@
 package com.example.restServer.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.restServer.entity.Support;
@@ -18,7 +24,7 @@ public class SupportController_songi {
 	@Autowired
 	private SupportRepository supportRepo;
 	
-	
+	//문의등록
 	@PostMapping("/qna")
 	public ResponseEntity<?> qnaForm(HttpServletRequest request) {
 		String title = request.getParameter("title");
@@ -35,6 +41,54 @@ public class SupportController_songi {
         supportRepo.save(support);
         
         return ResponseEntity.ok("등록 완료");
+	}
+	
+	
+	//문의 상세페이지
+	@GetMapping("/qna/{id}")
+	public ResponseEntity<?> qnaDetail(@PathVariable("id")Long id) {
+		
+		Support qna = supportRepo.findById(id).get();
+		System.out.println("qna 상세정보 출력 : " + qna);
+		return ResponseEntity.ok(qna);
+	
+		
+	}
+	
+	
+	//문의 수정
+	@PutMapping("/qna/{id}")
+	public ResponseEntity<?> qnaEdit(@PathVariable("id")Long id, HttpServletRequest request) {
+		String title = request.getParameter("title");
+        String content = request.getParameter("content");
+        
+		Support qna = supportRepo.findById(id).get();
+		
+		qna.setTitle(title);
+		qna.setContent(content);
+		supportRepo.save(qna);
+		
+		return ResponseEntity.ok("문의 수정 성공");
+	
+		
+	}
+	
+	//문의 삭제
+	@DeleteMapping("/qna/{id}")
+	public ResponseEntity<?> qnaDelete(@PathVariable("id")Long id){
+		supportRepo.deleteById(id);
+		return ResponseEntity.ok("문의 삭제 성공");
+	}
+	
+	
+	
+	//공지사항 목록 불러오기
+	@GetMapping("/notice")
+	public ResponseEntity<?> getNoticeList(){
+		
+		List<Support> noticeList = supportRepo.findAllByCategory("공지사항");
+		
+		return ResponseEntity.ok(noticeList);
 	}
 	
 	
