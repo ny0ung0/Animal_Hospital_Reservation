@@ -6,8 +6,10 @@ import org.springframework.stereotype.Service;
 
 import com.example.restServer.dto.JoinHospitalDto;
 import com.example.restServer.dto.MemberDto;
+import com.example.restServer.entity.Doctor;
 import com.example.restServer.entity.Login;
 import com.example.restServer.entity.Member;
+import com.example.restServer.repository.DoctorRepository;
 import com.example.restServer.repository.LoginRepository;
 import com.example.restServer.repository.MemberRepository;
 
@@ -19,6 +21,8 @@ public class JoinService {
 	@Autowired
 	LoginRepository loginRepository;
 	
+	@Autowired
+	DoctorRepository doctorRepository;
 	@Autowired
 	BCryptPasswordEncoder bCryptPasswordEncoder;
 	
@@ -71,6 +75,26 @@ public class JoinService {
 		member.setStatus("대기");
 		member = memberRepository.save(member);
 		//System.out.println(member);
+		Login login = new Login();
+		login.setMember(member);
+		login.setUsername(joinHospitalDto.getUsername());
+		String password = bCryptPasswordEncoder.encode(joinHospitalDto.getPassword());
+		login.setPassword(password);
+		login.setRole(joinHospitalDto.getRole());
+		loginRepository.save(login); 
+		
+		String doctor_ =joinHospitalDto.getDoctorNames();
+		System.out.println("doctor_:"+doctor_);
+		String[] doctors = doctor_.split("//");
+		
+		for(String d : doctors) {
+			System.out.println("doctor:"+d);
+			Doctor doctor = new Doctor();
+			doctor.setHospital(member);
+			doctor.setName(d);
+			doctorRepository.save(doctor);
+		}
+ 		
 		
 		
 	}
