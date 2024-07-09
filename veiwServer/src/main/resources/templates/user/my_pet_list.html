@@ -48,7 +48,8 @@ $(document).ready(function() {
                                     <button type="button" class="btn btn-sm btn-outline-primary" onclick="edit(${pet.id})">수정</button>
                                     <button type="button" class="btn btn-sm btn-outline-danger" onclick="deletePet(${pet.id})">삭제</button>
                                 </div>
-                                <img src="/images/${pet.photo}" class="img-fluid" id="petImg${i}" style="width: 100%;">
+                                <img th:src="@{'/images/' + ${pet.photo}}" class="img-fluid" id="petImg${i}" style="width: 100%;">
+                                
                                 <ul class="list-unstyled mb-0">
                                     <li><strong>이름:</strong> <span id="petName${i}">${pet.name}</span></li>
                                     <li><strong>종류:</strong> <span id="petType${i}">${pet.type}</span></li>
