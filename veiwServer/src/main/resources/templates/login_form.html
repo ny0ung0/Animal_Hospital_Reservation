@@ -73,10 +73,10 @@
 	                    }
 	                    
 	                } else if (this.status === 401) {
-	                    alert("로그인 실패 : 아이디,패스워드를 다시 입력해주세요.");
+	                    alert("로그인 실패");
 	                }
 			}
-			xhttp.open("post", "http://localhost:9001/api/v1/login");
+			xhttp.open("post", "http://localhost:9001/login");
 			xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");	
 
 			xhttp.send(new URLSearchParams(formData).toString());
@@ -101,7 +101,7 @@
 	                    alert("토큰 실패");
 	                }
 			}
-			xhttp.open("post", "http://localhost:9001/api/v1/aaa");
+			xhttp.open("post", "http://localhost:9001/api/v1/common/aaa");
 			//xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");	
 			xhttp.setRequestHeader("Authorization",token);
 			xhttp.send();

@@ -19,88 +19,524 @@
 	<div th:replace="~{hospital/header :: header}"></div>
 	<div class="container-xl">
 		<div id="tab" class="d-flex">
-			<button class="btn btn-main">반려인</button>
-			<button class="btn btn-outline-main">동물병원</button>
+			<button class="btn btn-main" onclick="showUser()">반려인</button>
+			<button class="btn btn-outline-main" onclick="showHospital()">동물병원</button>
 		</div>
-		<div id="user">
-			<form id="frmUser">
-				<input type="hidden" name="role" value="ROLE_USER">
+
+		<form id="frmUser">
+
+
+			<div class="mb-3">
+				<div class="inputBox">
+					<div class="d-flex">
+						<label class="form-label">아이디</label> <input type="button"
+							class="btn btn-main ms-auto" onclick="checkUsername(event)"
+							value="중복체크">
+					</div>
+					<input type="text" name="username" id="username"
+						class="form-control">
+				</div>
+				<div id="usernameResult"></div>
+			</div>
+			<div class="mb-3">
+				<label class="form-label">비밀번호</label> <input type="password"
+					name="password" class="form-control">
+				<div>비밀번호는 5자 이상, 15자 이하, 영어, 숫자, 특수문자를 포함해야 합니다.</div>
+			</div>
+			<div class="mb-3">
+				<label class="form-label">주소</label> <select id="address1"
+					class="form-control" name="address1"
+					onchange="address1SelectChanged()"></select> <select id="address2"
+					class="form-control" name="address2"></select> <input type="text"
+					class="form-control" name="detailAddress">
+			</div>
+			<div class="mb-3">
+				<label class="form-label">전화번호</label> <input type="text"
+					name="phone" class="form-control">
+			</div>
+			<div class="mb-3">
+				<label class="form-label">이메일</label> <input type="text"
+					name="email" class="form-control">
+			</div>
+
+			<div id="user">
+				<div class="mb-3">
+					<label class="form-label">이름</label> <input type="text" name="name"
+						class="form-control">
+				</div>
+
 				<div class="mb-3">
 					<div class="inputBox">
 						<div class="d-flex">
-							<label class="form-label">아이디</label>
-
-							<button class="btn btn-main ms-auto">중복체크</button>
+							<label class="form-label">닉네임</label> <input type="button"
+								class="btn btn-main ms-auto" value="중복체크"
+								onclick="checkNickname(event)">
 						</div>
-						<input type="text" name="username" class="form-control">
+						<input type="text" name="nickname" id="nickname"
+							class="form-control">
 					</div>
 				</div>
-				<div class="mb-3">
-					<label class="form-label">비밀번호</label> 
-					<input type="password" name="password" class="form-control">
-				</div>
-				<div class="mb-3">
-					<label class="form-label">이름</label> 
-					<input type="text" name="name" class="form-control">
-				</div>
-				<div class="mb-3">
-					<label class="form-label">이메일</label> 
-					<input type="text" name="email" class="form-control">
-				</div>
-				<div class="mb-3">
-					<label class="form-label">주소</label> 
-					<input type="text" name="address" class="form-control">
-				</div>
-				<div class="mb-3">
-					<label class="form-label">전화번호</label> 
-					<input type="text" name="phone" class="form-control">
-				</div>
+				<input type="hidden" name="role" value="ROLE_USER"> <input
+					type="button" value="회원가입" class="btn btn-main"
+					onclick="joinUser()">
+				<div id="nicknameResult"></div>
+				<br> <a href="#">로그인</a>
+			</div>
+
+
+			<div id="hospital" style="display: none;">
+
 				<div class="mb-3">
 					<div class="inputBox">
 						<div class="d-flex">
-							<label class="form-label">닉네임</label>
-
-							<button class="btn btn-main ms-auto">중복체크</button>
+							<label class="form-label">사업자번호</label> <input type="button"
+								class="btn btn-main ms-auto"
+								onclick="checkBusinessNumber(event)" value="조회">
 						</div>
-						<input type="text" name="nickname" class="form-control">
+						<input type="text" name="business_number" class="form-control">
+						<div id="businessNumberResult"></div>
 					</div>
 				</div>
-				<input type="button" value="회원가입" class="btn btn-main" onclick="joinUser()">
-				<br><a href="#" >로그인</a>
-			</form>
-		</div>
+				<div class="mb-3">
+					<label class="form-label">병원명</label> <input type="text"
+						name="hospital_name" class="form-control">
+				</div>
+				<div class="mb-3">
+					<label class="form-label">대표자</label> <input type="text"
+						name="representative" class="form-control">
+				</div>
+				<div class="mb-3">
+					<label class="form-label">영업정보</label>
+					
+					<div class="accordion" id="accordionExample">
+					  <div class="accordion-item">
+					    <h2 class="accordion-header">
+					      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+					        월
+					      </button>
+					    </h2>
+					    <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+					      <div class="accordion-body">
+					       <div><input type="checkbox"  name ="week" value="mon">월</div>
+										<div class="d-flex"><div>오픈시간<br><input type="text" name="start"></div>~<div>마감시간<br><input type="text" name="end"></div></div>
+										<div class="d-flex"><div>점심시간<br><input type="text" name="lunchStart"></div>~<div><input type="checkbox"  name ="lunch" value="no">점심시간 없음<br><input type="text" name="lunchEnd"></div></div>
+							</div>
+					    </div>
+					  </div>
+					  <div class="accordion-item">
+					    <h2 class="accordion-header">
+					      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+					        화
+					      </button>
+					    </h2>
+					    <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+					      <div class="accordion-body">
+					       <div><input type="checkbox"  name ="week" value="tue">화</div>
+										<div class="d-flex"><div>오픈시간<br><input type="text" name="start"></div>~<div>마감시간<br><input type="text" name="end"></div></div>
+										<div class="d-flex"><div>점심시간<br><input type="text" name="lunchStart"></div>~<div><input type="checkbox"  name ="lunch" value="no">점심시간 없음<br><input type="text" name="lunchEnd"></div></div>
+							</div>
+					    </div>
+					  </div>
+					  <div class="accordion-item">
+					    <h2 class="accordion-header">
+					      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+					        수
+					      </button>
+					    </h2>
+					    <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+					      <div class="accordion-body">
+					       <div><input type="checkbox"  name ="week" value="wed">수</div>
+										<div class="d-flex"><div>오픈시간<br><input type="text" name="start"></div>~<div>마감시간<br><input type="text" name="end"></div></div>
+										<div class="d-flex"><div>점심시간<br><input type="text" name="lunchStart"></div>~<div><input type="checkbox"  name ="lunch" value="no">점심시간 없음<br><input type="text" name="lunchEnd"></div></div>
+							</div>
+					    </div>
+					  </div>
+					  <div class="accordion-item">
+					    <h2 class="accordion-header">
+					      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+					        목
+					      </button>
+					    </h2>
+					    <div id="collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+					      <div class="accordion-body">
+					       <div><input type="checkbox"  name ="week" value="thu">목</div>
+										<div class="d-flex"><div>오픈시간<br><input type="text" name="start"></div>~<div>마감시간<br><input type="text" name="end"></div></div>
+										<div class="d-flex"><div>점심시간<br><input type="text" name="lunchStart"></div>~<div><input type="checkbox"  name ="lunch" value="no">점심시간 없음<br><input type="text" name="lunchEnd"></div></div>
+							</div>
+					    </div>
+					  </div>
+					  <div class="accordion-item">
+					    <h2 class="accordion-header">
+					      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+					        금
+					      </button>
+					    </h2>
+					    <div id="collapseFive" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+					      <div class="accordion-body">
+					       <div><input type="checkbox"  name ="week" value="fri">금</div>
+										<div class="d-flex"><div>오픈시간<br><input type="text" name="start"></div>~<div>마감시간<br><input type="text" name="end"></div></div>
+										<div class="d-flex"><div>점심시간<br><input type="text" name="lunchStart"></div>~<div><input type="checkbox"  name ="lunch" value="no">점심시간 없음<br><input type="text" name="lunchEnd"></div></div>
+							</div>
+					    </div>
+					  </div>
+					  <div class="accordion-item">
+					    <h2 class="accordion-header">
+					      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
+					        토
+					      </button>
+					    </h2>
+					    <div id="collapseSix" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+					      <div class="accordion-body">
+					       <div><input type="checkbox"  name ="week" value="sat">토</div>
+										<div class="d-flex"><div>오픈시간<br><input type="text" name="start"></div>~<div>마감시간<br><input type="text" name="end"></div></div>
+										<div class="d-flex"><div>점심시간<br><input type="text" name="lunchStart"></div>~<div><input type="checkbox"  name ="lunch" value="no">점심시간 없음<br><input type="text" name="lunchEnd"></div></div>
+							</div>
+					    </div>
+					  </div>
+					  <div class="accordion-item">
+					    <h2 class="accordion-header">
+					      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven">
+					        일
+					      </button>
+					    </h2>
+					    <div id="collapseSeven" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+					      <div class="accordion-body">
+					       <div><input type="checkbox"  name ="week" value="sun">일</div>
+										<div class="d-flex"><div>오픈시간<br><input type="text" name="start"></div>~<div>마감시간<br><input type="text" name="end"></div></div>
+										<div class="d-flex"><div>점심시간<br><input type="text" name="lunchStart"></div>~<div><input type="checkbox"  name ="lunch" value="no">점심시간 없음<br><input type="text" name="lunchEnd"></div></div>
+							</div>
+					    </div>
+					  </div>
+					  <div class="accordion-item">
+					    <h2 class="accordion-header">
+					      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEight" aria-expanded="false" aria-controls="collapseEight">
+					        공휴일
+					      </button>
+					    </h2>
+					    <div id="collapseEight" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+					      <div class="accordion-body">
+					       <div><input type="checkbox"  name ="week" value="hol">공휴일</div>
+										<div class="d-flex"><div>오픈시간<br><input type="text" name="start"></div>~<div>마감시간<br><input type="text" name="end"></div></div>
+										<div class="d-flex"><div>점심시간<br><input type="text" name="lunchStart"></div>~<div><input type="checkbox"  name ="lunch" value="no">점심시간 없음<br><input type="text" name="lunchEnd"></div></div>
+							</div>
+					    </div>
+					  </div>
+  
+					</div>
+					
+				</div>
+				
+				
+				
+				
+				
+				
+				
+				  <div class="mb-3">
+            <div class="inputBox">
+                <div class="d-flex">
+                    <label class="form-label">수의사 정보</label> 
+                    <input type="text" class="form-control" name="doctorName">
+                    <input type="button" class="btn btn-main ms-auto" onclick="addDoctor()" value="추가">
+                </div>
+                <div id="doctorResult"></div>
+            </div>
+        </div>
+        <input type="text" id="doctorNamesField" name="doctorNamesField">
+        
+        
+        
+        
+        
+        
+        
+			<div class="mb-3">
+				<label class="form-label">제휴포인트 사용 여부</label><br> 
+				<input type="radio" th:name="partnership" th:value="true">포인트 사용 제휴 가입<br>
+				<input type="radio" th:name="partnership" th:value="false">포인트 사용 제휴 미가입
+			</div>
+			<div class="mb-3">
+			  <label for="exampleFormControlTextarea1" class="form-label">소개글</label>
+			  <textarea class="form-control" name="introduction" rows="5"></textarea>
+			</div>
+
+			<div class="mb-3">
+				<label class="form-label">전화번호</label> 
+				<input type="file" name="logo" class="form-control">
+			</div>
+			
+
+				<div class="mb-3"></div>
+				 <input
+					type="button" value="회원가입" class="btn btn-main"
+					onclick="joinHospital()">
+				<div id="nicknameResult"></div>
+				<br> <a href="#">로그인</a>
+			</div>
+		</form>
+
+
+
+
+
+
 	</div>
-	<div id="result"></div>
+	
+	
+    
 	<div th:replace="~{hospital/footer :: footer}"></div>
 	<script
 		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
 		integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
 		crossorigin="anonymous"></script>
+
+	<script src="/js/address.js"></script>
 	<script>
+	readyAddress();
+	
+	//병원,사용자 탭
+	 function showUser() {
+            document.getElementById("user").style.display = "block";
+            document.getElementById("hospital").style.display = "none";
+            const frm = document.querySelector("#frmUser");
+            frm.role.value="ROLE_USER";
+            
+        }
+
+        function showHospital() {
+            document.getElementById("user").style.display = "none";
+            document.getElementById("hospital").style.display = "block";
+            const frm = document.querySelector("#frmUser");
+            frm.role.value="ROLE_HOSPITAL";
+        }
+	
+	
+		//유저네임 중복확인
+		function checkUsername(event){
+			event.preventDefault();
+			const username = document.querySelector("#username");
+			//alert(username.value);
+			if(username.value.length <3 ||username.value.length >12){
+				alert("아이디를 3자 이상,12자 이하로 등록해주세요.");
+				return;
+			}
+			
+			const xhttp = new XMLHttpRequest();
+			xhttp.onload = function() {
+				//alert(this.responseText);
+				var result = this.responseText;
+				document.getElementById("usernameResult").innerHTML = result;
+			}
+			xhttp.open("post", "http://localhost:9001/api/v1/common/check/username");
+			xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");	
+
+			xhttp.send("username=" + username.value);
+		}
+		//닉네임 중복확인 
+		function checkNickname(event){
+			event.preventDefault();
+			const nickname = document.querySelector("#nickname");
+			//alert(username.value);
+			if(nickname.value.length <3 ||nickname.value.length >12){
+				alert("닉네임을 3자 이상,12자 이하로 등록해주세요.");
+				return;
+			}
+			
+			const xhttp = new XMLHttpRequest();
+			xhttp.onload = function() {
+				//alert(this.responseText);
+				var result = this.responseText;
+				document.getElementById("nicknameResult").innerHTML = result;
+			}
+			xhttp.open("post", "http://localhost:9001/api/v1/common/check/nickname");
+			xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");	
+
+			xhttp.send("nickname=" + nickname.value);
+		}
+		//유저 회원가입
 		function joinUser() {
 			//alert("조인들어옴");
-			
+			if (!userValidateForm()) {
+                return;
+            }
 			const frm = document.querySelector("#frmUser");
 			const frm_ = {
 				"username" : frm.username.value,
 				"password" : frm.password.value,
 				"name" : frm.name.value,
 				"email" : frm.email.value,
-				"address" : frm.address.value,
+				"address" : frm.address1.value +"//"+frm.address2.value +"//"+frm.detailAddress.value ,
 				"phone" : frm.phone.value,
 				"nickname" : frm.nickname.value,
 				"role" : frm.role.value
+			};
+			const data = JSON.stringify(frm_);
+			//alert(data);
+			
+			const xhttp = new XMLHttpRequest();
+			xhttp.onload = function() {
+				//alert(this.responseText);
+				var result = this.responseText;
+				document.getElementById("result").innerHTML = result;
+			}
+			xhttp.open("post", "http://localhost:9001/api/v1/common/joinUser");
+			xhttp.setRequestHeader("Content-type", "application/json");	
+
+			xhttp.send(data);
+		}
+		
+		//이메일 유효성검사
+		function validateEmail(email) {
+		    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+		    return emailPattern.test(email);
+		}
+		//비밀번호 유효성검사
+		function validatePassword(password) {
+		    // 최소 5자 이상, 최대 15자 이하
+		    if (password.length < 5 || password.length > 15) {
+		        return false;
+		    }
+
+		    // 영어, 숫자, 특수문자를 포함하는지 검사하는 정규 표현식
+		    const passwordPattern = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{5,15}$/;
+
+		    return passwordPattern.test(password);
+		}
+		
+		//유저 폼데이터 유효성 검사
+		 function userValidateForm() {
+	            const frm = document.querySelector("#frmUser");
+	            const fields = ["username", "password", "name", "email", "address1", "address2", "detailAddress", "phone", "nickname"];
+	            
+	            for (let i = 0; i < fields.length; i++) {
+	                const field = frm[fields[i]];
+	                if (!field.value.trim()) {
+	                    alert(fields[i] + " 항목을 채워주세요.");
+	                    field.focus();
+	                    return false;
+	                }
+	            }
+	            const usernameResult = document.getElementById("usernameResult").innerText;
+	            const nicknameResult = document.getElementById("nicknameResult").innerText;
+
+	            if (!usernameResult.includes("사용가능")) {
+	                alert("아이디 중복 체크를 확인해 주세요.");
+	                document.querySelector("#username").focus();
+	                return false;
+	            }
+
+	            if (!nicknameResult.includes("사용가능")) {
+	                alert("닉네임 중복 체크를 확인해 주세요.");
+	                document.querySelector("#nickname").focus();
+	                return false;
+	            }
+	            
+	            const email = frm.email.value.trim();
+	            if (!validateEmail(email)) {
+	                alert("올바른 이메일 주소를 입력해 주세요.");
+	                frm.email.focus();
+	                return false;
+	            }
+	            const password = frm.password.value.trim();
+	            if (!validatePassword(password)) {
+	                alert("비밀번호는 5자 이상 15자 이하의 길이여야 하며, 영어, 숫자, 특수문자를 포함해야 합니다.");
+	                frm.password.focus();
+	                return false;
+	            }
+	            
+	            
+	            return true;
+	        }
+		
+		//의사 관련
+		function addDoctor() {
+            const doctorNameInput = document.querySelector('input[name="doctorName"]');
+            const doctorName = doctorNameInput.value.trim();
+            if (doctorName) {
+                const doctorList = document.getElementById('doctorResult');
+                const newDoctor = document.createElement('div');
+                newDoctor.className = 'doctor-item d-flex align-items-center mt-2';
+                newDoctor.innerHTML = `
+                    <span>${doctorName}</span>
+                    <button type="button" class="btn btn-danger btn-sm ms-2" onclick="removeDoctor(this)">x</button>
+                    <input type="text" name="doctorNames" value="${doctorName}">
+                `;
+                doctorList.appendChild(newDoctor);
+                updateDoctorNamesField();
+                doctorNameInput.value = ''; // Clear the input field
+            }
+        }
+
+        function removeDoctor(button) {
+            const doctorItem = button.parentElement;
+            doctorItem.remove();
+            updateDoctorNamesField();
+        }
+
+        function updateDoctorNamesField() {
+            const doctorNames = Array.from(document.getElementsByName('doctorNames')).map(input => input.value).join('//');
+            document.getElementById('doctorNamesField').value = doctorNames;
+        }
+		
+		//예약 관련
+		  function gatherFormData() {
+            const days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun', 'hol'];
+            const jsonData = {};
+
+            days.forEach(day => {
+                const accordionItem = document.querySelector(`input[name="week"][value="${day}"]`).closest('.accordion-item');
+                const isChecked = accordionItem.querySelector(`input[name="week"][value="${day}"]`).checked;
+
+                if (isChecked) {
+                    const start = accordionItem.querySelector('input[name="start"]').value;
+                    const end = accordionItem.querySelector('input[name="end"]').value;
+                    const lunchStart = accordionItem.querySelector('input[name="lunchStart"]').value;
+                    const lunchEnd = accordionItem.querySelector('input[name="lunchEnd"]').value;
+                    const noLunch = accordionItem.querySelector('input[name="lunch"][value="no"]').checked;
+
+                    const businessTime = `${start}//${end}`;
+                    const lunchTime = noLunch ? '점심시간 없음' : `${lunchStart}//${lunchEnd}`;
+
+                    jsonData[day] = [`영업시간 : ${businessTime}`, `점심시간 : ${lunchTime}`];
+                } else {
+                    jsonData[day] = ['영업시간 : 영업 안함'];
+                }
+            });
+
+            return jsonData;
+        }
+		
+		//병원 회원가입
+		function joinHospital(){
+			//alert("조인들어옴");
+			alert(JSON.stringify(gatherFormData()));
+			
+			const frm = document.querySelector("#frmUser");
+			const frm_ = {
+				"businessNumber" : frm.business_number.value,
+				"username" : frm.username.value,
+				"password" : frm.password.value,
+				"email" : frm.email.value,
+				"address" : frm.address1.value +"//"+frm.address2.value +"//"+frm.detailAddress.value ,
+				"phone" : frm.phone.value,
+				"role" : frm.role.value,
+				"hospitalName" : frm.hospital_name.value,
+				"representative" : frm.representative.value,
+				"partnership" : frm.partnership.value,
+				"introduction" : frm.introduction.value,
+				"doctorNames" : frm.doctorNamesField.value,
+				"businessHours" : JSON.stringify(gatherFormData())
 			};
 			const data = JSON.stringify(frm_);
 			alert(data);
 			
 			const xhttp = new XMLHttpRequest();
 			xhttp.onload = function() {
-				alert(this.responseText);
+				//alert(this.responseText);
 				var result = this.responseText;
 				document.getElementById("result").innerHTML = result;
 			}
-			xhttp.open("post", "http://localhost:9001/api/v1/joinUser");
+			xhttp.open("post", "http://localhost:9001/api/v1/common/joinHospital");
 			xhttp.setRequestHeader("Content-type", "application/json");	
 
 			xhttp.send(data);
