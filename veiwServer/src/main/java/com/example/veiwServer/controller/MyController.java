@@ -31,6 +31,10 @@ public class MyController {
 	}
 	
 	
+	@RequestMapping("/qnaDetail")
+	public String qnaDetail() {
+		return "qna_detail";
+	}
 	
 	
 	
