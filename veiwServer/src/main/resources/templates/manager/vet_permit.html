@@ -11,7 +11,7 @@
 <div class="w-100 p-5">
 	<h2>병원 가입 승인</h2>
 	<hr class="w-100"/>
-	<div>
+	<div id="permitTable" class="text-center">
 		<table class="table table-hover manager-table align-middle">
 			<thead>
 				<tr>
@@ -39,29 +39,32 @@ fetch("http://localhost:9001/api/v1/manager/permit", {
 .then(data => {
 	const objs = JSON.parse(data);
 	//console.log(objs);
-	let cnt = 1;
-	objs.forEach(obj =>{
-		let partnership = obj.partnership ? "Y" : "N"; 
-		
-		let address = obj.address.replace(/\/\//g, " ");
-		document.getElementById("tbody").innerHTML += 
-			'<tr>'
-				+ '<td>' + cnt + '</td>'
-				+ '<td>' + obj.username + '</td>'
-				+ '<td>' + obj.hospitalName + '</td>'
-				+ '<td>' + address + '</td>'
-				+ '<td>' + obj.phone + '</td>'
-				+ '<td>' + obj.businessNumber + '</td>'
-				+ '<td>' + partnership + '</td>'
-				+ '<td>'
-					+ '<button class="btn btn-primary me-1" onclick="permitOk(event, ' + obj.id + ')">승인</button>'
-					+ '<button class="btn btn-danger" onclick="permitNo(event, ' + obj.id + ')">반려</button>'
-				+ '</td>'
-			+ '</tr>';
-			cnt++;
-	});
+	if(objs.length === 0){
+		document.querySelector("#permitTable").innerHTML = "승일할 병원 내역이 없습니다.";
+	}else{
 	
-	
+		let cnt = 1;
+		objs.forEach(obj =>{
+			let partnership = obj.partnership ? "Y" : "N"; 
+			
+			let address = obj.address.replace(/\/\//g, " ");
+			document.getElementById("tbody").innerHTML += 
+				'<tr>'
+					+ '<td>' + cnt + '</td>'
+					+ '<td>' + obj.username + '</td>'
+					+ '<td>' + obj.hospitalName + '</td>'
+					+ '<td>' + address + '</td>'
+					+ '<td>' + obj.phone + '</td>'
+					+ '<td>' + obj.businessNumber + '</td>'
+					+ '<td>' + partnership + '</td>'
+					+ '<td>'
+						+ '<button class="btn btn-primary me-1" onclick="permitOk(event, ' + obj.id + ')">승인</button>'
+						+ '<button class="btn btn-danger" onclick="permitNo(event, ' + obj.id + ')">반려</button>'
+					+ '</td>'
+				+ '</tr>';
+				cnt++;
+		});
+	}
 	
 })
 .catch(error => console.log(error));

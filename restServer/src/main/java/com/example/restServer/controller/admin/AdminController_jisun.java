@@ -16,8 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.restServer.dto.IMemberLoginDto;
 import com.example.restServer.entity.Member;
+import com.example.restServer.entity.Point;
 import com.example.restServer.repository.LoginRepository;
 import com.example.restServer.repository.MemberRepository;
+import com.example.restServer.repository.PointRepository;
 import com.example.restServer.utill.MailService;
 
 import jakarta.annotation.Resource;
@@ -33,12 +35,15 @@ public class AdminController_jisun {
 	@Autowired
 	LoginRepository loginRepo;
 	
+	@Autowired
+	PointRepository pointRepo;
+	
 	@Resource(name = "mailService")
 	private MailService mailService;
 
 	@GetMapping("/permit")
 	public ResponseEntity<List<IMemberLoginDto>> getHospitalNonePermit(){
-		List<IMemberLoginDto> list = memberRepo.findByStatusNull();
+		List<IMemberLoginDto> list = memberRepo.findByStatusWaiting();
 		System.out.println(list.toString());
 		return new ResponseEntity<>(list, HttpStatus.OK);
 	}
@@ -67,5 +72,30 @@ public class AdminController_jisun {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	
+	@GetMapping("/user")
+	public ResponseEntity<List<IMemberLoginDto>> getUserList(){
+		List<IMemberLoginDto> list = memberRepo.findAllAddUsername();
+		System.out.println(list.toString());
+		return new ResponseEntity<>(list, HttpStatus.OK);
+	}
+	
+	@GetMapping("/user/{id}")
+	public ResponseEntity<IMemberLoginDto> getUser(@PathVariable("id")Long id){
+		IMemberLoginDto member = memberRepo.findByIdAddUsername(id);
+		return new ResponseEntity<>(member, HttpStatus.OK);
+	}
+	
+	
+	@GetMapping("/point/{id}")
+	public ResponseEntity<List<Point>> getUserPoint(@PathVariable("id")Long id){
+		List<Point> pointList = pointRepo.findAllByUserId(id);
+		return new ResponseEntity<>(pointList, HttpStatus.OK);
+	}
+	
+	@GetMapping("/point/total/{userId}")
+	public ResponseEntity<Integer> getUserPointTotal(@PathVariable("userId")Long userId){
+		Integer num = pointRepo.findByUserIdRemainingPoints(userId);
+		return new ResponseEntity<>(num, HttpStatus.OK);
+	}
 	
 }
