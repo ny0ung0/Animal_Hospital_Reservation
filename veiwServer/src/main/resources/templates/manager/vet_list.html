@@ -9,11 +9,11 @@
 <body class="d-flex flex-nowrap h-100">
 <div th:replace="~{manager/sidemenu :: sidemenu}"></div>
 <div class="w-100 p-5 h-100 overflow-auto">
-	<h2>회원 리스트</h2>
+	<h2>동물병원 리스트</h2>
 	<hr class="w-100"/>
 	<div class="d-flex">
 		<div class="ms-auto search_box input-group mb-3">
-		  <input type="text" class="form-control" placeholder="이름으로 검색" aria-label="이름으로 검색" aria-describedby="searchBtn" id="keywordInput">
+		  <input type="text" class="form-control" placeholder="병원이름으로 검색" aria-label="병원이름으로 검색" aria-describedby="searchBtn" name="keywordInput">
 		  <button class="btn btn-outline-secondary" type="button" id="searchBtn">검색</button>
 		</div>
 	</div>
@@ -22,8 +22,8 @@
 			<thead>
 				<tr>
 					<td>#</td>
-					<td>아이디</td>
-					<td>이름</td>
+					<td>병원 아이디</td>
+					<td>병원 이름</td>
 					<td>주소</td>
 					<td>연락처</td>
 					<td>상세보기</td>
@@ -38,7 +38,7 @@
 </div>
 <script>
 function allList(){
-	fetch("http://localhost:9001/api/v1/manager/user", {
+	fetch("http://localhost:9001/api/v1/manager/hospital", {
 		method : "GET"
 	})
 	.then(response => response.text())
@@ -54,11 +54,11 @@ function allList(){
 				'<tr>'
 					+ '<td>' + cnt + '</td>'
 					+ '<td>' + obj.username + '</td>'
-					+ '<td>' + obj.name + '</td>'
+					+ '<td>' + obj.hospitalName + '</td>'
 					+ '<td>' + address + '</td>'
 					+ '<td>' + obj.phone + '</td>'
 					+ '<td>'
-						+ '<a class="btn btn-primary" href="/manager/userDetail?id='+ obj.id +'">상세보기</a>'
+						+ '<a class="btn btn-primary" href="/manager/vetDetail?id='+ obj.id +'">상세보기</a>'
 					+ '</td>'
 					+ '<td>'
 						+ '<button class="btn btn-outline-danger" onclick="blackListAdd(event, ' + obj.id + ')">블랙리스트 추가</button>'
@@ -91,17 +91,14 @@ function blackListAdd(event, id){
 	
 }
 
-const keyword = document.querySelector("#keywordInput");
-
-
 document.querySelector("#searchBtn").addEventListener("click", function(){
-	
-	if(keyword.value==""){
+	const keyword = document.querySelector("input[name='keywordInput']").value;
+	console.log(keyword);
+	if(keyword==""){
 		document.getElementById("tbody").innerHTML = ""; // 이전 검색 결과를 초기화
 		allList();
 	}else{
-		console.log(keyword.value);
-		fetch("http://localhost:9001/api/v1/manager/user/keyword/" + keyword.value, {
+		fetch("http://localhost:9001/api/v1/manager/hospital/keyword/" + keyword, {
 			method : "GET"
 		})
 		.then(response => response.text())
@@ -121,11 +118,11 @@ document.querySelector("#searchBtn").addEventListener("click", function(){
 						'<tr>'
 							+ '<td>' + cnt + '</td>'
 							+ '<td>' + obj.username + '</td>'
-							+ '<td>' + obj.name + '</td>'
+							+ '<td>' + obj.hospitalName + '</td>'
 							+ '<td>' + address + '</td>'
 							+ '<td>' + obj.phone + '</td>'
 							+ '<td>'
-								+ '<a class="btn btn-primary" href="/manager/userDetail?id='+ obj.id +'">상세보기</a>'
+								+ '<a class="btn btn-primary" href="/manager/vetDetail?id='+ obj.id +'">상세보기</a>'
 							+ '</td>'
 							+ '<td>'
 								+ '<button class="btn btn-outline-danger" onclick="blackListAdd(event, ' + obj.id + ')">블랙리스트 추가</button>'
@@ -138,8 +135,6 @@ document.querySelector("#searchBtn").addEventListener("click", function(){
 	}
 	
 })
-
-
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>

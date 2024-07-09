@@ -18,32 +18,33 @@
 <h1 class="mt-3 mt-md-5 mb-3 mb-md-3">문의 등록</h1>
 <hr>
 
-<div>
-    <label for="category" class="form-label">문의 카테고리</label>
-    <select id="category" class="form-select" name="category">
-        <option value="">선택하세요</option>
-        <option value="불편신고">불편신고</option>
-        <option value="기타문의">기타문의</option>
-        <option value="경매신청">경매신청</option>
-        <option value="펀딩신청">펀딩신청</option>
-    </select>
+<div class="card-body">
+    <div class="form-group">
+        <label for="category" class="form-label fw-bold">문의 카테고리</label>
+        <select id="category" class="form-select form-control" name="category">
+            <option value="">문의 카테고리를 선택하세요</option>
+            <option value="불편신고">불편신고</option>
+            <option value="기타문의">기타문의</option>
+            <option value="경매신청">경매신청</option>
+            <option value="펀딩신청">펀딩신청</option>
+        </select>
+    </div>
+
+    <div class="form-floating mt-3">
+        <textarea name="title" class="form-control" placeholder="문의 제목을 작성해주세요" id="title"></textarea>
+        <label for="title" class="fw-bold">문의제목</label>
+    </div>
+
+    <div class="form-floating mt-3">
+        <textarea name="content" class="form-control" placeholder="문의 내용을 작성해주세요" id="content" style="height: 300px"></textarea>
+        <label for="content" class="fw-bold">문의내용</label>
+    </div>
+
+  
+    <div class="d-flex justify-content-center mt-3">
+	    <button type="submit" class="btn btn-primary" id="regBtn">문의 등록하기</button>
+	</div>
 </div>
-
-
-
-<div class="form-floating">
-  <textarea name="title" class="form-control" placeholder="문의 제목을 작성해주세요" id="title"></textarea>
-  <label for="title">제목</label>
-</div>
-
-<div class="form-floating">
-  <textarea name="content" class="form-control" placeholder="문의 내용을 작성해주세요" id="content" style="height: 300px"></textarea>
-  <label for="content">내용</label>
-</div>
-
-
-<button type="submit" class="btn btn-primary" id="regBtn">등록하기</button>
-
 
 
 </div>
@@ -85,9 +86,9 @@ document.getElementById('category').addEventListener('change', function() {
     var selectedValue = this.value;
     
     if (selectedValue === '경매신청') {
-        contentTextarea.value = '사용기한: \n의료상품명: \n병원명: \n경매시작일: \n경매마감일: \n경매시작가: \n상한가: \n내용: \n\n위의 해당양식을 모두 작성해주세요';
+        contentTextarea.value = '사용기한: \n의료상품명: \n병원명: \n경매시작일: \n경매마감일: \n경매시작가: \n상한가: \n내용: \n';
     } else if (selectedValue === '펀딩신청') {
-        contentTextarea.value = '사용기한: \n의료상품명: \n병원명: \n금액: \n인원 수: \n펀딩시작일: \n펀딩마감일: \n내용: \n\n의 해당양식을 모두 작성해주세요';
+        contentTextarea.value = '사용기한: \n의료상품명: \n병원명: \n금액: \n인원 수: \n펀딩시작일: \n펀딩마감일: \n내용: \n';
     } else {
         contentTextarea.value = '';
         contentTextarea.placeholder = '문의 내용을 작성해주세요';

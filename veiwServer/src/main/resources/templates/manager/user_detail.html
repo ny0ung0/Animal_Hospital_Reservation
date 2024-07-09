@@ -8,7 +8,7 @@
 </head>
 <body class="d-flex flex-nowrap h-100">
 <div th:replace="~{manager/sidemenu :: sidemenu}"></div>
-<div class="w-100 p-5">
+<div class="w-100 p-5 h-100 overflow-auto">
 	<input type="hidden" id="memberId" th:value="${id}">
 	<h2>회원 정보 상세</h2>
 	<hr class="w-100"/>
@@ -40,7 +40,7 @@
 	</div>
 	<h4 class="mt-5 mb-3 d-flex">
 		<div>포인트 사용 내역</div>
-		<div class="fs-6 fw-bold text-primary ms-auto">잔여 포인트 : <span id="pointTotal"></span></div>
+		<div class="fs-6 fw-bold text-primary ms-auto">잔여 포인트 : <span id="pointTotal"></span><button type="button" class="btn btn-sm btn-primary ms-2" data-bs-toggle="modal" data-bs-target="#addPoint"> + 포인트 지급</button></div>
 	</h4>
 	<div id="pointTable" class="border rounded px-5 py-4 my-3 text-center">
 		<table class="table text-center">
@@ -60,6 +60,33 @@
 		<a href="/manager/userList" class="btn btn-outline-secondary">목록 보기</a>
 	</div>
 </div>
+
+<!-- Modal -->
+<div class="modal fade" id="addPoint" tabindex="-1" aria-labelledby="addPointLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="addPointLabel">포인트 지급</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+      	<div class="mb-3">
+		  	<label for="addComment" class="form-label">지급 사유</label>
+			<input type="text" class="form-control" id="addComment" placeholder="사유를 간단히 입력하세요.">
+		</div>
+        <div class="mb-3">
+		  	<label for="addPointNumber" class="form-label">지급 포인트</label>
+			<input type="number" class="form-control" id="addPointNumber" placeholder="숫자만 입력하세요.">
+		</div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+        <button type="button" class="btn btn-primary" onclick="addPoint()">지급</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
 const memberId = document.querySelector("#memberId").value;
 fetch("http://localhost:9001/api/v1/manager/user/" + memberId, {
@@ -122,6 +149,32 @@ fetch("http://localhost:9001/api/v1/manager/point/total/" + memberId,{
 	document.querySelector("#pointTotal").innerHTML = totalnum + "P";
 })
 .catch(error => console.log(error));
+
+
+function addPoint(){
+	const addComment = document.querySelector("#addComment").value;
+	const addPointNumber = document.querySelector("#addPointNumber").value;
+	const addPointOj = {
+			comment : addComment,
+			pointsAccumulated : addPointNumber,
+			userId : memberId
+	}
+	const sendData = JSON.stringify(addPointOj);
+	console.log(addPointOj);
+	fetch("http://localhost:9001/api/v1/manager/point",{
+		method : "POST",
+		headers : {
+			"Content-type" : "application/json"
+		},
+		body : sendData
+	})
+	.then(response => response.text())
+	.then(data => {
+		console.log(data);
+		location.reload();
+	})
+	.catch(error => console.log(error));
+}
 
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
