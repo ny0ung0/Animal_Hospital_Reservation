@@ -14,6 +14,7 @@
 <link
 	href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Jua&display=swap"
 	rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>	
 </head>
 <body class="d-flex flex-column h-100">
 	<div th:replace="~{hospital/header :: header}"></div>
@@ -93,7 +94,7 @@
 								class="btn btn-main ms-auto"
 								onclick="checkBusinessNumber(event)" value="조회">
 						</div>
-						<input type="text" name="business_number" class="form-control">
+						<input type="number" name="business_number" id="business_number" class="form-control">
 						<div id="businessNumberResult"></div>
 					</div>
 				</div>
@@ -108,21 +109,129 @@
 				<div class="mb-3">
 					<label class="form-label">영업정보</label>
 					
-					<div class="accordion" id="accordionExample">
-					  <div class="accordion-item">
-					    <h2 class="accordion-header">
-					      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-					        월
-					      </button>
-					    </h2>
-					    <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
-					      <div class="accordion-body">
-					       <div><input type="checkbox"  name ="week" value="mon">월</div>
-										<div class="d-flex"><div>오픈시간<br><input type="text" name="start"></div>~<div>마감시간<br><input type="text" name="end"></div></div>
-										<div class="d-flex"><div>점심시간<br><input type="text" name="lunchStart"></div>~<div><input type="checkbox"  name ="lunch" value="no">점심시간 없음<br><input type="text" name="lunchEnd"></div></div>
-							</div>
-					    </div>
-					  </div>
+					
+					  <div class="accordion" id="accordionExample">
+					   <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseZero" aria-expanded="false" aria-controls="collapseZero">
+        공통
+      </button>
+    </h2>
+    <div id="collapseZero" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+      <div class="accordion-body">
+        <div><input type="hidden" name="commonWeek" value="com" id="commonCheckbox">공통</div>
+        <div class="d-flex">
+          <div>오픈시간<br>
+            <select name="commonStartHour">
+              <option th:each="hour : ${#numbers.sequence(0, 23)}" th:value="${hour}" th:text="${hour < 10 ? '0' + hour : hour}"></option>
+            </select>
+            :
+            <select name="commonStartMinute">
+              <option value="00">00</option>
+              <option value="30">30</option>
+            </select>
+          </div>
+          ~
+          <div>마감시간<br>
+            <select name="commonEndHour">
+              <option th:each="hour : ${#numbers.sequence(0, 23)}" th:value="${hour}" th:text="${hour < 10 ? '0' + hour : hour}"></option>
+            </select>
+            :
+            <select name="commonEndMinute">
+              <option value="00">00</option>
+              <option value="30">30</option>
+            </select>
+          </div>
+        </div>
+        <div class="d-flex">
+          <div>점심시간<br>
+            <select name="commonLunchStartHour">
+              <option th:each="hour : ${#numbers.sequence(0, 23)}" th:value="${hour}" th:text="${hour < 10 ? '0' + hour : hour}"></option>
+            </select>
+            :
+            <select name="commonLunchStartMinute">
+              <option value="00">00</option>
+              <option value="30">30</option>
+            </select>
+          </div>
+          ~
+          <div><input type="checkbox" name="commonLunch" value="no">점심시간 없음<br>
+            <select name="commonLunchEndHour">
+              <option th:each="hour : ${#numbers.sequence(0, 23)}" th:value="${hour}" th:text="${hour < 10 ? '0' + hour : hour}"></option>
+            </select>
+            :
+            <select name="commonLunchEndMinute">
+              <option value="00">00</option>
+              <option value="30">30</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- 각 요일에 동일한 구조 반복 -->
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+        월
+      </button>
+    </h2>
+    <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+      <div class="accordion-body">
+        <div>
+          <input type="checkbox" name="week" value="mon">월
+          <input type="checkbox" onclick="copyCommonSchedule(this, 'mon')">공통 복사
+        </div>
+        <div class="d-flex">
+          <div>오픈시간<br>
+            <select name="startHour_mon">
+              <option th:each="hour : ${#numbers.sequence(0, 23)}" th:value="${hour}" th:text="${hour < 10 ? '0' + hour : hour}"></option>
+            </select>
+            :
+            <select name="startMinute_mon">
+              <option value="00">00</option>
+              <option value="30">30</option>
+            </select>
+          </div>
+          ~
+          <div>마감시간<br>
+            <select name="endHour_mon">
+              <option th:each="hour : ${#numbers.sequence(0, 23)}" th:value="${hour}" th:text="${hour < 10 ? '0' + hour : hour}"></option>
+            </select>
+            :
+            <select name="endMinute_mon">
+              <option value="00">00</option>
+              <option value="30">30</option>
+            </select>
+          </div>
+        </div>
+        <div class="d-flex">
+          <div>점심시간<br>
+            <select name="lunchStartHour_mon">
+              <option th:each="hour : ${#numbers.sequence(0, 23)}" th:value="${hour}" th:text="${hour < 10 ? '0' + hour : hour}"></option>
+            </select>
+            :
+            <select name="lunchStartMinute_mon">
+              <option value="00">00</option>
+              <option value="30">30</option>
+            </select>
+          </div>
+          ~
+          <div><input type="checkbox" name="lunch_mon" value="no">점심시간 없음<br>
+            <select name="lunchEndHour_mon">
+              <option th:each="hour : ${#numbers.sequence(0, 23)}" th:value="${hour}" th:text="${hour < 10 ? '0' + hour : hour}"></option>
+            </select>
+            :
+            <select name="lunchEndMinute_mon">
+              <option value="00">00</option>
+              <option value="30">30</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+					  <!-- 화요일부터 공휴일까지 동일한 구조 반복 -->
 					  <div class="accordion-item">
 					    <h2 class="accordion-header">
 					      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
@@ -131,12 +240,58 @@
 					    </h2>
 					    <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
 					      <div class="accordion-body">
-					       <div><input type="checkbox"  name ="week" value="tue">화</div>
-										<div class="d-flex"><div>오픈시간<br><input type="text" name="start"></div>~<div>마감시간<br><input type="text" name="end"></div></div>
-										<div class="d-flex"><div>점심시간<br><input type="text" name="lunchStart"></div>~<div><input type="checkbox"  name ="lunch" value="no">점심시간 없음<br><input type="text" name="lunchEnd"></div></div>
-							</div>
+					        <div><input type="checkbox" name="week" value="tue">화<input type="checkbox" onclick="copyCommonSchedule(this, 'tue')">공통 복사</div>
+					        
+					        <div class="d-flex">
+					          <div>오픈시간<br>
+					            <select name="startHour_tue">
+					              <option th:each="hour : ${#numbers.sequence(0, 23)}" th:value="${hour}" th:text="${hour < 10 ? '0' + hour : hour}"></option>
+					            </select>
+					            :
+					            <select name="startMinute_tue">
+					              <option value="00">00</option>
+					              <option value="30">30</option>
+					            </select>
+					          </div>
+					          ~
+					          <div>마감시간<br>
+					            <select name="endHour_tue">
+					              <option th:each="hour : ${#numbers.sequence(0, 23)}" th:value="${hour}" th:text="${hour < 10 ? '0' + hour : hour}"></option>
+					            </select>
+					            :
+					            <select name="endMinute_tue">
+					              <option value="00">00</option>
+					              <option value="30">30</option>
+					            </select>
+					          </div>
+					        </div>
+					        <div class="d-flex">
+					          <div>점심시간<br>
+					            <select name="lunchStartHour_tue">
+					              <option th:each="hour : ${#numbers.sequence(0, 23)}" th:value="${hour}" th:text="${hour < 10 ? '0' + hour : hour}"></option>
+					            </select>
+					            :
+					            <select name="lunchStartMinute_tue">
+					              <option value="00">00</option>
+					              <option value="30">30</option>
+					            </select>
+					          </div>
+					          ~
+					          <div><input type="checkbox" name="lunch_tue" value="no">점심시간 없음<br>
+					            <select name="lunchEndHour_tue">
+					              <option th:each="hour : ${#numbers.sequence(0, 23)}" th:value="${hour}" th:text="${hour < 10 ? '0' + hour : hour}"></option>
+					            </select>
+					            :
+					            <select name="lunchEndMinute_tue">
+					              <option value="00">00</option>
+					              <option value="30">30</option>
+					            </select>
+					          </div>
+					        </div>
+					      </div>
 					    </div>
 					  </div>
+					  <!-- 수요일 -->
 					  <div class="accordion-item">
 					    <h2 class="accordion-header">
 					      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
@@ -145,12 +300,58 @@
 					    </h2>
 					    <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
 					      <div class="accordion-body">
-					       <div><input type="checkbox"  name ="week" value="wed">수</div>
-										<div class="d-flex"><div>오픈시간<br><input type="text" name="start"></div>~<div>마감시간<br><input type="text" name="end"></div></div>
-										<div class="d-flex"><div>점심시간<br><input type="text" name="lunchStart"></div>~<div><input type="checkbox"  name ="lunch" value="no">점심시간 없음<br><input type="text" name="lunchEnd"></div></div>
-							</div>
+					        <div><input type="checkbox" name="week" value="wed">수
+					        <input type="checkbox" onclick="copyCommonSchedule(this, 'wed')">공통 복사</div>
+					        <div class="d-flex">
+					          <div>오픈시간<br>
+					            <select name="startHour_wed">
+					              <option th:each="hour : ${#numbers.sequence(0, 23)}" th:value="${hour}" th:text="${hour < 10 ? '0' + hour : hour}"></option>
+					            </select>
+					            :
+					            <select name="startMinute_wed">
+					              <option value="00">00</option>
+					              <option value="30">30</option>
+					            </select>
+					          </div>
+					          ~
+					          <div>마감시간<br>
+					            <select name="endHour_wed">
+					              <option th:each="hour : ${#numbers.sequence(0, 23)}" th:value="${hour}" th:text="${hour < 10 ? '0' + hour : hour}"></option>
+					            </select>
+					            :
+					            <select name="endMinute_wed">
+					              <option value="00">00</option>
+					              <option value="30">30</option>
+					            </select>
+					          </div>
+					        </div>
+					        <div class="d-flex">
+					          <div>점심시간<br>
+					            <select name="lunchStartHour_wed">
+					              <option th:each="hour : ${#numbers.sequence(0, 23)}" th:value="${hour}" th:text="${hour < 10 ? '0' + hour : hour}"></option>
+					            </select>
+					            :
+					            <select name="lunchStartMinute_wed">
+					              <option value="00">00</option>
+					              <option value="30">30</option>
+					            </select>
+					          </div>
+					          ~
+					          <div><input type="checkbox" name="lunch_wed" value="no">점심시간 없음<br>
+					            <select name="lunchEndHour_wed">
+					              <option th:each="hour : ${#numbers.sequence(0, 23)}" th:value="${hour}" th:text="${hour < 10 ? '0' + hour : hour}"></option>
+					            </select>
+					            :
+					            <select name="lunchEndMinute_wed">
+					              <option value="00">00</option>
+					              <option value="30">30</option>
+					            </select>
+					          </div>
+					        </div>
+					      </div>
 					    </div>
 					  </div>
+					  <!-- 목요일 -->
 					  <div class="accordion-item">
 					    <h2 class="accordion-header">
 					      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
@@ -159,12 +360,58 @@
 					    </h2>
 					    <div id="collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
 					      <div class="accordion-body">
-					       <div><input type="checkbox"  name ="week" value="thu">목</div>
-										<div class="d-flex"><div>오픈시간<br><input type="text" name="start"></div>~<div>마감시간<br><input type="text" name="end"></div></div>
-										<div class="d-flex"><div>점심시간<br><input type="text" name="lunchStart"></div>~<div><input type="checkbox"  name ="lunch" value="no">점심시간 없음<br><input type="text" name="lunchEnd"></div></div>
-							</div>
+					        <div><input type="checkbox" name="week" value="thu">목
+					        <input type="checkbox" onclick="copyCommonSchedule(this, 'thu')">공통 복사</div>
+					        <div class="d-flex">
+					          <div>오픈시간<br>
+					            <select name="startHour_thu">
+					              <option th:each="hour : ${#numbers.sequence(0, 23)}" th:value="${hour}" th:text="${hour < 10 ? '0' + hour : hour}"></option>
+					            </select>
+					            :
+					            <select name="startMinute_thu">
+					              <option value="00">00</option>
+					              <option value="30">30</option>
+					            </select>
+					          </div>
+					          ~
+					          <div>마감시간<br>
+					            <select name="endHour_thu">
+					              <option th:each="hour : ${#numbers.sequence(0, 23)}" th:value="${hour}" th:text="${hour < 10 ? '0' + hour : hour}"></option>
+					            </select>
+					            :
+					            <select name="endMinute_thu">
+					              <option value="00">00</option>
+					              <option value="30">30</option>
+					            </select>
+					          </div>
+					        </div>
+					        <div class="d-flex">
+					          <div>점심시간<br>
+					            <select name="lunchStartHour_thu">
+					              <option th:each="hour : ${#numbers.sequence(0, 23)}" th:value="${hour}" th:text="${hour < 10 ? '0' + hour : hour}"></option>
+					            </select>
+					            :
+					            <select name="lunchStartMinute_thu">
+					              <option value="00">00</option>
+					              <option value="30">30</option>
+					            </select>
+					          </div>
+					          ~
+					          <div><input type="checkbox" name="lunch_thu" value="no">점심시간 없음<br>
+					            <select name="lunchEndHour_thu">
+					              <option th:each="hour : ${#numbers.sequence(0, 23)}" th:value="${hour}" th:text="${hour < 10 ? '0' + hour : hour}"></option>
+					            </select>
+					            :
+					            <select name="lunchEndMinute_thu">
+					              <option value="00">00</option>
+					              <option value="30">30</option>
+					            </select>
+					          </div>
+					        </div>
+					      </div>
 					    </div>
 					  </div>
+					  <!-- 금요일 -->
 					  <div class="accordion-item">
 					    <h2 class="accordion-header">
 					      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
@@ -173,12 +420,58 @@
 					    </h2>
 					    <div id="collapseFive" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
 					      <div class="accordion-body">
-					       <div><input type="checkbox"  name ="week" value="fri">금</div>
-										<div class="d-flex"><div>오픈시간<br><input type="text" name="start"></div>~<div>마감시간<br><input type="text" name="end"></div></div>
-										<div class="d-flex"><div>점심시간<br><input type="text" name="lunchStart"></div>~<div><input type="checkbox"  name ="lunch" value="no">점심시간 없음<br><input type="text" name="lunchEnd"></div></div>
-							</div>
+					        <div><input type="checkbox" name="week" value="fri">금
+					        <input type="checkbox" onclick="copyCommonSchedule(this, 'fri')">공통 복사</div>
+					        <div class="d-flex">
+					          <div>오픈시간<br>
+					            <select name="startHour_fri">
+					              <option th:each="hour : ${#numbers.sequence(0, 23)}" th:value="${hour}" th:text="${hour < 10 ? '0' + hour : hour}"></option>
+					            </select>
+					            :
+					            <select name="startMinute_fri">
+					              <option value="00">00</option>
+					              <option value="30">30</option>
+					            </select>
+					          </div>
+					          ~
+					          <div>마감시간<br>
+					            <select name="endHour_fri">
+					              <option th:each="hour : ${#numbers.sequence(0, 23)}" th:value="${hour}" th:text="${hour < 10 ? '0' + hour : hour}"></option>
+					            </select>
+					            :
+					            <select name="endMinute_fri">
+					              <option value="00">00</option>
+					              <option value="30">30</option>
+					            </select>
+					          </div>
+					        </div>
+					        <div class="d-flex">
+					          <div>점심시간<br>
+					            <select name="lunchStartHour_fri">
+					              <option th:each="hour : ${#numbers.sequence(0, 23)}" th:value="${hour}" th:text="${hour < 10 ? '0' + hour : hour}"></option>
+					            </select>
+					            :
+					            <select name="lunchStartMinute_fri">
+					              <option value="00">00</option>
+					              <option value="30">30</option>
+					            </select>
+					          </div>
+					          ~
+					          <div><input type="checkbox" name="lunch_fri" value="no">점심시간 없음<br>
+					            <select name="lunchEndHour_fri">
+					              <option th:each="hour : ${#numbers.sequence(0, 23)}" th:value="${hour}" th:text="${hour < 10 ? '0' + hour : hour}"></option>
+					            </select>
+					            :
+					            <select name="lunchEndMinute_fri">
+					              <option value="00">00</option>
+					              <option value="30">30</option>
+					            </select>
+					          </div>
+					        </div>
+					      </div>
 					    </div>
 					  </div>
+					  <!-- 토요일 -->
 					  <div class="accordion-item">
 					    <h2 class="accordion-header">
 					      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
@@ -187,12 +480,58 @@
 					    </h2>
 					    <div id="collapseSix" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
 					      <div class="accordion-body">
-					       <div><input type="checkbox"  name ="week" value="sat">토</div>
-										<div class="d-flex"><div>오픈시간<br><input type="text" name="start"></div>~<div>마감시간<br><input type="text" name="end"></div></div>
-										<div class="d-flex"><div>점심시간<br><input type="text" name="lunchStart"></div>~<div><input type="checkbox"  name ="lunch" value="no">점심시간 없음<br><input type="text" name="lunchEnd"></div></div>
-							</div>
+					        <div><input type="checkbox" name="week" value="sat">토
+					        <input type="checkbox" onclick="copyCommonSchedule(this, 'sat')">공통 복사</div>
+					        <div class="d-flex">
+					          <div>오픈시간<br>
+					            <select name="startHour_sat">
+					              <option th:each="hour : ${#numbers.sequence(0, 23)}" th:value="${hour}" th:text="${hour < 10 ? '0' + hour : hour}"></option>
+					            </select>
+					            :
+					            <select name="startMinute_sat">
+					              <option value="00">00</option>
+					              <option value="30">30</option>
+					            </select>
+					          </div>
+					          ~
+					          <div>마감시간<br>
+					            <select name="endHour_sat">
+					              <option th:each="hour : ${#numbers.sequence(0, 23)}" th:value="${hour}" th:text="${hour < 10 ? '0' + hour : hour}"></option>
+					            </select>
+					            :
+					            <select name="endMinute_sat">
+					              <option value="00">00</option>
+					              <option value="30">30</option>
+					            </select>
+					          </div>
+					        </div>
+					        <div class="d-flex">
+					          <div>점심시간<br>
+					            <select name="lunchStartHour_sat">
+					              <option th:each="hour : ${#numbers.sequence(0, 23)}" th:value="${hour}" th:text="${hour < 10 ? '0' + hour : hour}"></option>
+					            </select>
+					            :
+					            <select name="lunchStartMinute_sat">
+					              <option value="00">00</option>
+					              <option value="30">30</option>
+					            </select>
+					          </div>
+					          ~
+					          <div><input type="checkbox" name="lunch_sat" value="no">점심시간 없음<br>
+					            <select name="lunchEndHour_sat">
+					              <option th:each="hour : ${#numbers.sequence(0, 23)}" th:value="${hour}" th:text="${hour < 10 ? '0' + hour : hour}"></option>
+					            </select>
+					            :
+					            <select name="lunchEndMinute_sat">
+					              <option value="00">00</option>
+					              <option value="30">30</option>
+					            </select>
+					          </div>
+					        </div>
+					      </div>
 					    </div>
 					  </div>
+					  <!-- 일요일 -->
 					  <div class="accordion-item">
 					    <h2 class="accordion-header">
 					      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven">
@@ -201,12 +540,58 @@
 					    </h2>
 					    <div id="collapseSeven" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
 					      <div class="accordion-body">
-					       <div><input type="checkbox"  name ="week" value="sun">일</div>
-										<div class="d-flex"><div>오픈시간<br><input type="text" name="start"></div>~<div>마감시간<br><input type="text" name="end"></div></div>
-										<div class="d-flex"><div>점심시간<br><input type="text" name="lunchStart"></div>~<div><input type="checkbox"  name ="lunch" value="no">점심시간 없음<br><input type="text" name="lunchEnd"></div></div>
-							</div>
+					        <div><input type="checkbox" name="week" value="sun">일
+					        <input type="checkbox" onclick="copyCommonSchedule(this, 'sun')">공통 복사</div>
+					        <div class="d-flex">
+					          <div>오픈시간<br>
+					            <select name="startHour_sun">
+					              <option th:each="hour : ${#numbers.sequence(0, 23)}" th:value="${hour}" th:text="${hour < 10 ? '0' + hour : hour}"></option>
+					            </select>
+					            :
+					            <select name="startMinute_sun">
+					              <option value="00">00</option>
+					              <option value="30">30</option>
+					            </select>
+					          </div>
+					          ~
+					          <div>마감시간<br>
+					            <select name="endHour_sun">
+					              <option th:each="hour : ${#numbers.sequence(0, 23)}" th:value="${hour}" th:text="${hour < 10 ? '0' + hour : hour}"></option>
+					            </select>
+					            :
+					            <select name="endMinute_sun">
+					              <option value="00">00</option>
+					              <option value="30">30</option>
+					            </select>
+					          </div>
+					        </div>
+					        <div class="d-flex">
+					          <div>점심시간<br>
+					            <select name="lunchStartHour_sun">
+					              <option th:each="hour : ${#numbers.sequence(0, 23)}" th:value="${hour}" th:text="${hour < 10 ? '0' + hour : hour}"></option>
+					            </select>
+					            :
+					            <select name="lunchStartMinute_sun">
+					              <option value="00">00</option>
+					              <option value="30">30</option>
+					            </select>
+					          </div>
+					          ~
+					          <div><input type="checkbox" name="lunch_sun" value="no">점심시간 없음<br>
+					            <select name="lunchEndHour_sun">
+					              <option th:each="hour : ${#numbers.sequence(0, 23)}" th:value="${hour}" th:text="${hour < 10 ? '0' + hour : hour}"></option>
+					            </select>
+					            :
+					            <select name="lunchEndMinute_sun">
+					              <option value="00">00</option>
+					              <option value="30">30</option>
+					            </select>
+					          </div>
+					        </div>
+					      </div>
 					    </div>
 					  </div>
+					  <!-- 공휴일 -->
 					  <div class="accordion-item">
 					    <h2 class="accordion-header">
 					      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEight" aria-expanded="false" aria-controls="collapseEight">
@@ -215,15 +600,58 @@
 					    </h2>
 					    <div id="collapseEight" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
 					      <div class="accordion-body">
-					       <div><input type="checkbox"  name ="week" value="hol">공휴일</div>
-										<div class="d-flex"><div>오픈시간<br><input type="text" name="start"></div>~<div>마감시간<br><input type="text" name="end"></div></div>
-										<div class="d-flex"><div>점심시간<br><input type="text" name="lunchStart"></div>~<div><input type="checkbox"  name ="lunch" value="no">점심시간 없음<br><input type="text" name="lunchEnd"></div></div>
-							</div>
+					        <div><input type="checkbox" name="week" value="hol">공휴일
+					        <input type="checkbox" onclick="copyCommonSchedule(this, 'hol')">공통 복사</div>
+					        <div class="d-flex">
+					          <div>오픈시간<br>
+					            <select name="startHour_hol">
+					              <option th:each="hour : ${#numbers.sequence(0, 23)}" th:value="${hour}" th:text="${hour < 10 ? '0' + hour : hour}"></option>
+					            </select>
+					            :
+					            <select name="startMinute_hol">
+					              <option value="00">00</option>
+					              <option value="30">30</option>
+					            </select>
+					          </div>
+					          ~
+					          <div>마감시간<br>
+					            <select name="endHour_hol">
+					              <option th:each="hour : ${#numbers.sequence(0, 23)}" th:value="${hour}" th:text="${hour < 10 ? '0' + hour : hour}"></option>
+					            </select>
+					            :
+					            <select name="endMinute_hol">
+					              <option value="00">00</option>
+					              <option value="30">30</option>
+					            </select>
+					          </div>
+					        </div>
+					        <div class="d-flex">
+					          <div>점심시간<br>
+					            <select name="lunchStartHour_hol">
+					              <option th:each="hour : ${#numbers.sequence(0, 23)}" th:value="${hour}" th:text="${hour < 10 ? '0' + hour : hour}"></option>
+					            </select>
+					            :
+					            <select name="lunchStartMinute_hol">
+					              <option value="00">00</option>
+					              <option value="30">30</option>
+					            </select>
+					          </div>
+					          ~
+					          <div><input type="checkbox" name="lunch_hol" value="no">점심시간 없음<br>
+					            <select name="lunchEndHour_hol">
+					              <option th:each="hour : ${#numbers.sequence(0, 23)}" th:value="${hour}" th:text="${hour < 10 ? '0' + hour : hour}"></option>
+					            </select>
+					            :
+					            <select name="lunchEndMinute_hol">
+					              <option value="00">00</option>
+					              <option value="30">30</option>
+					            </select>
+					          </div>
+					        </div>
+					      </div>
 					    </div>
 					  </div>
-  
 					</div>
-					
 				</div>
 				
 				
@@ -242,7 +670,7 @@
                 <div id="doctorResult"></div>
             </div>
         </div>
-        <input type="text" id="doctorNamesField" name="doctorNamesField">
+        <input type="hidden" id="doctorNamesField" name="doctorNamesField">
         
         
         
@@ -261,14 +689,14 @@
 			</div>
 
 			<div class="mb-3">
-				<label class="form-label">전화번호</label> 
-				<input type="file" name="logo" class="form-control">
+				<label class="form-label">로고 이미지</label> 
+				<input type="file" name="file" class="form-control">
 			</div>
 			
 
 				<div class="mb-3"></div>
 				 <input
-					type="button" value="회원가입" class="btn btn-main"
+					type="button" value="회원가입" class="btn btn-main" id="hospitalJoinButton"
 					onclick="joinHospital()">
 				<div id="nicknameResult"></div>
 				<br> <a href="#">로그인</a>
@@ -459,7 +887,7 @@
                 newDoctor.innerHTML = `
                     <span>${doctorName}</span>
                     <button type="button" class="btn btn-danger btn-sm ms-2" onclick="removeDoctor(this)">x</button>
-                    <input type="text" name="doctorNames" value="${doctorName}">
+                    <input type="hidden" name="doctorNames" value="${doctorName}">
                 `;
                 doctorList.appendChild(newDoctor);
                 updateDoctorNamesField();
@@ -480,56 +908,62 @@
 		
 		//예약 관련
 		  function gatherFormData() {
-            const days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun', 'hol'];
-            const jsonData = {};
+    const days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun', 'hol'];
+    const jsonData = {};
 
-            days.forEach(day => {
-                const accordionItem = document.querySelector(`input[name="week"][value="${day}"]`).closest('.accordion-item');
-                const isChecked = accordionItem.querySelector(`input[name="week"][value="${day}"]`).checked;
+    days.forEach(day => {
+        const accordionItem = document.querySelector(`input[name="week"][value="${day}"]`).closest('.accordion-item');
+        const isChecked = accordionItem.querySelector(`input[name="week"][value="${day}"]`).checked;
 
-                if (isChecked) {
-                    const start = accordionItem.querySelector('input[name="start"]').value;
-                    const end = accordionItem.querySelector('input[name="end"]').value;
-                    const lunchStart = accordionItem.querySelector('input[name="lunchStart"]').value;
-                    const lunchEnd = accordionItem.querySelector('input[name="lunchEnd"]').value;
-                    const noLunch = accordionItem.querySelector('input[name="lunch"][value="no"]').checked;
+        if (isChecked) {
+            const startHour = accordionItem.querySelector(`select[name="startHour_${day}"]`).value;
+            const startMinute = accordionItem.querySelector(`select[name="startMinute_${day}"]`).value;
+            const endHour = accordionItem.querySelector(`select[name="endHour_${day}"]`).value;
+            const endMinute = accordionItem.querySelector(`select[name="endMinute_${day}"]`).value;
+            const lunchStartHour = accordionItem.querySelector(`select[name="lunchStartHour_${day}"]`).value;
+            const lunchStartMinute = accordionItem.querySelector(`select[name="lunchStartMinute_${day}"]`).value;
+            const lunchEndHour = accordionItem.querySelector(`select[name="lunchEndHour_${day}"]`).value;
+            const lunchEndMinute = accordionItem.querySelector(`select[name="lunchEndMinute_${day}"]`).value;
+            const noLunch = accordionItem.querySelector(`input[name="lunch_${day}"][value="no"]`).checked;
 
-                    const businessTime = `${start}//${end}`;
-                    const lunchTime = noLunch ? '점심시간 없음' : `${lunchStart}//${lunchEnd}`;
+            const start = `${startHour}:${startMinute}`;
+            const end = `${endHour}:${endMinute}`;
+            const lunchStart = `${lunchStartHour}:${lunchStartMinute}`;
+            const lunchEnd = `${lunchEndHour}:${lunchEndMinute}`;
 
-                    jsonData[day] = [`영업시간 : ${businessTime}`, `점심시간 : ${lunchTime}`];
-                } else {
-                    jsonData[day] = ['영업시간 : 영업 안함'];
-                }
-            });
+            const businessTime = `${start}//${end}`;
+            const lunchTime = noLunch ? '점심시간 없음' : `${lunchStart}//${lunchEnd}`;
 
-            return jsonData;
+            jsonData[day] = [`영업시간 : ${businessTime}`, `점심시간 : ${lunchTime}`];
+        } else {
+            jsonData[day] = ['영업시간 : 영업 안함'];
         }
+    });
+
+    return jsonData;
+}
+
 		
 		//병원 회원가입
 		function joinHospital(){
 			//alert("조인들어옴");
-			alert(JSON.stringify(gatherFormData()));
+			if (!hospitalValidateForm()) {
+                return;
+            }
+			//alert(JSON.stringify(gatherFormData()));
 			
 			const frm = document.querySelector("#frmUser");
-			const frm_ = {
-				"businessNumber" : frm.business_number.value,
-				"username" : frm.username.value,
-				"password" : frm.password.value,
-				"email" : frm.email.value,
-				"address" : frm.address1.value +"//"+frm.address2.value +"//"+frm.detailAddress.value ,
-				"phone" : frm.phone.value,
-				"role" : frm.role.value,
-				"hospitalName" : frm.hospital_name.value,
-				"representative" : frm.representative.value,
-				"partnership" : frm.partnership.value,
-				"introduction" : frm.introduction.value,
-				"doctorNames" : frm.doctorNamesField.value,
-				"businessHours" : JSON.stringify(gatherFormData())
-			};
-			const data = JSON.stringify(frm_);
-			alert(data);
-			
+			const formData = new FormData(frm);
+			//const data = JSON.stringify(frm_);
+			const businessHours = gatherFormData();
+       		formData.append('businessHours', JSON.stringify(businessHours));
+       		
+       		formData.append('address', frm.address1.value + "//" + frm.address2.value + "//" + frm.detailAddress.value);
+
+	         
+	         // 추가 누락된 필드를 formData에 추가
+	         formData.append('businessNumber', frm.business_number.value); // 필드명 변경
+	         formData.append('hospitalName', frm.hospital_name.value); // 필드명 변경
 			const xhttp = new XMLHttpRequest();
 			xhttp.onload = function() {
 				//alert(this.responseText);
@@ -537,10 +971,112 @@
 				document.getElementById("result").innerHTML = result;
 			}
 			xhttp.open("post", "http://localhost:9001/api/v1/common/joinHospital");
-			xhttp.setRequestHeader("Content-type", "application/json");	
+			//xhttp.setRequestHeader("Content-type", "multipart/form-data");	
 
-			xhttp.send(data);
+			xhttp.send(formData);
 		}
+		
+		
+		//병원 유효성검사
+		function hospitalValidateForm() {
+            const frm = document.querySelector("#frmUser");
+            const fields = ["username", "password", "email", "address1", "address2", "detailAddress", "phone"];
+            
+            for (let i = 0; i < fields.length; i++) {
+                const field = frm[fields[i]];
+                if (!field.value.trim()) {
+                    alert(fields[i] + " 항목을 채워주세요.");
+                    field.focus();
+                    return false;
+                }
+            }
+            const usernameResult = document.getElementById("usernameResult").innerText;
+            
+
+            if (!usernameResult.includes("사용가능")) {
+                alert("아이디 중복 체크를 확인해 주세요.");
+                document.querySelector("#username").focus();
+                return false;
+            }
+
+            
+            const email = frm.email.value.trim();
+            if (!validateEmail(email)) {
+                alert("올바른 이메일 주소를 입력해 주세요.");
+                frm.email.focus();
+                return false;
+            }
+            const password = frm.password.value.trim();
+            if (!validatePassword(password)) {
+                alert("비밀번호는 5자 이상 15자 이하의 길이여야 하며, 영어, 숫자, 특수문자를 포함해야 합니다.");
+                frm.password.focus();
+                return false;
+            }
+            
+            
+            return true;
+        }
+		
+		
+		//사업자 번호 확인
+		 function checkBusinessNumber() {
+             var data = {
+                 "b_no": [$("#business_number").val()] // 사업자번호 "xxxxxxx" 로 조회 시,
+             };
+				alert($("#business_number").val());
+             $.ajax({
+                 url: "https://api.odcloud.kr/api/nts-businessman/v1/status?serviceKey=pj1%2B669xKchgAcU3BhHK0bxmPPyBX9A%2FSmvsKpvuzhwIroogcKjl4B5qUfW3XYojSy0TgPWr6jrBOREJkxghlA%3D%3D",  // serviceKey 값을 YOUR_SERVICE_KEY에 입력
+                 type: "POST",
+                 data: JSON.stringify(data), // json 을 string으로 변환하여 전송
+                 dataType: "JSON",
+                 contentType: "application/json",
+                 accept: "application/json",
+                 success: function (result) {
+                	 console.log(result);
+                     console.log(result.data[0]['tax_type']);
+                     let taxType = result.data[0]['tax_type'];
+                     $("#businessNumberResult").text(taxType);
+
+                     //if (taxType === "국세청에 등록되지 않은 사업자등록번호입니다.") {
+                    //     $("#hospitalJoinButton").prop("disabled", true);
+                    // } else {
+                   //      $("#hospitalJoinButton").prop("disabled", false);
+                   //  }
+                 },
+                 error: function (result) {
+                     console.log(result.responseText); //responseText의 에러메세지 확인
+                 }
+             });
+         }
+
+		//영업시간 복사하는 함수
+		function copyCommonSchedule(checkbox, day) {
+		    if (checkbox.checked) {
+		      const commonStartHour = document.querySelector('select[name="commonStartHour"]').value;
+		      const commonStartMinute = document.querySelector('select[name="commonStartMinute"]').value;
+		      const commonEndHour = document.querySelector('select[name="commonEndHour"]').value;
+		      const commonEndMinute = document.querySelector('select[name="commonEndMinute"]').value;
+		      const commonLunchStartHour = document.querySelector('select[name="commonLunchStartHour"]').value;
+		      const commonLunchStartMinute = document.querySelector('select[name="commonLunchStartMinute"]').value;
+		      const commonLunchEndHour = document.querySelector('select[name="commonLunchEndHour"]').value;
+		      const commonLunchEndMinute = document.querySelector('select[name="commonLunchEndMinute"]').value;
+		      const commonNoLunch = document.querySelector('input[name="commonLunch"]').checked;
+		
+		      document.querySelector(`select[name="startHour_${day}"]`).value = commonStartHour;
+		      document.querySelector(`select[name="startMinute_${day}"]`).value = commonStartMinute;
+		      document.querySelector(`select[name="endHour_${day}"]`).value = commonEndHour;
+		      document.querySelector(`select[name="endMinute_${day}"]`).value = commonEndMinute;
+		      document.querySelector(`select[name="lunchStartHour_${day}"]`).value = commonLunchStartHour;
+		      document.querySelector(`select[name="lunchStartMinute_${day}"]`).value = commonLunchStartMinute;
+		      document.querySelector(`select[name="lunchEndHour_${day}"]`).value = commonLunchEndHour;
+		      document.querySelector(`select[name="lunchEndMinute_${day}"]`).value = commonLunchEndMinute;
+		      document.querySelector(`input[name="lunch_${day}"]`).checked = commonNoLunch;
+		      
+		      // 요일 체크박스 자동 체크
+		      document.querySelector(`input[name="week"][value="${day}"]`).checked = true;
+		    }
+		}
+        
 	</script>
 
 

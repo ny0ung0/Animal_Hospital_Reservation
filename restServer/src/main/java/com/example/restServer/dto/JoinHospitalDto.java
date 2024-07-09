@@ -2,6 +2,8 @@ package com.example.restServer.dto;
 
 import java.time.LocalDateTime;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,7 +20,7 @@ public class JoinHospitalDto {
 	private String username;
 	private String password;
 	//의사 테이블
-    private String doctorNames;
+    private String doctorNamesField;
     //멤버 테이블
     private String address;
     private String phone;
@@ -29,11 +31,16 @@ public class JoinHospitalDto {
     private Boolean partnership;
     private String introduction;
     private String role;
+    private MultipartFile file;
     private String logo;
     private String token;
     private String status;
     private String email;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    
+    public String getFileName() {
+		return file.getOriginalFilename();
+	}
 }
 //멤버,의사,로그인 테이블 다 넣어야함@@@@@

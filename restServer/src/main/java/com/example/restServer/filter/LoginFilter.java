@@ -66,12 +66,13 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
 		String role = auth.getAuthority();
 
-		String token = jwtUtil.createJwt(username, role, 10*60*1000L);
+		String token = jwtUtil.createJwt(username, role, 60*60*1000L);
 		
 		response.addHeader("Authorization", "Bearer " + token);
 		response.addHeader("MemberId", customUserDetails.getMemberId()+"");
+		response.addHeader("role", role);
 		//위에 설정한 헤더 데이터를 클라이언트가 접근할 수 있도록 허용하는 코드
-		response.addHeader("Access-Control-Expose-Headers", "Authorization, MemberId");
+		response.addHeader("Access-Control-Expose-Headers", "Authorization, MemberId, role");
 	}
 
 	

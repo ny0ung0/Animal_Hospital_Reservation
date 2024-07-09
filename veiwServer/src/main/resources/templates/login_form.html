@@ -34,7 +34,7 @@
 					<input type="password" name="password" class="form-control">
 				</div>
 				
-				<
+				
 				<input type="button" value="로그인" class="btn btn-main" onclick="loginUser()">
 				<br><a href="#" >회원가입</a>
 			</form>
@@ -70,6 +70,11 @@
 	                    const MemberId = this.getResponseHeader("MemberId");
 	                    if (MemberId) {
 	                        localStorage.setItem("MemberId", MemberId);
+	                    }
+	                    const role = this.getResponseHeader("role");
+	                    if (role) {
+	                    	
+	                        localStorage.setItem("role", role);
 	                    }
 	                    
 	                } else if (this.status === 401) {

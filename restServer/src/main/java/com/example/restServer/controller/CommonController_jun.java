@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -44,7 +45,7 @@ public class CommonController_jun {
 		return ResponseEntity.ok().body("성공");
 	}
 	@PostMapping("/joinHospital")
-	public String joinHospital(@RequestBody JoinHospitalDto joinHospitalDto){
+	public String joinHospital(@ModelAttribute JoinHospitalDto joinHospitalDto){
 		System.out.println("병원회원가입 들어옴");
 		System.out.println(joinHospitalDto); 
 		joinService.joinHospital(joinHospitalDto);

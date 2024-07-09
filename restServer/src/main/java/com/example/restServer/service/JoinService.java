@@ -1,6 +1,10 @@
 package com.example.restServer.service;
 
+import java.io.File;
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +19,10 @@ import com.example.restServer.repository.MemberRepository;
 
 @Service
 public class JoinService {
+	
+	@Value("${spring.servlet.multipart.location}")
+	private String uploadPath;
+	
 	@Autowired
 	MemberRepository memberRepository;
 	
@@ -73,7 +81,41 @@ public class JoinService {
 		member.setRole(joinHospitalDto.getRole());
 		member.setEmail(joinHospitalDto.getEmail());
 		member.setStatus("대기");
+		
+		if(joinHospitalDto.getFile() != null && !joinHospitalDto.getFile().isEmpty() ) {
+			String originName = joinHospitalDto.getFileName();
+			String newName = UUID.randomUUID().toString() + originName;
+			member.setLogo(newName);
+			File file = new File(newName);
+			
+			try {
+				joinHospitalDto.getFile().transferTo(file);
+				System.out.println("파일 업로드 성공....");
+				
+				//썸네일 생성
+				//String thumbnailSaveName = "s_" + newName;
+				//board.setThumbnailName(thumbnailSaveName);
+				
+				//File thumbfile = new File(uploadPath + thumbnailSaveName);
+				File ufile = new File(uploadPath + newName);
+				
+				//Thumbnails.of(ufile).size(100,100).toFile(thumbfile);
+				System.out.println(joinHospitalDto);
+				
+				
+			}catch(Exception e){
+				
+			}
+		}
+		
 		member = memberRepository.save(member);
+		
+		
+		
+		
+		
+		
+		
 		//System.out.println(member);
 		Login login = new Login();
 		login.setMember(member);
@@ -83,16 +125,17 @@ public class JoinService {
 		login.setRole(joinHospitalDto.getRole());
 		loginRepository.save(login); 
 		
-		String doctor_ =joinHospitalDto.getDoctorNames();
+		String doctor_ =joinHospitalDto.getDoctorNamesField();
 		System.out.println("doctor_:"+doctor_);
 		String[] doctors = doctor_.split("//");
-		
+		if(!(doctors[0].equals(""))){
 		for(String d : doctors) {
 			System.out.println("doctor:"+d);
 			Doctor doctor = new Doctor();
 			doctor.setHospital(member);
 			doctor.setName(d);
 			doctorRepository.save(doctor);
+		}
 		}
  		
 		
