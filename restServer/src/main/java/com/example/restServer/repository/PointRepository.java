@@ -10,7 +10,7 @@ import com.example.restServer.entity.Point;
 
 public interface PointRepository extends JpaRepository<Point, Long> {
 	
-	@Query(value = "SELECT (SELECT SUM(points_accumulated) FROM point WHERE user_id =:userId)-(SELECT SUM(points_used) FROM point WHERE user_id =:userId) AS remaining_points", nativeQuery = true)
+	@Query(value = "SELECT (SELECT SUM(points_accumulated) FROM point WHERE user_id =:userId)- IFNULL((SELECT SUM(points_used) FROM point WHERE user_id =:userId), 0) AS remaining_points", nativeQuery = true)
 	public Integer findByUserIdRemainingPoints(@Param("userId")Long userId);
 
 	public List<Point> findAllByUserId(Long id);
