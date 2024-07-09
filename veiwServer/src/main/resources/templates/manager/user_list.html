@@ -19,6 +19,8 @@
 					<td>아이디</td>
 					<td>이름</td>
 					<td>주소</td>
+					<td>연락처</td>
+					<td>상세보기</td>
 					<td>블랙리스트</td>
 				</tr>
 			</thead>
@@ -29,7 +31,7 @@
 	</div>
 </div>
 <script>
-fetch("http://localhost:9001/api/v1/manager/permit", {
+fetch("http://localhost:9001/api/v1/manager/user", {
 	method : "GET"
 })
 .then(response => response.text())
@@ -45,59 +47,42 @@ fetch("http://localhost:9001/api/v1/manager/permit", {
 			'<tr>'
 				+ '<td>' + cnt + '</td>'
 				+ '<td>' + obj.username + '</td>'
-				+ '<td>' + obj.hospitalName + '</td>'
+				+ '<td>' + obj.name + '</td>'
 				+ '<td>' + address + '</td>'
 				+ '<td>' + obj.phone + '</td>'
-				+ '<td>' + obj.businessNumber + '</td>'
-				+ '<td>' + partnership + '</td>'
 				+ '<td>'
-					+ '<button class="btn btn-primary me-1" onclick="permitOk(event, ' + obj.id + ')">승인</button>'
-					+ '<button class="btn btn-danger" onclick="permitNo(event, ' + obj.id + ')">반려</button>'
+					+ '<a class="btn btn-primary" href="/manager/userDetail?id='+ obj.id +'">상세보기</a>'
+				+ '</td>'
+				+ '<td>'
+					+ '<button class="btn btn-outline-danger" onclick="blackListAdd(event, ' + obj.id + ')">블랙리스트 추가</button>'
 				+ '</td>'
 			+ '</tr>';
 			cnt++;
 	});
 	
-	
-	
 })
 .catch(error => console.log(error));
 
-function permitOk(event, id){
-	if(confirm("승인하시겠습니까?")){
-		fetch("http://localhost:9001/api/v1/manager/permit/" + id,{
-			method : "PUT"
-		})
-		.then(response => response.text())
-		.then(data =>{
-			console.log(data);
-			alert("승인되었습니다.");
-			location.reload();
-		})
-		.catch(error => console.log(error));
-	}else{
-		alert("승인이 취소되었습니다.");
-	}
+function blackListAdd(event, id){
+	alert("준비중입니다!");
+// 	if(confirm("해당 고객을 블랙리스트에 추가하시겠습니까?")){
+// 		fetch("http://localhost:9001/api/v1/manager/blackList/" + id,{
+// 			method : "PUT"
+// 		})
+// 		.then(response => response.text())
+// 		.then(data =>{
+// 			console.log(data);
+// 			alert("추가되었습니다.");
+// 			location.reload();
+// 		})
+// 		.catch(error => console.log(error));
+// 	}else{
+// 		alert("취소되었습니다.");
+// 	}
 	
 }
 
-function permitNo(event, id){
-	if(confirm("반려하시겠습니까?")){
-		fetch("http://localhost:9001/api/v1/manager/permit/" + id,{
-			method : "DELETE"
-		})
-		.then(response => response.text())
-		.then(data =>{
-			console.log(data);
-			alert("반려되었습니다.");
-			location.reload();
-		})
-		.catch(error => console.log(error));
-	}else{
-		alert("반려가 취소되었습니다.");
-	}
-	
-}
+
 
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
