@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html class="h-100" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"
+	charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+<title>견강할고양</title>
+<script type="text/javascript"
+	src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=v02baxm8gp"></script>
+
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+	rel="stylesheet"
+	integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+	crossorigin="anonymous">
+<link href="/css/style.css" rel="stylesheet">
+<link href="/css/vet_list_region.css" rel="stylesheet">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link
+	href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Jua&display=swap"
+	rel="stylesheet">
+</head>
+<body class="d-flex flex-column h-100">
+	<img style="display: none" id="mainGif" src="/images/loading.gif">
+	<div th:replace="~{user/header :: header}"></div>
+	<div class="container-xl">
+		<h1 class="mt-3 mt-md-5 mb-3 mb-md-3">동물병원 예약 등록</h1>
+		<div><span>동물병원</span><input type="text" id="vetName"></div>
+		<div><span>날짜</span><input type="date" name="reserv_date"></div>
+		<div>
+			<span>수의사 선택</span>
+			<select id="vet" class="form-select" aria-label="Default select example">
+			  <option selected>원하는 선생님을 선택해주세요</option>
+			</select>
+		</div>
+		<div>
+			<span>시간 선택</span>
+			<div>
+			<div>09:00</div><div>09:30</div>
+			</div>
+		</div>
+		<div><span>보호자</span><input type="text" value="로그인한회원이름"></div>
+		<div>
+			<span>반려동물 선택</span>
+			<select id="pet" class="form-select" aria-label="Default select example">
+			  <option selected>진료보길 원하는 반려동물을 선택해주세요</option>
+			</select>
+		</div>
+		<div>
+			<span>진료유형</span>
+			<select class="form-select" aria-label="Default select example">
+			  <option selected>진료유형을 선택해주세요</option>
+			  <option value="일반진료">일반진료</option>
+			  <option value="건강검진">건강검진</option>
+			  <option value="예방접종">예방접종</option>
+			  <option value="스케일링">스케일링</option>
+			</select>
+		</div>
+		<div><span>메모</span><textarea type="text" name="memo"></textarea></div>
+		<div>
+			<span>쿠폰사용</span>
+			<select id="coupon" class="form-select" aria-label="Default select example">
+			  <option selected>쿠폰사용 안함</option>
+			</select>
+		</div>
+		<div>
+		<span>포인트 사용</span><span> ※ 1000 포인트 단위로 사용 가능</span><span>보유포인트 <span id="point"></span>P</span>
+		<input type="text" name="points_used" placeholder="0">
+		</div>
+		<input onclick="" type="button" value="예약등록">
+		<button onclick="">문의채팅</button>
+	
+	</div>
+	<div th:replace="~{user/footer :: footer}"></div>
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+		crossorigin="anonymous"></script>
+<script th:inline="javascript" type="text/javascript" src="/js/reserv_form.js"></script>
+
+<script th:inline="javascript">
+let hosId = "[[${id}]]";
+let today = new Date();
+const date = document.querySelector("input[type=date]");
+
+function setDateLimit(){
+	date.setAttribute("min", today.toISOString().substring(0,10))
+	//max 날짜는 3개월 오늘 날짜 전일
+	today.setMonth(today.getMonth()+2)
+	date.setAttribute("max", today.toISOString().substring(0,10))
+}
+setDateLimit();
+
+date.addEventListener("change", function(){
+	console.log("Xxx")
+	//오늘 날짜보다 이전 날짜는 선택할 수 없도록  
+	//min="2024-01-01", max="2024-02-15"
+})
+
+
+const xhttp = new XMLHttpRequest();
+xhttp.onload = function() {
+	let data = JSON.parse(this.responseText);
+	let userInfo = data[0];
+	let vetAvailInfo = data[1];
+	let vetInfo = data[2];
+	let vetNamesNIds = Object.keys(vetAvailInfo);
+
+  //병원 이름 넣기
+  document.querySelector("#vetName").setAttribute("value", Object.keys(vetInfo)[0]);
+  //쿠폰 정보 넣기
+  for(let i = 0; i < userInfo.couponList.length; i++){
+	  let coupon = userInfo.couponList[i];
+	  let listItem = document.createElement("option");
+	  listItem.setAttribute("value", coupon.id);
+	  listItem.innerHTML = coupon.name + ', 발행날짜' + formattingDate(coupon.issueDate) + ', 만료날짜' + formattingDate(coupon.expiryDate);
+	  document.querySelector("#coupon").appendChild(listItem);
+  }
+  //반려동물정보넣기
+  for(let i = 0; i < userInfo.petList.length; i++){
+	  let pet = userInfo.petList[i];
+	  let listItem = document.createElement("option");
+	  listItem.setAttribute("value", pet.id);
+	  listItem.innerHTML = pet.name + '';
+	  document.querySelector("#pet").appendChild(listItem);
+  }
+  //수의사정보넣기
+  for(let i = 0; i < vetNamesNIds.length; i++){
+	  console.log(vetNamesNIds[i])
+	  let vet = vetNamesNIds[i].split("//")
+	  let vetName = vet[1];
+	  let vetId = vet[0];
+	
+	  let listItem = document.createElement("option");
+	  listItem.setAttribute("value", vetId);
+	  listItem.innerHTML = vetName + ' 선생님';
+	  document.querySelector("#vet").appendChild(listItem);
+  }
+  //시간 뿌려주기(의사, 날짜 를 선택하는 순간 그에 맞춰서 시간 바꿔주기)
+  
+  
+}
+xhttp.open("GET", "http://localhost:9001/api/v1/user/reservation?id="+hosId, true);
+xhttp.setRequestHeader("username", 1);
+xhttp.send();
+
+function formattingDate(date){
+	let newDate = date.slice(0,10);
+	return newDate;
+}
+
+</script>
+
+
+
+</body>
+
+</html>
