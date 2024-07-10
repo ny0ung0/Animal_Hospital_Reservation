@@ -67,7 +67,6 @@ public class VetListController_jia {
 	public ResponseEntity<List<MemVetDto>> nearVetList(@RequestParam Map<String, String> address, HttpServletRequest request) {
 		List<MemVetDto> memList = new ArrayList<>();
 		System.out.println(address);
-//		System.out.println("xxxx");
 	
 		if(request.getHeader("username") != null ) {
 			Long userId = Long.parseLong(request.getHeader("username"));

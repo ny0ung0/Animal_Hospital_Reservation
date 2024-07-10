@@ -23,4 +23,7 @@ public interface SupportRepository extends JpaRepository<Support, Long> {
 	
 	@Query(value = "SELECT * FROM support WHERE category =:category", nativeQuery = true)
 	public List<Support> findAllByCategoryQnaByCategory(@Param("category")String category);
+	
+	@Query(value="Select * from support where member_id=:userId;", nativeQuery = true)
+	public List<Support> findAllByMemberId(@Param("userId") Long userId);
 }
