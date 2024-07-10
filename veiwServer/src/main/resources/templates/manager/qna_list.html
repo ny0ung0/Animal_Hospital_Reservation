@@ -48,7 +48,7 @@ function allList(){
 	.then(response => response.text())
 	.then(data => {
 		const objs = JSON.parse(data);
-		//console.log(objs);
+		console.log(objs);
 		let cnt = 1;
 		objs.forEach(obj =>{
 			console.log(obj.reply==null);
