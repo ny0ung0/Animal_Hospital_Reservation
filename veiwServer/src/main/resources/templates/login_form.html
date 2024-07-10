@@ -16,12 +16,8 @@
 	rel="stylesheet">
 </head>
 <body class="d-flex flex-column h-100">
-	<div th:replace="~{hospital/header :: header}"></div>
+	<div th:replace="~{user/header :: header}"></div>
 	<div class="container-xl">
-		<div id="tab" class="d-flex">
-			<button class="btn btn-main">반려인</button>
-			<button class="btn btn-outline-main">동물병원</button>
-		</div>
 		<div id="user">
 			<form id="frmUser">
 				<input type="hidden" name="role" value="ROLE_USER">
@@ -36,7 +32,7 @@
 				
 				
 				<input type="button" value="로그인" class="btn btn-main" onclick="loginUser()">
-				<br><a href="#" >회원가입</a>
+				<br><a href="/register_form" >회원가입</a>
 			</form>
 		</div>
 	</div>
@@ -76,6 +72,15 @@
 	                    	
 	                        localStorage.setItem("role", role);
 	                    }
+	                    
+	                    if(role =="ROLE_USER"){
+	                    	window.location.href="/";
+	                    }else if(role == "ROLE_HOSPITAL"){
+	                    	window.location.href="/hospital";
+	                    }else if(role == "ROLE_ADMIN"){
+	                    	window.location.href="/manager";
+	                    }
+	                    
 	                    
 	                } else if (this.status === 401) {
 	                    alert("로그인 실패");

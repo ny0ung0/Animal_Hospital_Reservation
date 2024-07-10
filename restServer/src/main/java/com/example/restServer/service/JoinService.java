@@ -1,6 +1,8 @@
 package com.example.restServer.service;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,8 +10,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.example.restServer.dto.IMemberEditDto;
 import com.example.restServer.dto.JoinHospitalDto;
 import com.example.restServer.dto.MemberDto;
+import com.example.restServer.dto.MemberEditDto;
 import com.example.restServer.entity.Doctor;
 import com.example.restServer.entity.Login;
 import com.example.restServer.entity.Member;
@@ -110,12 +114,6 @@ public class JoinService {
 		
 		member = memberRepository.save(member);
 		
-		
-		
-		
-		
-		
-		
 		//System.out.println(member);
 		Login login = new Login();
 		login.setMember(member);
@@ -129,16 +127,37 @@ public class JoinService {
 		System.out.println("doctor_:"+doctor_);
 		String[] doctors = doctor_.split("//");
 		if(!(doctors[0].equals(""))){
-		for(String d : doctors) {
-			System.out.println("doctor:"+d);
-			Doctor doctor = new Doctor();
-			doctor.setHospital(member);
-			doctor.setName(d);
-			doctorRepository.save(doctor);
+			for(String d : doctors) {
+				System.out.println("doctor:"+d);
+				Doctor doctor = new Doctor();
+				doctor.setHospital(member);
+				doctor.setName(d);
+				doctorRepository.save(doctor);
+			}
 		}
-		}
- 		
+	}
+	
+	public List<IMemberEditDto> getEditUserInfo(String memberId) {
+		List<IMemberEditDto> data = new ArrayList<>();
+		data =loginRepository.findByMemberIdEditData(memberId);
+		return data;
+	}
+	
+	public void updateEditUserInfo(MemberEditDto memberEditDto) {
 		
+		if(memberEditDto.getPassword().length()<16) {
+			Login login = loginRepository.findByUsername(memberEditDto.getUsername());
+			String password = bCryptPasswordEncoder.encode(memberEditDto.getPassword());
+			login.setPassword(password);
+			loginRepository.save(login);
+		}
+		Member member = memberRepository.findById(memberEditDto.getMemberId()).get();
+		member.setName(memberEditDto.getName());
+		member.setEmail(memberEditDto.getEmail());
+		member.setAddress(memberEditDto.getAddress());
+		member.setPhone(memberEditDto.getPhone());
+		member.setNickname(memberEditDto.getNickname());
+		memberRepository.save(member);
 		
 	}
 
