@@ -41,7 +41,7 @@
                                     daysOfWeek: [dayMap[day]],
                                     allDay: true,
                                     display: 'background',
-                                    backgroundColor: '#000000', // Red color for non-working days
+                                    backgroundColor: '#cccccc', // Red color for non-working days
                                     textColor: '#ffffff' // White text color
                                 });
                                 continue;
@@ -90,14 +90,22 @@
 
                         // 날짜 클릭 이벤트 설정
                         dateClick: function(info) {
-                            var clickedDate = info.dateStr; // 클릭한 날짜
+                            var clickedDate = new Date(info.dateStr); // 클릭한 날짜
+                            var today = new Date();
+                            today.setHours(0, 0, 0, 0); // 시간 부분을 제거하여 날짜만 비교
+
+                            if (clickedDate < today) {
+                                alert('과거 날짜는 선택할 수 없습니다.');
+                                return;
+                            }
+
                             var dayEvents = calendar.getEvents().filter(event => 
-                                event.startStr.split('T')[0] === clickedDate && event.title === '영업 안함'
+                                event.startStr.split('T')[0] === info.dateStr && event.title === '영업 안함'
                             );
                             if (dayEvents.length > 0) {
                                 alert('이 날은 영업하지 않습니다.');
                             } else {
-                                window.location.href = '/hospital/reserveSchedule?date=' + clickedDate + '&doctorId=' + doctorId + '&doctorName=' + doctorName; // 다른 페이지로 이동, URL에 날짜 포함
+                                window.location.href = '/hospital/reserveSchedule?date=' + info.dateStr + '&doctorId=' + doctorId + '&doctorName=' + doctorName; // 다른 페이지로 이동, URL에 날짜 포함
                             }
                         }
                     });
