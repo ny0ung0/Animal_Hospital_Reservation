@@ -24,7 +24,12 @@ public interface LoginRepository extends JpaRepository<Login, Long> {
 			+ "LEFT JOIN member m "
 			+ "ON l.member_id = m.id "
 			+ "WHERE member_id = :memberId;" , nativeQuery = true)
-	public List<IMemberEditDto> findByMemberIdEditData(@Param("memberId") String memberId);
+	public List<IMemberEditDto> findByMemberIdEditUser(@Param("memberId") String memberId);
 	
-	
+	@Query(value ="SELECT l.username, l.password, m.address, m.phone, m.email,m.business_number,m.hospital_name,m.representative,m.business_hours,m.partnership,m.introduction "
+			+ "FROM login l "
+			+ "LEFT JOIN member m "
+			+ "ON l.member_id = m.id "
+			+ "WHERE member_id = :memberId;", nativeQuery = true)
+	public List<IMemberEditDto> findByMemberIdEditHospital(@Param("memberId") String memberId);
 }
