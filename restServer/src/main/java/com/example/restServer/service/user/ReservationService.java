@@ -156,7 +156,7 @@ public class ReservationService {
 	
 		Reservation reservation = reservRepo.findById(reservId).get();
 		
-		  //기존 unavailableTime삭제해준뒤, 새로운 unavailableTime등록해주기
+		//기존 unavailableTime삭제해준뒤, 새로운 unavailableTime등록해주기
         LocalDateTime oriDateTime= reservation.getReservationDatetime();
       	UnavailableTime oriUnavailTime = unavailableTimeRepo.findTimeByDoctorIdNDatetime(reservation.getDoctor().getId(), oriDateTime.format(formatter1), oriDateTime.format(formatter2));
       	unavailableTimeRepo.delete(oriUnavailTime);
