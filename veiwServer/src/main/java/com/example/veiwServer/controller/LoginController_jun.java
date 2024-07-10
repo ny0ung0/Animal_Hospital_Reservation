@@ -1,22 +1,21 @@
 package com.example.veiwServer.controller;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.exc.StreamReadException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-@RestController
+@Controller
 public class LoginController_jun {
 
 	
@@ -37,7 +36,7 @@ public class LoginController_jun {
 	                  map -> (List<String>) map.values().iterator().next() // value 값 (구, 군 리스트)
 	            ));
 	      model.addAttribute("regions", regions);
-	      model.addAttribute("days", Arrays.asList("월", "화", "수", "목", "금", "토", "일", "공휴일"));
+	   //   model.addAttribute("days", Arrays.asList("월", "화", "수", "목", "금", "토", "일", "공휴일"));
 	}
 	
 	@RequestMapping("/login_form")

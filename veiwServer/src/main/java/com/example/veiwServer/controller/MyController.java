@@ -1,6 +1,8 @@
 package com.example.veiwServer.controller;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
@@ -37,8 +39,22 @@ public class MyController {
 	}
 	
 	
+	@RequestMapping("/noticeForm")
+	public String noticeForm() {
+		return "notice_form";
+	}
 	
 	
+	@RequestMapping("/noticeList")
+	public String noticeList() {
+		return "notice_list";
+	}
 	
+	
+	@RequestMapping("/noticeDetail/{id}")
+	public String noticeDetail(@PathVariable("id")Long id, Model model) {
+		model.addAttribute("id",id);
+		return "notice_detail";
+	}
 	
 }
