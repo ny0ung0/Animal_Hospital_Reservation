@@ -42,5 +42,8 @@ public interface MemberRepository extends JpaRepository<Member,Long>{
             "AND m.status = '승인' " +
             "AND m.name LIKE %:keyword%", nativeQuery = true)
 	public List<IMemberLoginDto> findAllUserAddUsernameByKeyword(@Param("keyword")String keyword);
+	
+	@Query(value = "select exists( select 1 from member where nickname= :nickname and id <> :member_id)", nativeQuery = true)
+	public int existsByNicknameEdit(@Param("nickname")String nickname,@Param("member_id")String member_id);
 	 
 }

@@ -120,7 +120,18 @@ public class CommonController_jun {
 		return "사용가능한 닉네임입니다.";
 	}
 	
-	
+	@PostMapping("/check/nickname/{MemberId}")
+	public String checkNicknameEdit(@PathVariable("MemberId") String memberId,  @RequestParam("nickname")String nickname) {
+		//System.out.println("checkNickname 들어옴");
+		//System.out.println(nickname);
+		boolean result =validationService.checkNicknameEdit(nickname, memberId);
+		System.out.println(result);
+		
+		if(result) {
+			return "중복된 닉네임입니다. 다른 닉네임을 입력해주세요.";
+		}
+		return "사용가능한 닉네임입니다.";
+	}
 	
 	
 	

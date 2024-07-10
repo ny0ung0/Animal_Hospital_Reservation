@@ -28,8 +28,11 @@ public class MemberLoginDto {
     private String status;
     private String email;
     private String username;
+    private String password;
     private Long loginId;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    
+    
     
 }
