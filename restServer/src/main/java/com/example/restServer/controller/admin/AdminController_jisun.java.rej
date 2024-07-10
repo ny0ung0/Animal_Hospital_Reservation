@@ -1,0 +1,19 @@
+diff a/restServer/src/main/java/com/example/restServer/controller/admin/AdminController_jisun.java b/restServer/src/main/java/com/example/restServer/controller/admin/AdminController_jisun.java	(rejected hunks)
+@@ -126,4 +126,17 @@
+ 		return new ResponseEntity<>(num, HttpStatus.OK);
+ 	}
+ 	
++	@PostMapping("/point")
++	public ResponseEntity<String> addPoint(@RequestBody PointAddDto pointAddDto){
++		System.out.println("왔냐" + pointAddDto.getUserId());
++		Member member = memberRepo.findById(pointAddDto.getUserId()).get();
++		Point point = new Point();
++		point.setAccumulationDate(new Date());
++		point.setComment(pointAddDto.getComment());
++		point.setPointsAccumulated(pointAddDto.getPointsAccumulated());
++		point.setUser(member);
++		pointRepo.save(point);
++		return new ResponseEntity<>("ok", HttpStatus.OK);
++	}
++	
+ }
