@@ -20,13 +20,13 @@
 	<h4 class="fw-bold mb-3">[[${doctorName}]] 수의사 진료일정</h4>
 	<div class="border p-4 rounded">
 		<div class="date-input-size mb-3 mx-auto">
-			<input type="date" class="form-control" id="" th:value="${date}">
+			<input type="date" class="form-control" id="date" th:value="${date}">
 		</div>
 		<div class="container container-600">
 			<input type="checkbox" class="btn-check" id="btn-check-1-outlined" checked autocomplete="off">
-			<label class="btn btn-outline-main" for="btn-check-1-outlined">09:00</label>
+			<label class="btn btn-light" for="btn-check-1-outlined">09:00</label>
 			<input type="checkbox" class="btn-check" id="btn-check-2-outlined" autocomplete="off">
-			<label class="btn btn-outline-main" for="btn-check-2-outlined">10:00</label>
+			<label class="btn btn-light" for="btn-check-2-outlined">10:00</label>
 		</div>
 	</div>
 	<div class="clear-fix mt-3">
@@ -35,12 +35,9 @@
 </div>
 <div th:replace="~{hospital/footer :: footer}"></div>
 <script type="text/javascript">
-fetch("http://localhost:9001/api/v1/hospital/reservation/waiting", {
+let date = document.querySelector("#date").value;
+fetch("http://localhost:9001/api/v1/hospital/business-hours/" + date, {
 	method : "GET",
-	//headers: {
-	   // "Authorization": "application/json",
-	   // "username": "application/json",
-	  //},
 })
 .then(response =>  response.json())
 .then(data => {
