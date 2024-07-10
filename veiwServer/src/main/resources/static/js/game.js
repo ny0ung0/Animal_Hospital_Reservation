@@ -28,7 +28,7 @@ let userId = localStorage.getItem("MemberId"); // 예시를 위한 사용자 ID
 function preload() {
   // 필요한 에셋 로드
   this.load.image('background', '/images/background.png')
-  this.load.spritesheet('pet_level_1', '/images/pet.png', { frameWidth: 230, frameHeight: 180 })
+  this.load.spritesheet('pet_level_1', '/images/dog_sprite.png', { frameWidth: 320, frameHeight: 240 })
   this.load.image('feedButton', '/images/feedButton.png')
   this.load.image('playButton', '/images/playButton.png')
 }
@@ -39,7 +39,7 @@ function create() {
   this.anims.create({
     key: 'idle',
     frames: this.anims.generateFrameNumbers('pet_level_1', { frames: [0, 1, 2, 3, 4, 5] }),
-    frameRate: 10,
+    frameRate: 6,
     repeat: -1
   })
 
