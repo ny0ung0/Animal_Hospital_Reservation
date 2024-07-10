@@ -29,9 +29,7 @@ function loadBasicInfo(data){
 	let basicHours = JSON.parse(vetInfo[Object.keys(vetInfo)[0]].businessHours);
 	let basicHoursArr = getBasicBusinessHours(basicHours);
 	
-	
-	
-	//병원 이름 넣기
+	  //병원 이름 넣기
 	  document.querySelector("#vetName").setAttribute("value", Object.keys(vetInfo)[0]);
 	  //포인트정보넣기
 	  document.querySelector("#point").innerHTML = userInfo.pointList[0];

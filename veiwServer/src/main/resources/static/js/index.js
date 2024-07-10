@@ -177,8 +177,12 @@ function addHospitalToList(map, currentPos) {
 
 
         var infoWindow = new naver.maps.InfoWindow({
-            content: '<div style="width:150px;text-align:center;padding:10px;">' + hospital["사업장명"] + '</div>'
+            content: '<div style="width:150px;text-align:center;padding:10px;" onclick=" showModal(event)" data-bs-toggle="modal" data-bs-target="#exampleModal">' + hospital["사업장명"] 
+            + '</div><span class="address" style="display:none;">' + hospital["도로명전체주소"] 
+            + '</span><span class="phone" style="display:none;">' + hospital["소재지전화"] + '</span>'
         });
+        
+        
 
         markers.push(markedVet);
         infoWindows.push(infoWindow);
@@ -225,18 +229,33 @@ function addHospitalToList(map, currentPos) {
 
 
 document.querySelector(".inner").addEventListener("click", function(e){
-				e.preventDefault();
-				console.log(e.target)
-			})
+	e.preventDefault();
+	console.log(e.target)
+})
 
 
 
 
 // 모달에 해당 병원 상세정보 보여주기
 function showModal(e) {
-    let hospitalName = e.target.parentElement.querySelector("button").innerText;
-    let address = e.target.parentElement.querySelector(".address").innerText;
-    
+	console.log("Xxxx");
+	let hospitalName;
+	let address;
+	let phone;
+	
+	if(e.target.parentElement.querySelector("button") == null){
+		hospitalName = e.target.innerText;
+		address= e.target.parentElement.querySelector(".address").innerText;
+		phone = e.target.parentElement.querySelector(".phone").innerText;
+		
+		console.log(hospitalName)
+		console.log(address)
+		console.log(phone)
+	}else{
+		hospitalName = e.target.parentElement.querySelector("button").innerText;
+		address = e.target.parentElement.querySelector(".address").innerText;
+		phone = e.target.parentElement.querySelector(".phone").innerText;
+	}
     
     if (memVet[hospitalName] != null && memVet[hospitalName]["address"] == address) {
 		 document.querySelector("#working_hour").innerHTML="";
@@ -286,7 +305,7 @@ function showModal(e) {
         }
     }
     document.querySelector("#exampleModalLabel").innerText = hospitalName;
-    document.querySelector("#phone").innerHTML = e.target.parentElement.querySelector(".phone").innerText;
+    document.querySelector("#phone").innerHTML = phone;
     document.querySelector("#address").innerHTML = address;
 }
 
