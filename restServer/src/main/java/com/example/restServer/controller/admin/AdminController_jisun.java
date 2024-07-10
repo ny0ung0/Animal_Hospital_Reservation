@@ -163,4 +163,27 @@ public class AdminController_jisun {
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
 	
+	@GetMapping("/support/qna/category/{category}/keyword/{keyword}")
+    public ResponseEntity<List<Support>> getSupportQnaFindByKeyword(@PathVariable("category")String category, @PathVariable("keyword")String keyword){
+        if(category.equals("all")) {
+        	List<Support> list = supportRepo.findAllByCategoryQnaByAllCategoryKeyword(keyword);
+       	 	return new ResponseEntity<>(list, HttpStatus.OK);
+       }else {
+    	   List<Support> list = supportRepo.findAllByCategoryQnaByCategoryKeyword(category, keyword);
+       	 return new ResponseEntity<>(list, HttpStatus.OK);
+       }
+    }
+	
+	@GetMapping("/support/qna/category/{category}")
+    public ResponseEntity<List<Support>> getSupportQnaFindByCategory(@PathVariable("category")String category){
+        if(category.equals("all")) {
+        	 List<Support> list = supportRepo.findAllByCategoryQna();
+        	 return new ResponseEntity<>(list, HttpStatus.OK);
+        }else {
+        	 List<Support> list = supportRepo.findAllByCategoryQnaByCategory(category);
+        	 return new ResponseEntity<>(list, HttpStatus.OK);
+        }
+       
+    }
+	
 }
