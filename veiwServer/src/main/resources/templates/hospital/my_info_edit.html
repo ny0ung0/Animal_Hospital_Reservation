@@ -2,115 +2,56 @@
 <html class="h-100" xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<title>견강할고양</title>
-<link
-	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-	rel="stylesheet"
-	integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
-	crossorigin="anonymous">
+<title>병원 정보 수정</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 <link href="/css/style.css" rel="stylesheet">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link
-	href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Jua&display=swap"
-	rel="stylesheet">
-<script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>	
+<link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Jua&display=swap" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
 </head>
 <body class="d-flex flex-column h-100">
-	<div th:replace="~{user/header :: header}"></div>
-	<div class="container-xl">
-		<div id="tab" class="d-flex">
-			<button class="btn btn-main" onclick="showUser()">반려인</button>
-			<button class="btn btn-outline-main" onclick="showHospital()">동물병원</button>
-		</div>
+    <div th:replace="~{hospital/header :: header}"></div>
+    <div class="container-xl">
+        <h2 class="mt-5 mb-3">병원 정보 수정</h2>
 
-		<form id="frmUser">
-
-
-			<div class="mb-3">
-				<div class="inputBox">
-					<div class="d-flex">
-						<label class="form-label">아이디</label> <input type="button"
-							class="btn btn-main ms-auto" onclick="checkUsername(event)"
-							value="중복체크">
-					</div>
-					<input type="text" name="username" id="username"
-						class="form-control">
-				</div>
-				<div id="usernameResult"></div>
-			</div>
-			<div class="mb-3">
-				<label class="form-label">비밀번호</label> <input type="password"
-					name="password" class="form-control">
-				<div>비밀번호는 5자 이상, 15자 이하, 영어, 숫자, 특수문자를 포함해야 합니다.</div>
-			</div>
-			<div class="mb-3">
-				<label class="form-label">주소</label> <select id="address1"
-					class="form-control" name="address1"
-					onchange="address1SelectChanged()"></select> <select id="address2"
-					class="form-control" name="address2"></select> <input type="text"
-					class="form-control" name="detailAddress">
-			</div>
-			<div class="mb-3">
-				<label class="form-label">전화번호</label> <input type="text"
-					name="phone" class="form-control">
-			</div>
-			<div class="mb-3">
-				<label class="form-label">이메일</label> <input type="text"
-					name="email" class="form-control">
-			</div>
-
-			<div id="user">
-				<div class="mb-3">
-					<label class="form-label">이름</label> <input type="text" name="name"
-						class="form-control">
-				</div>
-
-				<div class="mb-3">
-					<div class="inputBox">
-						<div class="d-flex">
-							<label class="form-label">닉네임</label> <input type="button"
-								class="btn btn-main ms-auto" value="중복체크"
-								onclick="checkNickname(event)">
-						</div>
-						<input type="text" name="nickname" id="nickname"
-							class="form-control">
-					</div>
-				</div>
-				<input type="hidden" name="role" value="ROLE_USER"> <input
-					type="button" value="회원가입" class="btn btn-main"
-					onclick="joinUser()">
-				<div id="nicknameResult"></div>
-				<br> <a href="/login_form">로그인</a>
-			</div>
-
-
-			<div id="hospital" style="display: none;">
-
-				<div class="mb-3">
-					<div class="inputBox">
-						<div class="d-flex">
-							<label class="form-label">사업자번호</label> <input type="button"
-								class="btn btn-main ms-auto"
-								onclick="checkBusinessNumber(event)" value="조회">
-						</div>
-						<input type="number" name="business_number" id="business_number" class="form-control">
-						<div id="businessNumberResult"></div>
-					</div>
-				</div>
-				<div class="mb-3">
-					<label class="form-label">병원명</label> <input type="text"
-						name="hospital_name" class="form-control">
-				</div>
-				<div class="mb-3">
-					<label class="form-label">대표자</label> <input type="text"
-						name="representative" class="form-control">
-				</div>
-				<div class="mb-3">
-					<label class="form-label">영업정보</label>
-					
-					
-					  <div class="accordion" id="accordionExample">
+        <form id="frmEditHospital">
+            <div class="mb-3">
+                <label class="form-label">아이디</label>
+                <input type="text" name="username" id="username" class="form-control" readonly>
+            </div>
+            <div class="mb-3">
+                <input type="checkbox" id="passwordCheckBox" onchange="togglePasswordCheckBox()">
+                <label class="form-label">비밀번호</label>
+                <input type="password" name="password" class="form-control" disabled>
+                <input type="hidden" name="passwordOrigin">
+                <div>비밀번호는 5자 이상, 15자 이하, 영어, 숫자, 특수문자를 포함해야 합니다.</div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">주소</label>
+                <select id="address1" class="form-control" name="address1" onchange="address1SelectChanged()"></select>
+                <select id="address2" class="form-control" name="address2"></select>
+                <input type="text" class="form-control" name="detailAddress">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">전화번호</label>
+                <input type="text" name="phone" class="form-control">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">이메일</label>
+                <input type="text" name="email" class="form-control">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">병원명</label>
+                <input type="text" name="hospital_name" class="form-control">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">대표자</label>
+                <input type="text" name="representative" class="form-control">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">영업정보</label>
+                <div class="accordion" id="accordionExample">
 					   <div class="accordion-item">
     <h2 class="accordion-header">
       <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseZero" aria-expanded="false" aria-controls="collapseZero">
@@ -652,442 +593,326 @@
 					    </div>
 					  </div>
 					</div>
-				</div>
-				
-				
-				
-				
-				
-				
-				
-				  <div class="mb-3">
-            <div class="inputBox">
-                <div class="d-flex">
-                    <label class="form-label">수의사 정보</label> 
-                    <input type="text" class="form-control" name="doctorName">
-                    <input type="button" class="btn btn-main ms-auto" onclick="addDoctor()" value="추가">
-                </div>
-                <div id="doctorResult"></div>
             </div>
-        </div>
-        <input type="hidden" id="doctorNamesField" name="doctorNamesField">
-        
-        
-        
-        
-        
-        
-        
-			<div class="mb-3">
-				<label class="form-label">제휴포인트 사용 여부</label><br> 
-				<input type="radio" th:name="partnership" id="partnershipTrue" th:value="true"><label for="partnershipTrue">포인트 사용 제휴 가입</label><br>
+            <div class="mb-3">
+                <div class="inputBox">
+                    <div class="d-flex">
+                        <label class="form-label">수의사 정보</label> 
+                        <input type="text" class="form-control" name="doctorName">
+                        <input type="button" class="btn btn-main ms-auto" onclick="addDoctor()" value="추가">
+                    </div>
+                    <div id="doctorResult"></div>
+                </div>
+            </div>
+            <input type="hidden" id="doctorNamesField" name="doctorNamesField">
+            <div class="mb-3">
+                <label class="form-label">제휴포인트 사용 여부</label><br> 
+                <input type="radio" th:name="partnership" id="partnershipTrue" th:value="true"><label for="partnershipTrue">포인트 사용 제휴 가입</label><br>
                 <input type="radio" th:name="partnership" id="partnershipFalse" th:value="false"><label for="partnershipFalse">포인트 사용 제휴 미가입</label>
-			</div>
-			<div class="mb-3">
-			  <label for="exampleFormControlTextarea1" class="form-label">소개글</label>
-			  <textarea class="form-control" name="introduction" rows="5"></textarea>
-			</div>
+            </div>
+            <div class="mb-3">
+                <label for="exampleFormControlTextarea1" class="form-label">소개글</label>
+                <textarea class="form-control" name="introduction" rows="5"></textarea>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">로고 이미지</label> 
+                <input type="file" name="file" class="form-control">
+            </div>
+            <div class="mb-3"></div>
+            <input type="button" value="수정하기" class="btn btn-main" onclick="editHospital()">
+        </form>
+    </div>
 
-			<div class="mb-3">
-				<label class="form-label">로고 이미지</label> 
-				<input type="file" name="file" class="form-control">
-			</div>
-			
+    <div th:replace="~{hospital/footer :: footer}"></div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="/js/address.js"></script>
+    <script>
+    readyAddress();
+   	readyHospitalInfo();
 
-				<div class="mb-3"></div>
-				 <input
-					type="button" value="회원가입" class="btn btn-main" id="hospitalJoinButton"
-					onclick="joinHospital()">
-				<div id="nicknameResult"></div>
-				<br> <a href="/login_form">로그인</a>
-			</div>
-		</form>
-
-
-
-
-
-
-	</div>
-	
-	
+    function readyHospitalInfo() {
+        const frm = document.querySelector("#frmEditHospital");
+        const xhttp = new XMLHttpRequest();
+        xhttp.onload = function() {
+            var result = JSON.parse(this.responseText)[0];
+            frm.username.value = result.username;
+            frm.passwordOrigin.value = result.password;
+            var parts = result.address.split('//');
+            let address1 = parts[0];
+            let address2 = parts[1];
+            let detailAddress = parts.slice(2).join('//');
+            frm.detailAddress.value = detailAddress;
+            selectOptionByValue("address1", address1);
+            address1SelectChanged(function () {
+                selectOptionByValue("address2", address2);
+            });
+            frm.phone.value = result.phone;
+            frm.email.value = result.email;
+            frm.hospital_name.value = result.hospitalName;
+            frm.representative.value = result.representative;
+            // 추가로 필요한 필드들을 설정
+            
+            frm.partnership.value =result.partnership;
+            frm.introduction.value =result.introduction;
+            readyDoctorInfo();
+            
+            //영업정보
+            const businessHours = JSON.parse(result.businessHours);
+            populateBusinessHours(businessHours);
+           
+        }
+        xhttp.open("get", "http://localhost:9001/api/v1/hospital/hospitalInfo/" + localStorage.getItem("MemberId"));
+        xhttp.send();
+    }
     
-	<div th:replace="~{hospital/footer :: footer}"></div>
-	<script
-		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-		integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-		crossorigin="anonymous"></script>
-
-	<script src="/js/address.js"></script>
-	<script>
-	readyAddress();
-	
-	//병원,사용자 탭
-	 function showUser() {
-            document.getElementById("user").style.display = "block";
-            document.getElementById("hospital").style.display = "none";
-            const frm = document.querySelector("#frmUser");
-            frm.role.value="ROLE_USER";
+    function readyDoctorInfo() {
+        const frm = document.querySelector("#frmEditHospital");
+        const xhttp = new XMLHttpRequest();
+        xhttp.onload = function() {
+        	let doctors = JSON.parse(this.responseText);
             
+            //의사관련
+            doctors.forEach(function(doc) {
+            	var dName= doc.name;
+            	readyAddDoctor(dName);
+            });
         }
+        xhttp.open("get", "http://localhost:9001/api/v1/hospital/doctorInfo/" + localStorage.getItem("MemberId"));
+        xhttp.send();
+    }
+    
+    function populateBusinessHours(businessHours) {
+        const days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun', 'hol'];
+        days.forEach(day => {
+            const checkbox = document.querySelector(`input[name="week"][value="${day}"]`);
+            if (businessHours[day]) {
+                const dayData = businessHours[day];
+                const isOpen = !dayData.includes('영업 안함');
+                checkbox.checked = isOpen;
+                if (isOpen) {
+                    const [start, end] = dayData[0].split(' : ')[1].split('//');
+                    const [startHour, startMinute] = safeSplitTime(start);
+                    const [endHour, endMinute] = safeSplitTime(end);
 
-        function showHospital() {
-            document.getElementById("user").style.display = "none";
-            document.getElementById("hospital").style.display = "block";
-            const frm = document.querySelector("#frmUser");
-            frm.role.value="ROLE_HOSPITAL";
-        }
-	
-	
-		//유저네임 중복확인
-		function checkUsername(event){
-			event.preventDefault();
-			const username = document.querySelector("#username");
-			//alert(username.value);
-			if(username.value.length <3 ||username.value.length >12){
-				alert("아이디를 3자 이상,12자 이하로 등록해주세요.");
-				return;
-			}
-			
-			const xhttp = new XMLHttpRequest();
-			xhttp.onload = function() {
-				//alert(this.responseText);
-				var result = this.responseText;
-				document.getElementById("usernameResult").innerHTML = result;
-			}
-			xhttp.open("post", "http://localhost:9001/api/v1/common/check/username");
-			xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");	
+                    document.querySelector(`select[name="startHour_${day}"]`).value = startHour;
+                    document.querySelector(`select[name="startMinute_${day}"]`).value = startMinute;
+                    document.querySelector(`select[name="endHour_${day}"]`).value = endHour;
+                    document.querySelector(`select[name="endMinute_${day}"]`).value = endMinute;
 
-			xhttp.send("username=" + username.value);
-		}
-		//닉네임 중복확인 
-		function checkNickname(event){
-			event.preventDefault();
-			const nickname = document.querySelector("#nickname");
-			//alert(username.value);
-			if(nickname.value.length <3 ||nickname.value.length >12){
-				alert("닉네임을 3자 이상,12자 이하로 등록해주세요.");
-				return;
-			}
-			
-			const xhttp = new XMLHttpRequest();
-			xhttp.onload = function() {
-				//alert(this.responseText);
-				var result = this.responseText;
-				document.getElementById("nicknameResult").innerHTML = result;
-			}
-			xhttp.open("post", "http://localhost:9001/api/v1/common/check/nickname");
-			xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");	
+                    if (dayData.length > 1 && !dayData[1].includes('점심시간 없음')) {
+                        const [lunchStart, lunchEnd] = dayData[1].split(' : ')[1].split('//');
+                        const [lunchStartHour, lunchStartMinute] = safeSplitTime(lunchStart);
+                        const [lunchEndHour, lunchEndMinute] = safeSplitTime(lunchEnd);
 
-			xhttp.send("nickname=" + nickname.value);
-		}
-		//유저 회원가입
-		function joinUser() {
-			//alert("조인들어옴");
-			if (!userValidateForm()) {
-                return;
-            }
-			const frm = document.querySelector("#frmUser");
-			const frm_ = {
-				"username" : frm.username.value,
-				"password" : frm.password.value,
-				"name" : frm.name.value,
-				"email" : frm.email.value,
-				"address" : frm.address1.value +"//"+frm.address2.value +"//"+frm.detailAddress.value ,
-				"phone" : frm.phone.value,
-				"nickname" : frm.nickname.value,
-				"role" : frm.role.value
-			};
-			const data = JSON.stringify(frm_);
-			//alert(data);
-			
-			const xhttp = new XMLHttpRequest();
-			xhttp.onload = function() {
-				//alert(this.responseText);
-				var result = this.responseText;
-				document.getElementById("result").innerHTML = result;
-			}
-			xhttp.open("post", "http://localhost:9001/api/v1/common/joinUser");
-			xhttp.setRequestHeader("Content-type", "application/json");	
+                        document.querySelector(`select[name="lunchStartHour_${day}"]`).value = lunchStartHour;
+                        document.querySelector(`select[name="lunchStartMinute_${day}"]`).value = lunchStartMinute;
+                        document.querySelector(`select[name="lunchEndHour_${day}"]`).value = lunchEndHour;
+                        document.querySelector(`select[name="lunchEndMinute_${day}"]`).value = lunchEndMinute;
+                    }
 
-			xhttp.send(data);
-		}
-		
-		//이메일 유효성검사
-		function validateEmail(email) {
-		    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-		    return emailPattern.test(email);
-		}
-		//비밀번호 유효성검사
-		function validatePassword(password) {
-		    // 최소 5자 이상, 최대 15자 이하
-		    if (password.length < 5 || password.length > 15) {
-		        return false;
-		    }
-
-		    // 영어, 숫자, 특수문자를 포함하는지 검사하는 정규 표현식
-		    const passwordPattern = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{5,15}$/;
-
-		    return passwordPattern.test(password);
-		}
-		
-		//유저 폼데이터 유효성 검사
-		 function userValidateForm() {
-	            const frm = document.querySelector("#frmUser");
-	            const fields = ["username", "password", "name", "email", "address1", "address2", "detailAddress", "phone", "nickname"];
-	            
-	            for (let i = 0; i < fields.length; i++) {
-	                const field = frm[fields[i]];
-	                if (!field.value.trim()) {
-	                    alert(fields[i] + " 항목을 채워주세요.");
-	                    field.focus();
-	                    return false;
-	                }
-	            }
-	            const usernameResult = document.getElementById("usernameResult").innerText;
-	            const nicknameResult = document.getElementById("nicknameResult").innerText;
-
-	            if (!usernameResult.includes("사용가능")) {
-	                alert("아이디 중복 체크를 확인해 주세요.");
-	                document.querySelector("#username").focus();
-	                return false;
-	            }
-
-	            if (!nicknameResult.includes("사용가능")) {
-	                alert("닉네임 중복 체크를 확인해 주세요.");
-	                document.querySelector("#nickname").focus();
-	                return false;
-	            }
-	            
-	            const email = frm.email.value.trim();
-	            if (!validateEmail(email)) {
-	                alert("올바른 이메일 주소를 입력해 주세요.");
-	                frm.email.focus();
-	                return false;
-	            }
-	            const password = frm.password.value.trim();
-	            if (!validatePassword(password)) {
-	                alert("비밀번호는 5자 이상 15자 이하의 길이여야 하며, 영어, 숫자, 특수문자를 포함해야 합니다.");
-	                frm.password.focus();
-	                return false;
-	            }
-	            
-	            
-	            return true;
-	        }
-		
-		//의사 관련
-		function addDoctor() {
-            const doctorNameInput = document.querySelector('input[name="doctorName"]');
-            const doctorName = doctorNameInput.value.trim();
-            if (doctorName) {
-                const doctorList = document.getElementById('doctorResult');
-                const newDoctor = document.createElement('div');
-                newDoctor.className = 'doctor-item d-flex align-items-center mt-2';
-                newDoctor.innerHTML = `
-                    <span>${doctorName}</span>
-                    <button type="button" class="btn btn-danger btn-sm ms-2" onclick="removeDoctor(this)">x</button>
-                    <input type="hidden" name="doctorNames" value="${doctorName}">
-                `;
-                doctorList.appendChild(newDoctor);
-                updateDoctorNamesField();
-                doctorNameInput.value = ''; // Clear the input field
-            }
-        }
-
-        function removeDoctor(button) {
-            const doctorItem = button.parentElement;
-            doctorItem.remove();
-            updateDoctorNamesField();
-        }
-
-        function updateDoctorNamesField() {
-            const doctorNames = Array.from(document.getElementsByName('doctorNames')).map(input => input.value).join('//');
-            document.getElementById('doctorNamesField').value = doctorNames;
-        }
-		
-		//예약 관련
-		  function gatherFormData() {
-    const days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun', 'hol'];
-    const jsonData = {};
-
-    days.forEach(day => {
-        const accordionItem = document.querySelector(`input[name="week"][value="${day}"]`).closest('.accordion-item');
-        const isChecked = accordionItem.querySelector(`input[name="week"][value="${day}"]`).checked;
-
-        if (isChecked) {
-            const startHour = accordionItem.querySelector(`select[name="startHour_${day}"]`).value;
-            const startMinute = accordionItem.querySelector(`select[name="startMinute_${day}"]`).value;
-            const endHour = accordionItem.querySelector(`select[name="endHour_${day}"]`).value;
-            const endMinute = accordionItem.querySelector(`select[name="endMinute_${day}"]`).value;
-            const lunchStartHour = accordionItem.querySelector(`select[name="lunchStartHour_${day}"]`).value;
-            const lunchStartMinute = accordionItem.querySelector(`select[name="lunchStartMinute_${day}"]`).value;
-            const lunchEndHour = accordionItem.querySelector(`select[name="lunchEndHour_${day}"]`).value;
-            const lunchEndMinute = accordionItem.querySelector(`select[name="lunchEndMinute_${day}"]`).value;
-            const noLunch = accordionItem.querySelector(`input[name="lunch_${day}"][value="no"]`).checked;
-
-            const start = `${startHour}:${startMinute}`;
-            const end = `${endHour}:${endMinute}`;
-            const lunchStart = `${lunchStartHour}:${lunchStartMinute}`;
-            const lunchEnd = `${lunchEndHour}:${lunchEndMinute}`;
-
-            const businessTime = `${start}//${end}`;
-            const lunchTime = noLunch ? '점심시간 없음' : `${lunchStart}//${lunchEnd}`;
-
-            jsonData[day] = [`영업시간 : ${businessTime}`, `점심시간 : ${lunchTime}`];
-        } else {
-            jsonData[day] = ['영업시간 : 영업 안함'];
-        }
-    });
-
-    return jsonData;
-}
-
-		
-		//병원 회원가입
-		function joinHospital(){
-			//alert("조인들어옴");
-			if (!hospitalValidateForm()) {
-                return;
-            }
-			//alert(JSON.stringify(gatherFormData()));
-			
-			const frm = document.querySelector("#frmUser");
-			const formData = new FormData(frm);
-			//const data = JSON.stringify(frm_);
-			const businessHours = gatherFormData();
-       		formData.append('businessHours', JSON.stringify(businessHours));
-       		
-       		formData.append('address', frm.address1.value + "//" + frm.address2.value + "//" + frm.detailAddress.value);
-
-	         
-	         // 추가 누락된 필드를 formData에 추가
-	         formData.append('businessNumber', frm.business_number.value); // 필드명 변경
-	         formData.append('hospitalName', frm.hospital_name.value); // 필드명 변경
-			const xhttp = new XMLHttpRequest();
-			xhttp.onload = function() {
-				//alert(this.responseText);
-				var result = this.responseText;
-				document.getElementById("result").innerHTML = result;
-			}
-			xhttp.open("post", "http://localhost:9001/api/v1/common/joinHospital");
-			//xhttp.setRequestHeader("Content-type", "multipart/form-data");	
-
-			xhttp.send(formData);
-		}
-		
-		
-		//병원 유효성검사
-		function hospitalValidateForm() {
-            const frm = document.querySelector("#frmUser");
-            const fields = ["username", "password", "email", "address1", "address2", "detailAddress", "phone"];
-            
-            for (let i = 0; i < fields.length; i++) {
-                const field = frm[fields[i]];
-                if (!field.value.trim()) {
-                    alert(fields[i] + " 항목을 채워주세요.");
-                    field.focus();
-                    return false;
+                    document.querySelector(`input[name="lunch_${day}"]`).checked = dayData[1].includes('점심시간 없음');
+                    toggleTimeSelectors(day);
+                } else {
+                    // 영업 안할 경우 시간 선택기 비활성화 및 체크박스 해제
+                    checkbox.checked = false;
+                    toggleTimeSelectors(day);
                 }
+            } else {
+                // 데이터가 없는 경우 영업 안함으로 간주하고 체크박스 해제 및 시간 선택기 비활성화
+                checkbox.checked = false;
+                toggleTimeSelectors(day);
             }
-            const usernameResult = document.getElementById("usernameResult").innerText;
-            
+        });
+    }
 
-            if (!usernameResult.includes("사용가능")) {
-                alert("아이디 중복 체크를 확인해 주세요.");
-                document.querySelector("#username").focus();
+    function safeSplitTime(time) {
+        const parts = time.split(':');
+        return parts.length === 2 ? parts : [null, null];
+    }
+
+    function toggleTimeSelectors(day) {
+        const isChecked = document.querySelector(`input[name="week"][value="${day}"]`).checked;
+        const selects = document.querySelectorAll(`select[name*="${day}"], input[name*="${day}"]`);
+        
+        selects.forEach(select => {
+            select.disabled = !isChecked;
+        });
+    }
+
+
+    // 유저 정보 수정
+    function editHospital() {
+        if (!hospitalValidateForm()) {
+            return;
+        }
+        const frm = document.querySelector("#frmEditHospital");
+        const passwordChecked = document.querySelector("#passwordCheckBox").checked;
+        var pw = '';
+        if(passwordChecked){
+            pw = frm.password.value;
+        } else {
+            pw = frm.passwordOrigin.value;
+        }
+        const frm_ = {
+            "hospitalId": localStorage.getItem("HospitalId"),
+            "username": frm.username.value,
+            "password": pw,
+            "email": frm.email.value,
+            "address": frm.address1.value + "//" + frm.address2.value + "//" + frm.detailAddress.value,
+            "phone": frm.phone.value,
+            "hospital_name": frm.hospital_name.value,
+            "representative": frm.representative.value,
+            // 추가로 필요한 필드들을 설정
+        };
+        const data = JSON.stringify(frm_);
+
+        const xhttp = new XMLHttpRequest();
+        xhttp.onload = function() {
+            var result = this.responseText;
+            alert(this.responseText);
+        }
+        xhttp.open("put", "http://localhost:9001/api/v1/hospital/info");
+        xhttp.setRequestHeader("Content-type", "application/json");
+        xhttp.send(data);
+    }
+
+    // 이메일 유효성 검사
+    function validateEmail(email) {
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailPattern.test(email);
+    }
+
+    // 비밀번호 유효성 검사
+    function validatePassword(password) {
+        if (password.length < 5 || password.length > 15) {
+            return false;
+        }
+        const passwordPattern = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{5,15}$/;
+        return passwordPattern.test(password);
+    }
+
+    // 유저 폼 데이터 유효성 검사
+    function hospitalValidateForm() {
+        const frm = document.querySelector("#frmEditHospital");
+        const fields = ["username", "hospital_name", "representative", "email", "address1", "address2", "detailAddress", "phone"];
+        
+        for (let i = 0; i < fields.length; i++) {
+            const field = frm[fields[i]];
+            if (!field.value.trim()) {
+                alert(fields[i] + " 항목을 채워주세요.");
+                field.focus();
                 return false;
             }
-
-            
-            const email = frm.email.value.trim();
-            if (!validateEmail(email)) {
-                alert("올바른 이메일 주소를 입력해 주세요.");
-                frm.email.focus();
-                return false;
-            }
+        }
+        const email = frm.email.value.trim();
+        if (!validateEmail(email)) {
+            alert("올바른 이메일 주소를 입력해 주세요.");
+            frm.email.focus();
+            return false;
+        }
+        if(document.querySelector("#passwordCheckBox").checked){
             const password = frm.password.value.trim();
             if (!validatePassword(password)) {
                 alert("비밀번호는 5자 이상 15자 이하의 길이여야 하며, 영어, 숫자, 특수문자를 포함해야 합니다.");
                 frm.password.focus();
                 return false;
             }
-            
-            
-            return true;
         }
-		
-		
-		//사업자 번호 확인
-		 function checkBusinessNumber() {
-             var data = {
-                 "b_no": [$("#business_number").val()] // 사업자번호 "xxxxxxx" 로 조회 시,
-             };
-				alert($("#business_number").val());
-             $.ajax({
-                 url: "https://api.odcloud.kr/api/nts-businessman/v1/status?serviceKey=pj1%2B669xKchgAcU3BhHK0bxmPPyBX9A%2FSmvsKpvuzhwIroogcKjl4B5qUfW3XYojSy0TgPWr6jrBOREJkxghlA%3D%3D",  // serviceKey 값을 YOUR_SERVICE_KEY에 입력
-                 type: "POST",
-                 data: JSON.stringify(data), // json 을 string으로 변환하여 전송
-                 dataType: "JSON",
-                 contentType: "application/json",
-                 accept: "application/json",
-                 success: function (result) {
-                	 console.log(result);
-                     console.log(result.data[0]['tax_type']);
-                     let taxType = result.data[0]['tax_type'];
-                     $("#businessNumberResult").text(taxType);
+        return true;
+    }
 
-                     //if (taxType === "국세청에 등록되지 않은 사업자등록번호입니다.") {
-                    //     $("#hospitalJoinButton").prop("disabled", true);
-                    // } else {
-                   //      $("#hospitalJoinButton").prop("disabled", false);
-                   //  }
-                 },
-                 error: function (result) {
-                     console.log(result.responseText); //responseText의 에러메세지 확인
-                 }
-             });
-         }
+    // 비밀번호 변경여부
+    function togglePasswordCheckBox(){
+        const isChecked = document.querySelector("#passwordCheckBox").checked;
+        const password = document.querySelector('input[name=password]')
+        password.disabled = !isChecked;
+    }
 
-		//영업시간 복사하는 함수
-		function copyCommonSchedule(checkbox, day) {
-		    if (checkbox.checked) {
-		      const commonStartHour = document.querySelector('select[name="commonStartHour"]').value;
-		      const commonStartMinute = document.querySelector('select[name="commonStartMinute"]').value;
-		      const commonEndHour = document.querySelector('select[name="commonEndHour"]').value;
-		      const commonEndMinute = document.querySelector('select[name="commonEndMinute"]').value;
-		      const commonLunchStartHour = document.querySelector('select[name="commonLunchStartHour"]').value;
-		      const commonLunchStartMinute = document.querySelector('select[name="commonLunchStartMinute"]').value;
-		      const commonLunchEndHour = document.querySelector('select[name="commonLunchEndHour"]').value;
-		      const commonLunchEndMinute = document.querySelector('select[name="commonLunchEndMinute"]').value;
-		      const commonNoLunch = document.querySelector('input[name="commonLunch"]').checked;
-		
-		      document.querySelector(`select[name="startHour_${day}"]`).value = commonStartHour;
-		      document.querySelector(`select[name="startMinute_${day}"]`).value = commonStartMinute;
-		      document.querySelector(`select[name="endHour_${day}"]`).value = commonEndHour;
-		      document.querySelector(`select[name="endMinute_${day}"]`).value = commonEndMinute;
-		      document.querySelector(`select[name="lunchStartHour_${day}"]`).value = commonLunchStartHour;
-		      document.querySelector(`select[name="lunchStartMinute_${day}"]`).value = commonLunchStartMinute;
-		      document.querySelector(`select[name="lunchEndHour_${day}"]`).value = commonLunchEndHour;
-		      document.querySelector(`select[name="lunchEndMinute_${day}"]`).value = commonLunchEndMinute;
-		      document.querySelector(`input[name="lunch_${day}"]`).checked = commonNoLunch;
-		      
-		      // 요일 체크박스 자동 체크
-		      document.querySelector(`input[name="week"][value="${day}"]`).checked = true;
-		      toggleTimeSelectors(day);
-		    }
-		}
+    // 의사 추가
+    function addDoctor() {
+        const doctorNameInput = document.querySelector('input[name="doctorName"]');
+        const doctorName = doctorNameInput.value.trim();
+        if (doctorName) {
+            const doctorList = document.getElementById('doctorResult');
+            const newDoctor = document.createElement('div');
+            newDoctor.className = 'doctor-item d-flex align-items-center mt-2';
+            newDoctor.innerHTML = `
+                <span>${doctorName}</span>
+                <button type="button" class="btn btn-danger btn-sm ms-2" onclick="removeDoctor(this)">x</button>
+                <input type="hidden" name="doctorNames" value="${doctorName}">
+            `;
+            doctorList.appendChild(newDoctor);
+            updateDoctorNamesField();
+            doctorNameInput.value = ''; // Clear the input field
+        }
+    }
+    
+    //페이지 로드 하면서 들어갈 의사정보
+    function readyAddDoctor(doc) {
+        const doctorNameInput = document.querySelector('input[name="doctorName"]');
+        const doctorName = doc;
+        if (doctorName) {
+            const doctorList = document.getElementById('doctorResult');
+            const newDoctor = document.createElement('div');
+            newDoctor.className = 'doctor-item d-flex align-items-center mt-2';
+            newDoctor.innerHTML = `
+                <span>${doctorName}</span>
+                <button type="button" class="btn btn-danger btn-sm ms-2" onclick="removeDoctor(this)">x</button>
+                <input type="hidden" name="doctorNames" value="${doctorName}">
+            `;
+            doctorList.appendChild(newDoctor);
+            updateDoctorNamesField();
+            doctorNameInput.value = ''; // Clear the input field
+        }
+    }
+
+    function removeDoctor(button) {
+        const doctorItem = button.parentElement;
+        doctorItem.remove();
+        updateDoctorNamesField();
+    }
+
+    function updateDoctorNamesField() {
+        const doctorNames = Array.from(document.getElementsByName('doctorNames')).map(input => input.value).join('//');
+        document.getElementById('doctorNamesField').value = doctorNames;
+    }
+
+    // 영업시간 복사하는 함수
+    function copyCommonSchedule(checkbox, day) {
+        if (checkbox.checked) {
+            const commonStartHour = document.querySelector('select[name="commonStartHour"]').value;
+            const commonStartMinute = document.querySelector('select[name="commonStartMinute"]').value;
+            const commonEndHour = document.querySelector('select[name="commonEndHour"]').value;
+            const commonEndMinute = document.querySelector('select[name="commonEndMinute"]').value;
+            const commonLunchStartHour = document.querySelector('select[name="commonLunchStartHour"]').value;
+            const commonLunchStartMinute = document.querySelector('select[name="commonLunchStartMinute"]').value;
+            const commonLunchEndHour = document.querySelector('select[name="commonLunchEndHour"]').value;
+            const commonLunchEndMinute = document.querySelector('select[name="commonLunchEndMinute"]').value;
+            const commonNoLunch = document.querySelector('input[name="commonLunch"]').checked;
+
+            document.querySelector(`select[name="startHour_${day}"]`).value = commonStartHour;
+            document.querySelector(`select[name="startMinute_${day}"]`).value = commonStartMinute;
+            document.querySelector(`select[name="endHour_${day}"]`).value = commonEndHour;
+            document.querySelector(`select[name="endMinute_${day}"]`).value = commonEndMinute;
+            document.querySelector(`select[name="lunchStartHour_${day}"]`).value = commonLunchStartHour;
+            document.querySelector(`select[name="lunchStartMinute_${day}"]`).value = commonLunchStartMinute;
+            document.querySelector(`select[name="lunchEndHour_${day}"]`).value = commonLunchEndHour;
+            document.querySelector(`select[name="lunchEndMinute_${day}"]`).value = commonLunchEndMinute;
+            document.querySelector(`input[name="lunch_${day}"]`).checked = commonNoLunch;
+            
+            document.querySelector(`input[name="week"][value="${day}"]`).checked = true;
+            toggleTimeSelectors(day);
+        }
+    }
+
+    function toggleTimeSelectors(day) {
+        const isChecked = document.querySelector(`input[name="week"][value="${day}"]`).checked;
+        const selects = document.querySelectorAll(`select[name*="${day}"], input[name*="${day}"]`);
         
-		function toggleTimeSelectors(day) {
-		    const isChecked = document.querySelector(`input[name="week"][value="${day}"]`).checked;
-		    const selects = document.querySelectorAll(`select[name*="${day}"], input[name*="${day}"]`);
-		    
-		    selects.forEach(select => {
-		        select.disabled = !isChecked;
-		    });
-		}
-	</script>
-
-
+        selects.forEach(select => {
+            select.disabled = !isChecked;
+        });
+    }
+    </script>
 </body>
 </html>

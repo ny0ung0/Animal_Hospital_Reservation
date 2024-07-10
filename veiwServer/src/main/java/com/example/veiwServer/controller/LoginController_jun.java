@@ -48,7 +48,12 @@ public class LoginController_jun {
 	
 	//user 관련
 	@RequestMapping("/user/my_info_edit")
-	public void my_info_edit() {
+	public void my_info_edit_user() {
+		
+	}
+	
+	@RequestMapping("/hospital/my_info_edit")
+	public void my_info_edit_hospital() {
 		
 	}
 }

@@ -35,6 +35,8 @@ public class JoinService {
 	
 	@Autowired
 	DoctorRepository doctorRepository;
+	
+	
 	@Autowired
 	BCryptPasswordEncoder bCryptPasswordEncoder;
 	
@@ -137,12 +139,15 @@ public class JoinService {
 		}
 	}
 	
+	//유저정보 가져오기
 	public List<IMemberEditDto> getEditUserInfo(String memberId) {
 		List<IMemberEditDto> data = new ArrayList<>();
-		data =loginRepository.findByMemberIdEditData(memberId);
+		data =loginRepository.findByMemberIdEditUser(memberId);
+		
 		return data;
 	}
 	
+	//유저정보수정
 	public void updateEditUserInfo(MemberEditDto memberEditDto) {
 		
 		if(memberEditDto.getPassword().length()<16) {
@@ -160,5 +165,14 @@ public class JoinService {
 		memberRepository.save(member);
 		
 	}
+	
+	//병원정보 가져오기
+	public List<IMemberEditDto> getEditHospitalInfo(String memberId) {
+		List<IMemberEditDto> data = new ArrayList<>();
+		data = loginRepository.findByMemberIdEditHospital(memberId);
+		
+		return data;
+	}
+	
 
 }
