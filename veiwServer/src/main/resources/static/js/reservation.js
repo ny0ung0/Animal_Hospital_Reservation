@@ -9,6 +9,8 @@
  const vet = document.querySelector("#vet");
  const timeSlot = document.querySelector("#time_slot");
 
+
+
 function setDateLimit(){
 	//오늘 날짜보다 이전 날짜는 선택할 수 없도록  
 	date.setAttribute("min", today.toISOString().substring(0,10))
@@ -16,6 +18,8 @@ function setDateLimit(){
 	today.setMonth(today.getMonth()+2)
 	date.setAttribute("max", today.toISOString().substring(0,10))
 }
+setDateLimit();
+
 
 function loadBasicInfo(data){
 	let userInfo = data[0];
@@ -24,6 +28,8 @@ function loadBasicInfo(data){
 	let vetNamesNIds = Object.keys(vetAvailInfo);
 	let basicHours = JSON.parse(vetInfo[Object.keys(vetInfo)[0]].businessHours);
 	let basicHoursArr = getBasicBusinessHours(basicHours);
+	
+	
 	
 	//병원 이름 넣기
 	  document.querySelector("#vetName").setAttribute("value", Object.keys(vetInfo)[0]);
@@ -70,23 +76,8 @@ function loadBasicInfo(data){
 				alert("진료 예약을 원하는 날짜를 먼저 선택해주세요!")
 			}
 			
-			//해당날짜 기본 타임슬롯보여주기
-			if(basicHoursArr[selectedDay] !=null){
-				let selectedBasicTime = basicHoursArr[selectedDay]["day"]
-				showDates(selectedBasicTime[0], selectedBasicTime[1], selectedBasicTime[2], selectedBasicTime[3])
-				//해당날짜 해당선생님의 availability보여주기
-				console.log(Object.keys(vetAvailInfo))
-				Object.keys(vetAvailInfo).forEach(key=>{
-					if(key.split("//")[0] == selectedVet){
-						for(v of vetAvailInfo[key]){
-							if(convertToTimeZone(v.date, 'Asia/Seoul') == selectedDate){
-								console.log(v.time.slice(0,5))
-								document.querySelector("span[value='"+v.time.slice(0,5)+"']").classList.add("disabled");
-							}
-						}
-					}
-				})
-			}
+			loadTimeslot(basicHoursArr,vetAvailInfo);
+
 		})
 }
 
@@ -120,7 +111,6 @@ function formattingDate(date){
 	let newDate = date.slice(0,10);
 	return newDate;
 }
-
 
 function convertingDate(basicHours, day){
 	let startTime;
@@ -202,14 +192,24 @@ function showDates(startTime, endTime, lunchStart, lunchEnd){
     }
 }
 
-function setDateLimit(){
-	//오늘 날짜보다 이전 날짜는 선택할 수 없도록  
-	date.setAttribute("min", today.toISOString().substring(0,10))
-	//max 날짜는 3개월 오늘 날짜 전일
-	today.setMonth(today.getMonth()+2)
-	date.setAttribute("max", today.toISOString().substring(0,10))
+function loadTimeslot(basicHoursArr,vetAvailInfo){
+	//해당날짜 기본 타임슬롯보여주기
+	if(basicHoursArr[selectedDay] !=null){
+		let selectedBasicTime = basicHoursArr[selectedDay]["day"]
+		showDates(selectedBasicTime[0], selectedBasicTime[1], selectedBasicTime[2], selectedBasicTime[3])
+		//해당날짜 해당선생님의 availability보여주기
+		Object.keys(vetAvailInfo).forEach(key=>{
+			if(key.split("//")[0] == selectedVet){
+				for(v of vetAvailInfo[key]){
+					if(convertToTimeZone(v.date, 'Asia/Seoul') == selectedDate){
+						console.log(v.time.slice(0,5))
+						document.querySelector("span[value='"+v.time.slice(0,5)+"']").classList.add("disabled");
+					}
+				}
+			}
+		})
+	}
 }
-setDateLimit();
 
 
 date.addEventListener("change", function(e){
