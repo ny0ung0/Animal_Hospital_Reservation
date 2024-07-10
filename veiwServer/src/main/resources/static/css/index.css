@@ -102,6 +102,7 @@
     display: flex;
     justify-content: flex-end;
     align-items: center;
+    margin-bottom:10px;
 }
 .point-partner {
     display: flex;
@@ -125,9 +126,10 @@
 	width:40px;
 	height:40px;
 	position: absolute;
-    top: 10px;
+    top: 50px;
     right: 10px;
     animation: spinY 2s linear infinite; /* 애니메이션 추가 */
+    z-index:9999;
 }
 
 /* 애니메이션 정의 */
