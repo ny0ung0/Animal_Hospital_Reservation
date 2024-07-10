@@ -15,18 +15,22 @@ const game = new Phaser.Game(config)
 let pet
 let feedButton
 let playButton
-let feedTickets = 0
-let playTickets = 0
-let experience = 0
-let level = 1
-let maxExperience = 100
+let feedTickets
+let playTickets
+let experience
+let level
+let maxExperience
 let feedText
 let playText
 let experienceText
-let userId = localStorage.getItem("MemberId"); // 예시를 위한 사용자 ID
+let levelText
+let lastGivenTimeMorning
+let lastGivenTimeAfternoon
+let lastGivenTimeEvening
+let isFullyGrown
+let userId = localStorage.getItem("MemberId")
 
 function preload() {
-  // 필요한 에셋 로드
   this.load.image('background', '/images/background.png')
   this.load.spritesheet('pet_level_1', '/images/dog_sprite.png', { frameWidth: 320, frameHeight: 240 })
   this.load.image('feedButton', '/images/feedButton.png')
@@ -38,7 +42,7 @@ function create() {
 
   this.anims.create({
     key: 'idle',
-    frames: this.anims.generateFrameNumbers('pet_level_1', { frames: [0, 1, 2, 3, 4, 5] }),
+    frames: this.anims.generateFrameNumbers('pet_level_1', { frames: [0, 1, 2, 3] }),
     frameRate: 6,
     repeat: -1
   })
@@ -47,7 +51,7 @@ function create() {
   pet.play('idle')
   pet.setScale(0.5)
   pet.x = 180
-  pet.y = 400
+  pet.y = 420
 
   feedButton = this.add.image(60, 40, 'feedButton').setInteractive()
   feedButton.on('pointerdown', () => {
@@ -55,9 +59,15 @@ function create() {
       feedTickets--
       experience += 10
       if (experience >= maxExperience) {
-        level++
-        experience = 0
-        maxExperience += 50
+        if (level >= 3) {
+        } else {
+          experience = 0
+          maxExperience += 50
+          level++
+        }
+        if (level >= 3 && experience >= 200) {
+          isFullyGrown = true
+        }
       }
       updateText()
       saveData()
@@ -75,6 +85,9 @@ function create() {
         experience = 0
         maxExperience += 50
       }
+      if (level >= 3 && experience >= 200) {
+        isFullyGrown = true
+      }
       updateText()
       saveData()
     }
@@ -84,6 +97,7 @@ function create() {
   feedText = this.add.text(55, 65, `${feedTickets}`, { fontSize: '20px', fill: '#fff' })
   playText = this.add.text(125, 65, `${playTickets}`, { fontSize: '20px', fill: '#fff' })
   experienceText = this.add.text(190, 50, `Experience: ${experience}`, { fontSize: '20px', fill: '#fff' })
+  levelText = this.add.text(190, 25, `Level: ${level}`, { fontSize: '20px', fill: '#fff' })
 
   loadData()
 }
@@ -96,6 +110,7 @@ function updateText() {
   feedText.setText(`${feedTickets}`)
   playText.setText(`${playTickets}`)
   experienceText.setText(`Experience: ${experience}`)
+  levelText.setText(`Level: ${level}`)
 }
 
 function loadData() {
@@ -107,7 +122,12 @@ function loadData() {
       experience = data.currentExperience
       level = data.level
       maxExperience = data.maxExperience
+      lastGivenTimeMorning = data.lastGivenTimeMorning
+      lastGivenTimeAfternoon = data.lastGivenTimeAfternoon
+      lastGivenTimeEvening = data.lastGivenTimeEvening
+      isFullyGrown = data.isFullyGrown
       updateText()
+      checkAndGiveTickets() // 데이터를 로드한 후에 티켓 지급 확인
     })
     .catch(error => console.error('Error:', error))
 }
@@ -119,7 +139,11 @@ function saveData() {
     playCount: playTickets,
     currentExperience: experience,
     level: level,
-    maxExperience: maxExperience
+    maxExperience: maxExperience,
+    lastGivenTimeMorning: lastGivenTimeMorning,
+    lastGivenTimeAfternoon: lastGivenTimeAfternoon,
+    lastGivenTimeEvening: lastGivenTimeEvening,
+    isFullyGrown: isFullyGrown
   }
 
   fetch(`http://localhost:9001/api/petgame/${userId}`, {
@@ -130,6 +154,48 @@ function saveData() {
     body: JSON.stringify(data)
   })
     .then(response => response.json())
-    .then(data => console.log(data))
+    .then(data => {
+      if (isFullyGrown) {
+        loadData() // 새로운 펫 데이터를 로드
+      } else {
+        console.log(data)
+      }
+    })
     .catch(error => console.error('Error:', error))
+}
+
+function checkAndGiveTickets() {
+  const currentHour = new Date().getHours()
+  const now = new Date()
+
+  if (currentHour >= 7 && currentHour < 9) {
+    if (lastGivenTimeMorning) {
+      const lastGivenDate = new Date(lastGivenTimeMorning)
+      if (lastGivenDate.getDate() === now.getDate()) {
+        return // 이미 현재 시간대에 티켓을 지급받았으므로 더 이상 처리하지 않음
+      }
+    }
+    feedTickets++
+    lastGivenTimeMorning = now.toISOString() // 마지막 지급 시간 업데이트
+  } else if (currentHour >= 12 && currentHour < 15) {
+    if (lastGivenTimeAfternoon) {
+      const lastGivenDate = new Date(lastGivenTimeAfternoon)
+      if (lastGivenDate.getDate() === now.getDate()) {
+        return // 이미 현재 시간대에 티켓을 지급받았으므로 더 이상 처리하지 않음
+      }
+    }
+    feedTickets++
+    lastGivenTimeAfternoon = now.toISOString() // 마지막 지급 시간 업데이트
+  } else if (currentHour >= 18 && currentHour < 21) {
+    if (lastGivenTimeEvening) {
+      const lastGivenDate = new Date(lastGivenTimeEvening)
+      if (lastGivenDate.getDate() === now.getDate()) {
+        return // 이미 현재 시간대에 티켓을 지급받았으므로 더 이상 처리하지 않음
+      }
+    }
+    feedTickets++
+    lastGivenTimeEvening = now.toISOString() // 마지막 지급 시간 업데이트
+  }
+  updateText()
+  saveData()
 }

@@ -22,4 +22,14 @@ public class ValidationService {
 	public boolean checkNickname(String nickname) {
 		return memberRepository.existsByNickname(nickname);
 	}
+	
+	public boolean checkNicknameEdit(String nickname,String memberId) {
+		
+		int result = memberRepository.existsByNicknameEdit(nickname, memberId);
+
+		if(result == 1) {
+			return true;
+		}
+		return false;
+	}
 }

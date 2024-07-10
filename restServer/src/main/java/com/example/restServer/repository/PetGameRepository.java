@@ -10,5 +10,8 @@ import com.example.restServer.entity.PetGame;
 public interface PetGameRepository extends JpaRepository<PetGame, Long> {
 
 	Optional<PetGame> findByUser(Member user);
-	  Optional<PetGame> findByUserId(Long user);
+
+	Optional<PetGame> findByUserId(Long user);
+
+	Optional<PetGame> findByUserAndIsFullyGrownFalse(Member user);
 }
