@@ -142,7 +142,7 @@ function convertingDate(basicHours, day){
 
 function showDates(startTime, endTime, lunchStart, lunchEnd){
 	if(startTime == 0|| endTime == 0 || lunchStart == 0 ||lunchEnd == 0){
-		document.querySelector("#time_slot").innerHTML="<div class='msg'>해당일은 예약가능한 시간이 없습니다🥲</div>"
+		document.querySelector("#time_slot").innerHTML="<div class='msg'>해당일은 예약가능한 시간이 없습니다😥</div>"
 		return;
 	}
     // 시간을 분 단위로 변환

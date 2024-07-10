@@ -8,6 +8,9 @@ var infoWindows = [];
 let memVet = {};
 let nearVet = [];
 
+
+
+
 const xhttp = new XMLHttpRequest();
 xhttp.onload = function() {
     let data = JSON.parse(this.responseText);
@@ -18,22 +21,33 @@ xhttp.onload = function() {
         center: new naver.maps.LatLng(37.3595704, 127.105399),
         zoom: 15
     });
+    
 
     // 현재 위치 가져오기
     navigator.geolocation.getCurrentPosition(function(position) {
         var currentPos = new naver.maps.LatLng(position.coords.latitude, position.coords.longitude);
         map.setCenter(currentPos);
+        
         var markerOptions = {
             position: new naver.maps.LatLng(currentPos),
             map: map,
             icon: {
-                url:'/images/cur_location.png',
+                url:"/images/current.png",
                 size: new naver.maps.Size(32, 32),
                 origin: new naver.maps.Point(0, 0),
                 anchor: new naver.maps.Point(25, 26)
-            }
+            },
         };
         var marker = new naver.maps.Marker(markerOptions);
+       //마커의 현재위치 클릭
+        naver.maps.Event.addListener(marker, 'click', function() {
+    	  map.panTo(currentPos);
+	    });
+
+		document.querySelector("#curBtn").addEventListener('click', function(e) {
+		  e.preventDefault();	
+    	  map.panTo(currentPos);
+	    });
 
         // 반경 1km 이내의 병원 필터링
         var nearbyHospitals = hospitals.filter(function(hospital) {
@@ -154,6 +168,13 @@ function addHospitalToList(map, currentPos) {
                 anchor: new naver.maps.Point(12, 37),
             }
         });
+        
+        
+	
+         naver.maps.Event.addListener(markedVet, 'click', function() {
+    	  map.panTo(markedVet.getPosition());
+	    });
+
 
         var infoWindow = new naver.maps.InfoWindow({
             content: '<div style="width:150px;text-align:center;padding:10px;">' + hospital["사업장명"] + '</div>'
@@ -165,15 +186,15 @@ function addHospitalToList(map, currentPos) {
         let phone = hospital["소재지전화"] ? hospital["소재지전화"] : '';
         let listItem = document.createElement("div");
       
-        listItem.innerHTML = '<button type="button" onclick="showModal(event)" class="btn btn-main" data-bs-toggle="modal" data-bs-target="#exampleModal">'
-            + hospital["사업장명"] + '</button> , <span class="phone">' + phone
+        listItem.innerHTML = '<button type="button" onclick="showModal(event)" class="btn btn-hospital-sub" data-bs-toggle="modal" data-bs-target="#exampleModal">'
+            + hospital["사업장명"] + '</button> <img style="width:35px; display:none;" src="/images/pin_p.svg"/><i class="bi bi-bookmark-heart fs-4"></i>, <span class="phone">' + phone
             + '</span> , <span class="address">' + hospital["소재지전체주소"] + '</span>';
         document.querySelector(".inner").appendChild(listItem);
 
         if (memVet[hospital["사업장명"]] != null && memVet[hospital["사업장명"]]["address"] == hospital["소재지전체주소"]) {
             listItem.querySelector("button").classList = "btn btn-user-sub"
             if (memVet[hospital["사업장명"]]["partnership"] == true) {
-                listItem.style.backgroundColor = "red"
+                listItem.querySelector("img").style.display="inline-block"
             }
         }
     });
@@ -197,16 +218,39 @@ function addHospitalToList(map, currentPos) {
     }
 }
 
+
+
+
+
+
+
+document.querySelector(".inner").addEventListener("click", function(e){
+				e.preventDefault();
+				console.log(e.target)
+			})
+
+
+
+
 // 모달에 해당 병원 상세정보 보여주기
 function showModal(e) {
     let hospitalName = e.target.parentElement.querySelector("button").innerText;
     let address = e.target.parentElement.querySelector(".address").innerText;
+    
+    
     if (memVet[hospitalName] != null && memVet[hospitalName]["address"] == address) {
+		 document.querySelector("#working_hour").innerHTML="";
+		let basicHours =JSON.parse(memVet[hospitalName]["businessHours"]);
+	    //0:일, 1:월, 2:화 .... 6:토
+	    let hoursArr = getBasicBusinessHours(basicHours);
+		
+		
 		//병원 id 심어주기
 		document.querySelector("#hospital_id").innerHTML = memVet[hospitalName]["id"];
         // 영업시간 보여주기
         document.querySelector("#working_hour").style.display = "block";
-        document.querySelector("#working_hour").innerHTML = memVet[hospitalName]["businessHours"];
+        showBusinessHour(hoursArr);
+        
         // 리뷰 보여주기
         document.querySelector("#review").style.display = "block";
         document.querySelector("#review").innerHTML = memVet[hospitalName]["review"];
@@ -249,4 +293,69 @@ function showModal(e) {
 function makeReservation(e){
 	let id = e.target.parentElement.querySelector("#hospital_id").innerText;
 	location.href="/user/reserv_form?id="+id;
+}
+
+function convertingDate(basicHours, day){
+	let startTime;
+	let endingTime;
+	let lunchStart;
+	let lunchEnd;
+	//영업하는 날 시간 구하기
+	if(basicHours[day][0].slice(7) !="영업 안함"){
+		startTime = basicHours[day][0].slice(7).split("//")[0];
+		endingTime = basicHours[day][0].slice(7).split("//")[1];
+		//영업하면서&점심시간있음
+		if(basicHours[day][1].slice(7) !="점심시간 없음"){
+			lunchStart = basicHours[day][1].slice(7).split("//")[0];
+			lunchEnd = basicHours["mon"][1].slice(7).split("//")[1];
+		}else{
+			//영업하지만&점심시간없음
+			lunchStart = 0;
+			lunchEnd = 0;
+		}
+	}else{
+		//영업 안 하는 날
+		startTime = 0;
+		endingTime = 0;
+		lunchStart = 0;
+		lunchEnd = 0;
+	}
+	return {day : [startTime, endingTime, lunchStart, lunchEnd]};
+}
+
+function getBasicBusinessHours(basicHours){
+	let sun = convertingDate(basicHours, "sun");
+	let mon = convertingDate(basicHours, "mon");
+	let tue = convertingDate(basicHours, "tue");
+	let wed = convertingDate(basicHours, "wed");
+	let thu = convertingDate(basicHours, "thu");
+	let fri = convertingDate(basicHours, "fri");
+	let sat = convertingDate(basicHours, "sat");
+	let hol = convertingDate(basicHours, "hol");
+	return [sun, mon, tue, wed, thu, fri, sat, hol];
+}
+
+function showBusinessHour(hoursArr){
+    let week = ["일", "월", "화", "수", "목", "금", "토", "공휴일"];
+    //0:일, 1:월, 2:화 .... 6:토
+    for(let i = 0; i < hoursArr.length; i++){
+        let day = hoursArr[i];
+        let startTime = day.day[0];
+        let endTime = day.day[1];
+        let lunchStart = day.day[2];
+        let lunchEnd = day.day[3];
+        
+        let listItem = document.createElement("div");
+        listItem.innerHTML = week[i] + " - 영업시간 : <span class='workHour'>" + startTime + " ~ " + endTime
+                             +"</span> , 점심시간 : <span class='lunchHour'>" + lunchStart + " ~ " + lunchEnd +"</span>";
+
+        if(startTime === 0){
+            listItem.querySelector(".workHour").innerHTML = "휴무";
+        }
+        if(lunchStart === 0){
+            listItem.querySelector(".lunchHour").innerHTML = "-";
+        }
+        
+        document.querySelector("#working_hour").appendChild(listItem);
+    }
 }
