@@ -19,6 +19,7 @@ import com.example.restServer.entity.Member;
 import com.example.restServer.entity.Point;
 import com.example.restServer.entity.Reservation;
 import com.example.restServer.repository.DoctorRepository;
+import com.example.restServer.repository.MemberRepository;
 import com.example.restServer.repository.PointRepository;
 import com.example.restServer.repository.ReservationRepository;
 
@@ -35,6 +36,9 @@ public class HospitalReservationController_js {
 	
 	@Autowired
 	PointRepository pointRepo;
+	
+	@Autowired
+	MemberRepository memberRepo;
 	
 	@GetMapping("/reservation/waiting")
 	public ResponseEntity<List<Reservation>> getWaitingReservation(){
@@ -104,10 +108,11 @@ public class HospitalReservationController_js {
 		return new ResponseEntity<>(list, HttpStatus.OK);
 	}
 	
-	@GetMapping("/business-hours/{date}")
-	public ResponseEntity<String> getHospitalBusinessHours(@PathVariable("date") String date){
-		System.out.println(date);
-		return new ResponseEntity<>("list", HttpStatus.OK);
+	@GetMapping("/business-hours")
+	public ResponseEntity<String> getHospitalBusinessHours(){
+		Member member = memberRepo.findById(3L).get();
+		String businessHours = member.getBusinessHours();
+		return new ResponseEntity<>(businessHours, HttpStatus.OK);
 	}
 	
 }
