@@ -184,9 +184,16 @@ function addHospitalToList(map, currentPos) {
         listItem.classList = "vet"
         listItem.setAttribute("data-marker-index", index); 
       
-        listItem.innerHTML = '<button type="button" onclick="showModal(event)" class="btn btn-hospital-sub" data-bs-toggle="modal" data-bs-target="#exampleModal">'
-            + hospital["사업장명"] + '</button> <img style="width:35px; display:none;" src="/images/pin_p.svg"/><img style="width:35px;" src="/images/bookmark.png"/>, <span class="phone">' 
-            + phone + '</span> , <span class="address">' + hospital["소재지전체주소"] + '</span>';
+        listItem.innerHTML = '<div class="vet-header">' +
+						        '<button type="button" onclick="showModal(event)" class="btn btn-hospital-sub" data-bs-toggle="modal" data-bs-target="#exampleModal">' +
+						            hospital["사업장명"] +
+						        '</button>' +
+						        '<img class="pin" style="width:35px; display:none;" src="/images/pin_p.svg"/>' +
+						        '<img class="bookmark" style="width:35px;" src="/images/bookmark.png"/>' +
+						    '</div>' +
+						    '<div class="vet-body">' +
+						        '<span class="phone">' + phone + '</span>, <span class="address">' + hospital["소재지전체주소"] + '</span>' +
+						    '</div>';
         document.querySelector(".inner").appendChild(listItem);
 
         if (memVet[hospital["사업장명"]] != null && memVet[hospital["사업장명"]]["address"] == hospital["소재지전체주소"]) {
@@ -234,15 +241,16 @@ function showModal(e) {
 	let address;
 	let phone;
 	
+	//마커를 클릭하여 모달을 열 경우
 	if (e.target.parentElement.querySelector("button") == null) {
 		hospitalName = e.target.innerText;
 		address = e.target.parentElement.querySelector(".address").innerText;
 		phone = e.target.parentElement.querySelector(".phone").innerText;
-
 	} else {
+		//리스트의 버튼을 클릭하여 모달을 열 경우
 		hospitalName = e.target.parentElement.querySelector("button").innerText;
-		address = e.target.parentElement.querySelector(".address").innerText;
-		phone = e.target.parentElement.querySelector(".phone").innerText;
+		address = e.target.parentElement.parentElement.querySelector(".address").innerText;
+		phone = e.target.parentElement.parentElement.querySelector(".phone").innerText;
 	}
 
 	// 기본 정보 설정
