@@ -12,7 +12,7 @@
 	<h2>고객센터 - 문의게시판</h2>
 	<hr class="w-100"/>
 	<div class="d-flex">
-		<select class="search_box form-select mb-3">
+		<select id="categorySelector" class="search_box form-select mb-3">
 		  <option value="all" selected>전체</option>
 		  <option value="기타문의">기타문의</option>
 		  <option value="불편신고">불편신고</option>
@@ -48,7 +48,7 @@ function allList(){
 	.then(response => response.text())
 	.then(data => {
 		const objs = JSON.parse(data);
-		//console.log(objs);
+		console.log(objs);
 		let cnt = 1;
 		objs.forEach(obj =>{
 			console.log(obj.reply==null);
@@ -76,17 +76,61 @@ function allList(){
 allList();
 
 
+document.querySelector("#categorySelector").addEventListener("change", function(){
+	
+	let selectValue = this.value;
+	console.log(selectValue);
+		fetch("http://localhost:9001/api/v1/manager/support/qna/category/" + selectValue, {
+			method : "GET"
+		})
+		.then(response => response.text())
+		.then(data => {
+			const objs = JSON.parse(data);
+			document.getElementById("tbody").innerHTML = ""; // 이전 검색 결과를 초기화
+			//console.log(objs);
+			if(objs.length === 0){
+				document.getElementById("tbody").innerHTML = "<tr><td colspan='7'>리스트가 없습니다.</td><tr>";
+			}else{
+				let cnt = 1;
+				objs.forEach(obj =>{
+					console.log(obj.reply==null);
+					let btnarea = "";
+					obj.reply == null ? btnarea = '<button class="btn btn-outline-danger" onclick="addReply(event, ' + obj.id + ')">답변 대기</button>' :  btnarea = '<button class="btn btn-outline-primary" onclick="reply(event, ' + obj.id + ')">답변 완료</button>';
+					document.getElementById("tbody").innerHTML += 
+						'<tr>'
+							+ '<td>' + cnt + '</td>'
+							+ '<td>' + obj.category + '</td>'
+							+ '<td>' + obj.title + '</td>'
+							+ '<td>' + obj.member.name + '</td>'
+							+ '<td>'
+								+ '<a class="btn btn-primary" href="/manager/userDetail?id='+ obj.id +'">상세보기</a>'
+							+ '</td>'
+							+ '<td>'
+								+ btnarea
+							+ '</td>'
+						+ '</tr>';
+						cnt++;
+				});
+			}
+		})
+
+	
+})
+
+
+
+
 const keyword = document.querySelector("#keywordInput");
 
 
 document.querySelector("#searchBtn").addEventListener("click", function(){
-	
+	let selectValue = document.querySelector("#categorySelector").value;
 	if(keyword.value==""){
 		document.getElementById("tbody").innerHTML = ""; // 이전 검색 결과를 초기화
 		allList();
 	}else{
 		console.log(keyword.value);
-		fetch("http://localhost:9001/api/v1/manager/user/keyword/" + keyword.value, {
+		fetch("http://localhost:9001/api/v1/manager/support/qna/category/" + selectValue + "/keyword/" + keyword.value, {
 			method : "GET"
 		})
 		.then(response => response.text())
@@ -99,21 +143,20 @@ document.querySelector("#searchBtn").addEventListener("click", function(){
 			}else{
 				let cnt = 1;
 				objs.forEach(obj =>{
-					let partnership = obj.partnership ? "Y" : "N"; 
-					
-					let address = obj.address.replace(/\/\//g, " ");
+					console.log(obj.reply==null);
+					let btnarea = "";
+					obj.reply == null ? btnarea = '<button class="btn btn-outline-danger" onclick="addReply(event, ' + obj.id + ')">답변 대기</button>' :  btnarea = '<button class="btn btn-outline-primary" onclick="reply(event, ' + obj.id + ')">답변 완료</button>';
 					document.getElementById("tbody").innerHTML += 
 						'<tr>'
 							+ '<td>' + cnt + '</td>'
-							+ '<td>' + obj.username + '</td>'
-							+ '<td>' + obj.name + '</td>'
-							+ '<td>' + address + '</td>'
-							+ '<td>' + obj.phone + '</td>'
+							+ '<td>' + obj.category + '</td>'
+							+ '<td>' + obj.title + '</td>'
+							+ '<td>' + obj.member.name + '</td>'
 							+ '<td>'
 								+ '<a class="btn btn-primary" href="/manager/userDetail?id='+ obj.id +'">상세보기</a>'
 							+ '</td>'
 							+ '<td>'
-								+ '<button class="btn btn-outline-danger" onclick="blackListAdd(event, ' + obj.id + ')">블랙리스트 추가</button>'
+								+ btnarea
 							+ '</td>'
 						+ '</tr>';
 						cnt++;

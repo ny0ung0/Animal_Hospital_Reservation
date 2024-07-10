@@ -1,11 +1,19 @@
 package com.example.restServer.controller.admin;
 
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -16,6 +24,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.restServer.dto.IMemberLoginDto;
@@ -47,6 +56,10 @@ public class AdminController_jisun {
 	
 	@Autowired
 	SupportRepository supportRepo;
+	
+	@Autowired
+	private PagedResourcesAssembler<Support> pagedResourcesAssembler;
+
 	
 	@Resource(name = "mailService")
 	private MailService mailService;
@@ -145,9 +158,32 @@ public class AdminController_jisun {
 	}
 	
 	@GetMapping("/support/qna")
-	public ResponseEntity<List<Support>> getSupportQna(){
-		List<Support> list = supportRepo.findAllByCategoryQna();
-		return new ResponseEntity<>(list, HttpStatus.OK);
-	}
+    public ResponseEntity<List<Support>> getSupportQna(){
+        List<Support> list = supportRepo.findAllByCategoryQna();
+        return new ResponseEntity<>(list, HttpStatus.OK);
+    }
+	
+	@GetMapping("/support/qna/category/{category}/keyword/{keyword}")
+    public ResponseEntity<List<Support>> getSupportQnaFindByKeyword(@PathVariable("category")String category, @PathVariable("keyword")String keyword){
+        if(category.equals("all")) {
+        	List<Support> list = supportRepo.findAllByCategoryQnaByAllCategoryKeyword(keyword);
+       	 	return new ResponseEntity<>(list, HttpStatus.OK);
+       }else {
+    	   List<Support> list = supportRepo.findAllByCategoryQnaByCategoryKeyword(category, keyword);
+       	 return new ResponseEntity<>(list, HttpStatus.OK);
+       }
+    }
+	
+	@GetMapping("/support/qna/category/{category}")
+    public ResponseEntity<List<Support>> getSupportQnaFindByCategory(@PathVariable("category")String category){
+        if(category.equals("all")) {
+        	 List<Support> list = supportRepo.findAllByCategoryQna();
+        	 return new ResponseEntity<>(list, HttpStatus.OK);
+        }else {
+        	 List<Support> list = supportRepo.findAllByCategoryQnaByCategory(category);
+        	 return new ResponseEntity<>(list, HttpStatus.OK);
+        }
+       
+    }
 	
 }
