@@ -27,7 +27,7 @@ import com.example.restServer.repository.LoginRepository;
 import com.example.restServer.repository.MemberRepository;
 import com.example.restServer.repository.PointRepository;
 import com.example.restServer.repository.SupportRepository;
-import com.example.restServer.utill.MailService;
+import com.example.restServer.util.MailService;
 
 import jakarta.annotation.Resource;
 
