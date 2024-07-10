@@ -11,49 +11,111 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 <script src="/js/index.global.min.js"></script>
 <script>
-    	document.addEventListener('DOMContentLoaded', function() {
-    		const doctorId = document.querySelector("#doctorId").value;
-    		const doctorName = document.querySelector("#doctorName").value;
-        	var calendarEl = document.getElementById('calendar');
-            var calendar = new FullCalendar.Calendar(calendarEl, {
-                // Tool Bar 목록 document : https://fullcalendar.io/docs/toolbar
-                headerToolbar: {
-                    left: 'prevYear,prev,next,nextYear today',
-                    center: 'title',
-                    right: 'dayGridMonth,dayGridWeek,dayGridDay'
-                },
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch("http://localhost:9001/api/v1/hospital/business-hours", {
+                method: "GET",
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                if (data == "") {
+                    alert("등록된 영업시간이 없습니다.");
+                } else {
+                    const businessHoursData = data;
+                    const dayMap = {
+                        "sun": 0,
+                        "mon": 1,
+                        "tue": 2,
+                        "wed": 3,
+                        "thu": 4,
+                        "fri": 5,
+                        "sat": 6
+                    };
 
-                //selectable: true,
-                //selectMirror: true,
-                
-                // 날짜 클릭 이벤트 설정
-		        dateClick: function(info) {
-		            var clickedDate = info.dateStr; // 클릭한 날짜
-		            window.location.href = '/hospital/reserveSchedule?date=' + clickedDate + '&doctorId=' + doctorId + '&doctorName=' + doctorName; // 다른 페이지로 이동, URL에 날짜 포함
-		        }
+                    function parseBusinessHours(data) {
+                        const events = [];
+                        for (const [day, times] of Object.entries(data)) {
+                            if (times[0] === "영업시간 : 영업 안함") {
+                                events.push({
+                                    title: '영업 안함',
+                                    daysOfWeek: [dayMap[day]],
+                                    allDay: true,
+                                    display: 'background',
+                                    backgroundColor: '#cccccc', // Red color for non-working days
+                                    textColor: '#ffffff' // White text color
+                                });
+                                continue;
+                            }
 
-                //navLinks: true, // can click day/week names to navigate views
-                //editable: true,
-                //dayMaxEvents: true, // allow "more" link when too many events
-                // 이벤트 객체 필드 document : https://fullcalendar.io/docs/event-object
-//                 events: [
-//                     {
-//                     title: '2건',
-//                     url: 'http://google.com/',
-//                     start: '2024-07-10'
-//                     },
-// 					{
-// 					title: '1건',
-// 					url: 'http://google.com/',
-// 					start: '2024-07-12'
-// 					}
-//                 ]
-            });
+                            const businessHours = times[0].split(" : ")[1].split("//");
+                            const lunchHours = times.length > 1 ? times[1].split(" : ")[1].split("//") : null;
 
-            calendar.render();
+//                             events.push({
+//                                 title: '영업시간',
+//                                 daysOfWeek: [dayMap[day]],
+//                                 startTime: businessHours[0],
+//                                 endTime: businessHours[1],
+//                             });
+
+//                             if (lunchHours && lunchHours[0] !== "점심시간 없음") {
+//                                 events.push({
+//                                     title: '점심시간',
+//                                     daysOfWeek: [dayMap[day]],
+//                                     startTime: lunchHours[0],
+//                                     endTime: lunchHours[1],
+//                                     display: 'background',
+//                                     backgroundColor: '#ffff00', // Yellow color for lunch time
+//                                     textColor: '#000000' // Black text color
+//                                 });
+//                             }
+                        }
+                        return events;
+                    }
+
+                    const events = parseBusinessHours(businessHoursData);
+
+                    const doctorId = document.querySelector("#doctorId").value;
+                    const doctorName = document.querySelector("#doctorName").value;
+                    var calendarEl = document.getElementById('calendar');
+                    var calendar = new FullCalendar.Calendar(calendarEl, {
+                        // Tool Bar 목록 document : https://fullcalendar.io/docs/toolbar
+                        headerToolbar: {
+                            left: 'prevYear,prev,next,nextYear today',
+                            center: 'title',
+                            right: 'dayGridMonth,dayGridWeek,dayGridDay'
+                        },
+                        events: events,
+                        //selectable: true,
+                        //selectMirror: true,
+
+                        // 날짜 클릭 이벤트 설정
+                        dateClick: function(info) {
+                            var clickedDate = new Date(info.dateStr); // 클릭한 날짜
+                            var today = new Date();
+                            today.setHours(0, 0, 0, 0); // 시간 부분을 제거하여 날짜만 비교
+
+                            if (clickedDate < today) {
+                                alert('과거 날짜는 선택할 수 없습니다.');
+                                return;
+                            }
+
+                            var dayEvents = calendar.getEvents().filter(event => 
+                                event.startStr.split('T')[0] === info.dateStr && event.title === '영업 안함'
+                            );
+                            if (dayEvents.length > 0) {
+                                alert('이 날은 영업하지 않습니다.');
+                            } else {
+                                window.location.href = '/hospital/reserveSchedule?date=' + info.dateStr + '&doctorId=' + doctorId + '&doctorName=' + doctorName; // 다른 페이지로 이동, URL에 날짜 포함
+                            }
+                        }
+                    });
+
+                    calendar.render();
+                }
+            })
+            .catch(error => console.log(error));
         });
-
-</script>
+    </script>
 </head>
 <body class="d-flex flex-column h-100">
 <div th:replace="~{hospital/header :: header}"></div>
@@ -71,7 +133,6 @@
 <div th:replace="~{hospital/footer :: footer}"></div>
 
 <script type="text/javascript">
-
 
 
 </script>
