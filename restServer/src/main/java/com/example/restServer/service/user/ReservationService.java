@@ -34,7 +34,7 @@ public class ReservationService {
 	@Autowired 
 	private MemberRepository memRepo;
 	@Autowired 
-	private ReservationRepository reserveRepo;
+	private ReservationRepository reservRepo;
 	@Autowired 
 	private PetRepository petRepo;
 	@Autowired 
@@ -122,7 +122,7 @@ public class ReservationService {
 			reservation.setCoupon(coupon);
 			couponRepo.save(coupon);
 		}
-		reserveRepo.save(reservation);
+		reservRepo.save(reservation);
 		UnavailableTime unavailTime = new UnavailableTime();
 		unavailTime.setDoctor(doctorRepo.findById(Long.parseLong(formData.get("doctorId"))).get());
 		unavailTime.setHospital(memRepo.findById(Long.parseLong(formData.get("hospitalId"))).get());
@@ -136,5 +136,10 @@ public class ReservationService {
 		
 		
 		return "";
+	}
+	
+	public Reservation findReservInfo(Long reservId) {
+		System.out.println(reservRepo.findById(reservId).get());
+		return reservRepo.findById(reservId).get();
 	}
 }

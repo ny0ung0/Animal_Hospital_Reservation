@@ -28,7 +28,7 @@
 	<img style="display: none" id="mainGif" src="/images/loading.gif">
 	<div th:replace="~{user/header :: header}"></div>
 	<div class="container-xl">
-		<h1 class="mt-3 mt-md-5 mb-3 mb-md-3">동물병원 예약 등록</h1>
+		<h1 class="mt-3 mt-md-5 mb-3 mb-md-3">동물병원 예약 수정</h1>
 		<div class="mt-3 item"><div>동물병원</div><input type="text" id="vetName" disabled></div>
 		<div class="mt-3 item"><div>날짜*</div><input type="date" name="reserv_date"></div>
 		<div class="mt-3 item">
@@ -81,52 +81,60 @@
 <script th:inline="javascript" type="text/javascript" src="/js/reservation.js"></script>
 
 <script th:inline="javascript">
-let hosId = "[[${id}]]";
-
+let reservId = "[[${id}]]";
 
 const xhttp = new XMLHttpRequest();
 xhttp.onload = function() {
 	let data = JSON.parse(this.responseText);
-	setDateLimit();
-	loadBasicInfo(data);
+	console.log(data)
+	loadBasicInfo(data)
+	
+	
+	
+	
+
 }
-xhttp.open("GET", "http://localhost:9001/api/v1/user/reservation?id="+hosId, true);
+xhttp.open("GET", "http://localhost:9001/api/v1/user/reservation/"+reservId, true);
 xhttp.setRequestHeader("username", 1);
 xhttp.send();
 
-
-function submitForm(e){
-	e.preventDefault();
-	let formData = {
-		"hospitalId": hosId,
-		"doctorId": selectedVet,
-		"date" : document.querySelector("input[type=date]").value,
-		"time" : selectedTime,
-		"pet" : document.querySelector("#pet").value,
-		"type": document.querySelector("#type").value,
-		"memo": document.querySelector("textarea").value,
-		"coupon" : document.querySelector("#coupon").value,
-		"point":document.querySelector("input[name=points_used]").value,
-	}
-	if(selectedVet == null || document.querySelector("input[type=date]").value == null 
-			|| selectedTime == null || document.querySelector("#pet").value == ""
-			|| document.querySelector("#type").value == ""){
-		alert("필수 입력값이 비어있습니다. 다시 확인해주세요");
-		return false;
-	}
-	console.log(formData)
+function loadReservationInfo(data){
+	let userInfo = data[0];
+	let vetAvailInfo = data[1];
+	let vetInfo = data[2];
+	let reservInfo = data[3].reservation;
 	
-	 const xhttp = new XMLHttpRequest();
-	  xhttp.onload = function() {
-	    //다른페이지로 이동?ㅎㅎ,,
-	    alert("예약이 성공적으로 완료되었습니다");
-	    location.href="/"
-	    }
-	  xhttp.open("POST", "http://localhost:9001/api/v1/user/reservation", true);
-	  xhttp.setRequestHeader("username", 1);
-	  xhttp.setRequestHeader("Content-type", "application/json");
-	  xhttp.send(JSON.stringify(formData));
+	
+	 //병원 이름 넣기
+	 document.querySelector("#vetName").setAttribute("value", Object.keys(vetInfo)[0]);
+	 //포인트정보넣기
+	 document.querySelector("#point").innerHTML = reservInfo.pointsUsed ? reservInfo.pointsUsed : "0";
+	 //쿠폰 정보 넣기
+	 document.querySelector("#coupon").value = reservInfo.coupon ? reservInfo.coupon : "default";
+	 //반려동물정보넣기
+	 document.querySelector("#pet").value = reservInfo.pet.name;
+	 //수의사정보넣기
+    document.querySelector("#vet").value = reservInfo.doctor.name + "수의사 선생님";
+	 //메모정보넣기
+	 document.querySelector("textarea").innerHTML = reservInfo.memo;
+	 //타입정보 넣기
+	 document.querySelector("#type").value = reservInfo.type;
+	 //예약날짜 넣기
+	 document.querySelector("#type").value = reservInfo.reservationDatetime;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
 </script>
 
 
