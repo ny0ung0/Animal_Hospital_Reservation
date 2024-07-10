@@ -87,7 +87,6 @@ let hosId = "[[${id}]]";
 const xhttp = new XMLHttpRequest();
 xhttp.onload = function() {
 	let data = JSON.parse(this.responseText);
-	setDateLimit();
 	loadBasicInfo(data);
 }
 xhttp.open("GET", "http://localhost:9001/api/v1/user/reservation?id="+hosId, true);
@@ -118,9 +117,7 @@ function submitForm(e){
 	
 	 const xhttp = new XMLHttpRequest();
 	  xhttp.onload = function() {
-	    //다른페이지로 이동?ㅎㅎ,,
 	    alert("예약이 성공적으로 완료되었습니다");
-	    location.href="/"
 	    }
 	  xhttp.open("POST", "http://localhost:9001/api/v1/user/reservation", true);
 	  xhttp.setRequestHeader("username", 1);
