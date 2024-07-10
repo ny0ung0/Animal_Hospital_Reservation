@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -48,10 +47,6 @@ public class AdminController_jisun {
 	
 	@Autowired
 	SupportRepository supportRepo;
-	
-	@Autowired
-	private PagedResourcesAssembler<Support> pagedResourcesAssembler;
-
 	
 	@Resource(name = "mailService")
 	private MailService mailService;
