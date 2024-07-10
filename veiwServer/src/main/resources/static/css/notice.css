@@ -1,0 +1,25 @@
+@charset "UTF-8";
+
+
+#detail_wrap {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.detail-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+.detail-item span {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-right: 10px;
+}
+.detail-item div {
+    font-size: 1rem;
+}
+.btn-container {
+    margin-top: 20px;
+}

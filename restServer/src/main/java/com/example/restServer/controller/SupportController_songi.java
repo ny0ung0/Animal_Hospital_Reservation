@@ -87,11 +87,56 @@ public class SupportController_songi {
 	public ResponseEntity<?> getNoticeList(){
 		
 		List<Support> noticeList = supportRepo.findAllByCategory("공지사항");
+		System.out.println("공지목록 출력 : " + noticeList);
 		
 		return ResponseEntity.ok(noticeList);
 	}
 	
 	
+	
+	
+	
+	//공지등록
+	@PostMapping("/notice")
+	public ResponseEntity<?> noticeForm(HttpServletRequest request) {
+		String title = request.getParameter("title");
+        String content = request.getParameter("content");
+        String category = "공지사항";
+        
+        Support support = new Support();
+        support.setCategory(category);
+        support.setTitle(title);
+        support.setContent(content);
+        support.setIsConfirmed(false);
+        //support.setMember(1);
+        
+        supportRepo.save(support);
+        
+        return ResponseEntity.ok("공지 등록 완료");
+	}
+	
+	
+	
+	
+	//공지사항 상세페이지 불러오기
+	@GetMapping("/notice/{id}")
+	public ResponseEntity<?> getNotice(@PathVariable("id")Long id){
+		Support notice = supportRepo.findById(id).get();
+		System.out.println("공지 상세 출력 : " + notice);
+		
+		return ResponseEntity.ok(notice);
+	}
+	
+	
+	
+	
+	//공지사항 삭제
+	@DeleteMapping("/notice/{id}")
+	public ResponseEntity<?> deleteNotice(@PathVariable("id")Long id){
+		supportRepo.deleteById(id);
+		
+		return ResponseEntity.ok("공지 삭제 성공");
+	}
 	
 	
 }
