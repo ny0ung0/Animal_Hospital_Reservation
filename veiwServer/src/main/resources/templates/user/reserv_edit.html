@@ -70,7 +70,7 @@
 		<div><span>포인트 사용</span><span>&nbsp &nbsp ※ 1000 포인트 단위로 사용 가능</span><span> &nbsp&nbsp 보유포인트 <span id="point"></span>P</span></div>
 		<input type="text" name="points_used" placeholder="0">
 		</div>
-		<input class="btn btn-main" onclick=" return submitForm(event)" type="button" value="예약등록">
+		<input class="btn btn-main" onclick=" return submitForm(event)" type="button" value="예약수정">
 		<button class="btn btn-user-sub" onclick="">문의채팅</button>
 	</div>
 	<div th:replace="~{user/footer :: footer}"></div>
@@ -82,17 +82,15 @@
 
 <script th:inline="javascript">
 let reservId = "[[${id}]]";
+let oriSelectedTimeslot = null;
+
 
 const xhttp = new XMLHttpRequest();
 xhttp.onload = function() {
 	let data = JSON.parse(this.responseText);
 	console.log(data)
 	loadBasicInfo(data)
-	
-	
-	
-	
-
+	loadReservationInfo(data)
 }
 xhttp.open("GET", "http://localhost:9001/api/v1/user/reservation/"+reservId, true);
 xhttp.setRequestHeader("username", 1);
@@ -103,24 +101,80 @@ function loadReservationInfo(data){
 	let vetAvailInfo = data[1];
 	let vetInfo = data[2];
 	let reservInfo = data[3].reservation;
-	
-	
+	let basicHours = JSON.parse(vetInfo[Object.keys(vetInfo)[0]].businessHours);
+	let basicHoursArr = getBasicBusinessHours(basicHours);
+	selectedDate = convertToTimeZone(reservInfo.reservationDatetime,'Asia/Seoul')
+	selectedDay = new Date(selectedDate).getDay();
+	selectedVet = reservInfo.doctor.id
+	console.log(reservInfo.reservationDatetime.slice(11, -3))
+	console.log(reservInfo.coupon)
+	console.log(reservInfo.pointsUsed )
 	 //병원 이름 넣기
 	 document.querySelector("#vetName").setAttribute("value", Object.keys(vetInfo)[0]);
 	 //포인트정보넣기
-	 document.querySelector("#point").innerHTML = reservInfo.pointsUsed ? reservInfo.pointsUsed : "0";
-	 //쿠폰 정보 넣기
-	 document.querySelector("#coupon").value = reservInfo.coupon ? reservInfo.coupon : "default";
+	 document.querySelector("input[name=points_used]").value = reservInfo.pointsUsed;
+	 
+	 if(reservInfo.coupon != null){
+		 let listItem = document.createElement("option");
+		 listItem.setAttribute("value", reservInfo.coupon.id);
+		 listItem.innerHTML = reservInfo.coupon.name + ', 발행날짜' + formattingDate(reservInfo.coupon.issueDate) + ', 만료날짜' + formattingDate(reservInfo.coupon.expiryDate);
+		 document.querySelector("#coupon").appendChild(listItem);
+		 
+		 //쿠폰 정보 넣기
+		 document.querySelector("#coupon").value = reservInfo.coupon.id;
+	 }
+	
 	 //반려동물정보넣기
-	 document.querySelector("#pet").value = reservInfo.pet.name;
-	 //수의사정보넣기
-    document.querySelector("#vet").value = reservInfo.doctor.name + "수의사 선생님";
+	 document.querySelector("#pet").value = reservInfo.pet.id;
 	 //메모정보넣기
 	 document.querySelector("textarea").innerHTML = reservInfo.memo;
 	 //타입정보 넣기
 	 document.querySelector("#type").value = reservInfo.type;
+	 //수의사정보넣기
+     document.querySelector("#vet").value = selectedVet;
 	 //예약날짜 넣기
-	 document.querySelector("#type").value = reservInfo.reservationDatetime;
+	 document.querySelector("input[type=date]").value = selectedDate;
+	 
+	 loadTimeslot(basicHoursArr,vetAvailInfo);
+	 selectedTime = reservInfo.reservationDatetime.slice(11, -3);
+	 selectedSlot = oriSelectedTimeslot;
+	 oriSelectedTimeslot = document.querySelector("span[value='"+ selectedTime +"']")
+	 oriSelectedTimeslot.style.backgroundColor= "#84e3d0";
+}
+
+
+function submitForm(e){
+	e.preventDefault();
+	let formData = {
+		"reservId" : reservId,
+		"doctorId": selectedVet,
+		"date" : document.querySelector("input[type=date]").value,
+		"time" : selectedTime,
+		"pet" : document.querySelector("#pet").value,
+		"type": document.querySelector("#type").value,
+		"memo": document.querySelector("textarea").value,
+		"coupon" : document.querySelector("#coupon").value,
+		"point":document.querySelector("input[name=points_used]").value,
+	}
+	if(selectedVet == null || document.querySelector("input[type=date]").value == null 
+			|| selectedTime == null || document.querySelector("#pet").value == ""
+			|| document.querySelector("#type").value == ""){
+		alert("필수 입력값이 비어있습니다. 다시 확인해주세요");
+		return false;
+	}
+	console.log(formData)
+	
+	 const xhttp = new XMLHttpRequest();
+	  xhttp.onload = function() {
+	    //다른페이지로 이동?ㅎㅎ,,
+	    alert("예약이 성공적으로 수정되었습니다");
+	    //마이페이지로 이동
+// 	    location.href="/"
+	    }
+	  xhttp.open("PUT", "http://localhost:9001/api/v1/user/reservation", true);
+	  xhttp.setRequestHeader("username", 1);
+	  xhttp.setRequestHeader("Content-type", "application/json");
+	  xhttp.send(JSON.stringify(formData));
 }
 
 
