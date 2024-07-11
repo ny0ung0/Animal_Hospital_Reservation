@@ -33,7 +33,7 @@ import com.example.restServer.entity.Pet;
 import com.example.restServer.repository.PetRepository;
 import com.example.restServer.service.user.PetService;
 
-@CrossOrigin("*")
+
 @RestController
 @RequestMapping("/user/mypage")
 public class MyPetController_songi {
