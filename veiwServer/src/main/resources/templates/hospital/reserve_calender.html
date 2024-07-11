@@ -16,6 +16,10 @@ const token = localStorage.getItem("token");
         document.addEventListener('DOMContentLoaded', function() {
             fetch("http://localhost:9001/api/v1/hospital/business-hours", {
                 method: "GET",
+                headers: {
+                    'Authorization': `${token}`,
+                    'memberId' : memberId
+                }
             })
             .then(response => response.json())
             .then(data => {
@@ -124,8 +128,8 @@ const token = localStorage.getItem("token");
 <div class="container-xl">
 	<h1 class="mt-3 mt-md-5 mb-3 mb-md-3">진료 일정 관리</h1>
 	<hr/>
-	<input type="text" id="doctorId" th:value="${doctorId}">
-	<input type="text" id="doctorName" th:value="${doctorName}">
+	<input type="hidden" id="doctorId" th:value="${doctorId}">
+	<input type="hidden" id="doctorName" th:value="${doctorName}">
 	<h4 class="fw-bold mb-3">[[${doctorName}]] 수의사 진료일정</h4>
 	<div>
 		<div id="calendar" class="mb-5"></div>

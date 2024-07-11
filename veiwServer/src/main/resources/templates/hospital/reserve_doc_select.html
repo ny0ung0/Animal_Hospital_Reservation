@@ -23,12 +23,13 @@
 <script type="text/javascript">
 const memberId = localStorage.getItem("MemberId");
 const token = localStorage.getItem("token");
-fetch("http://localhost:9001/api/v1/hospital/doctor/" + memberId, {
+console.log("memberId", memberId);
+fetch("http://localhost:9001/api/v1/hospital/doctor", {
 	method : "GET",
-	//headers: {
-	   // "Authorization": "application/json",
-	   // "username": "application/json",
-	  //},
+	headers: {
+        'Authorization': token,
+        'memberId' : memberId
+    }
 })
 .then(response =>  response.json())
 .then(data => {

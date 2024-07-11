@@ -56,15 +56,15 @@ public class HospitalReservationController_js {
 	
 	@GetMapping("/reservation/waiting")
 	public ResponseEntity<List<Reservation>> getWaitingReservation(HttpServletRequest request){
-		Enumeration<String> headers = request.getHeaderNames();
-		Long memberId = null;
-		while(headers.hasMoreElements()) {
-			//System.out.println(headers.nextElement());
-			if(headers.nextElement().equals("memberId")) {
-				System.out.println(request.getHeader("memberId"));
-				memberId = Long.parseLong(request.getHeader("memberId"));
-			}
-		}
+		String memberIdHeader = request.getHeader("memberId");
+	    String authHeader = request.getHeader("Authorization");
+
+	    if (memberIdHeader == null || authHeader == null) {
+	        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+	    }
+
+	    Long memberId = Long.parseLong(memberIdHeader);
+	    
 		System.out.println("대기 예약정보가져오기");
 		List<Reservation> list = reservationRepo.findAllByHospitalIdAndStatus(memberId, "대기");
 		System.out.println(list);
@@ -73,15 +73,15 @@ public class HospitalReservationController_js {
 	
 	@GetMapping("/reservation/confirmed")
 	public ResponseEntity<List<Reservation>> getConfirmedReservation(HttpServletRequest request){
-		Enumeration<String> headers = request.getHeaderNames();
-		Long memberId = null;
-		while(headers.hasMoreElements()) {
-			//System.out.println(headers.nextElement());
-			if(headers.nextElement().equals("memberId")) {
-				System.out.println(request.getHeader("memberId"));
-				memberId = Long.parseLong(request.getHeader("memberId"));
-			}
-		}
+		String memberIdHeader = request.getHeader("memberId");
+	    String authHeader = request.getHeader("Authorization");
+
+	    if (memberIdHeader == null || authHeader == null) {
+	        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+	    }
+
+	    Long memberId = Long.parseLong(memberIdHeader);
+	    
 		System.out.println("확정 예약정보가져오기");
 		List<Reservation> list = reservationRepo.findAllByHospitalIdAndStatus(memberId, "확정");
 		System.out.println(list);
@@ -90,15 +90,15 @@ public class HospitalReservationController_js {
 	
 	@GetMapping("/reservation/complete")
 	public ResponseEntity<List<Reservation>> getCompleteReservation(HttpServletRequest request){
-		Enumeration<String> headers = request.getHeaderNames();
-		Long memberId = null;
-		while(headers.hasMoreElements()) {
-			//System.out.println(headers.nextElement());
-			if(headers.nextElement().equals("memberId")) {
-				System.out.println(request.getHeader("memberId"));
-				memberId = Long.parseLong(request.getHeader("memberId"));
-			}
-		}
+		String memberIdHeader = request.getHeader("memberId");
+	    String authHeader = request.getHeader("Authorization");
+
+	    if (memberIdHeader == null || authHeader == null) {
+	        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+	    }
+
+	    Long memberId = Long.parseLong(memberIdHeader);
+	    
 		System.out.println("완료 예약정보가져오기");
 		List<Reservation> list = reservationRepo.findAllByHospitalIdAndStatus(memberId, "완료");
 		System.out.println(list);
@@ -107,15 +107,15 @@ public class HospitalReservationController_js {
 	
 	@GetMapping("/reservation/cancle")
 	public ResponseEntity<List<Reservation>> getCancleReservation(HttpServletRequest request){
-		Enumeration<String> headers = request.getHeaderNames();
-		Long memberId = null;
-		while(headers.hasMoreElements()) {
-			//System.out.println(headers.nextElement());
-			if(headers.nextElement().equals("memberId")) {
-				System.out.println(request.getHeader("memberId"));
-				memberId = Long.parseLong(request.getHeader("memberId"));
-			}
-		}
+		String memberIdHeader = request.getHeader("memberId");
+	    String authHeader = request.getHeader("Authorization");
+
+	    if (memberIdHeader == null || authHeader == null) {
+	        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+	    }
+
+	    Long memberId = Long.parseLong(memberIdHeader);
+	    
 		System.out.println("취소 예약정보가져오기");
 		List<Reservation> list = reservationRepo.findAllByHospitalIdAndStatus(memberId, "취소");
 		System.out.println(list);
@@ -123,7 +123,7 @@ public class HospitalReservationController_js {
 	}
 	
 	@GetMapping("/reservation/{id}")
-	public ResponseEntity<Reservation> getHospitalReservationById(@PathVariable("id") Long id){
+	public ResponseEntity<Reservation> getHospitalReservationById( @PathVariable("id") Long id){
 		System.out.println("예약정보 디테일 가져오기");
 		Optional<Reservation> result = reservationRepo.findById(id);
 		Reservation reservation = result.get();
@@ -134,7 +134,6 @@ public class HospitalReservationController_js {
 	@PutMapping("/reservation/{id}/{status}")
 	public ResponseEntity<Reservation> updateReservationStatus(@PathVariable("id") Long id, @PathVariable("status")String status){
 		System.out.println("예약 상태 업데이트");
-		
 		Optional<Reservation> result = reservationRepo.findById(id);
 		Reservation reservation = result.get();
 		reservation.setStatus(status);
@@ -151,16 +150,37 @@ public class HospitalReservationController_js {
 		return new ResponseEntity<>(reservation2, HttpStatus.OK);
 	}
 	
-	@GetMapping("/doctor/{memberId}")
-	public ResponseEntity<List<Doctor>> getDoctorList(@PathVariable("memberId") Long memberId){
-		System.out.println("의사 리스트 가져오기");
-		List<Doctor> list =  doctorRepo.findAllByHospitalId(memberId);
-		return new ResponseEntity<>(list, HttpStatus.OK);
+	@GetMapping("/doctor")
+	public ResponseEntity<List<Doctor>> getDoctorList(HttpServletRequest request){
+		//System.out.println("의사 리스트 가져오기");
+		String memberIdHeader = request.getHeader("memberId");
+	    String authHeader = request.getHeader("Authorization");
+
+	    if (memberIdHeader == null || authHeader == null) {
+	        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+	    }
+
+	    Long memberId = Long.parseLong(memberIdHeader);
+	    //System.out.println("memberId: " + memberId);
+	    //System.out.println("Authorization: " + authHeader);
+
+	    // 인증 또는 권한 검사 로직을 여기에 추가할 수 있습니다
+
+	    List<Doctor> list = doctorRepo.findAllByHospitalId(memberId);
+	    return new ResponseEntity<>(list, HttpStatus.OK);
 	}
 	
 	@GetMapping("/business-hours")
-	public ResponseEntity<String> getHospitalBusinessHours(){
-		Member member = memberRepo.findById(3L).get();
+	public ResponseEntity<String> getHospitalBusinessHours(HttpServletRequest request){
+		String memberIdHeader = request.getHeader("memberId");
+	    String authHeader = request.getHeader("Authorization");
+
+	    if (memberIdHeader == null || authHeader == null) {
+	        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+	    }
+
+	    Long memberId = Long.parseLong(memberIdHeader);
+		Member member = memberRepo.findById(memberId).get();
 		String businessHours = member.getBusinessHours();
 		return new ResponseEntity<>(businessHours, HttpStatus.OK);
 	}
@@ -168,10 +188,9 @@ public class HospitalReservationController_js {
 	
 	@GetMapping("/reservation/doctor/{doctorId}")
 	public ResponseEntity<List<Reservation>> getDoctorReservation(@PathVariable("doctorId")Long doctorId){
-		//System.out.println("doctorId" + doctorId);
+
 		List<Reservation> list = reservationRepo.findAllByDoctorId(doctorId);
-		//System.out.println("여기인거 맞지?");
-		//System.out.println(list);
+	
 		return new ResponseEntity<>(list, HttpStatus.OK);
 	}
 	
