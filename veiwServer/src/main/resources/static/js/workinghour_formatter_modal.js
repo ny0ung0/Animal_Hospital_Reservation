@@ -71,6 +71,7 @@ function showBusinessHour(hoursArr){
 
 // 모달에 해당 병원 상세정보 보여주기
 function showModal(e) {
+	
 	//회원만 있는 병원 정보칸 가리기
 	document.querySelector(".modal-memVetInfo").style.display = "none";
 	
@@ -94,6 +95,9 @@ function showModal(e) {
 	document.querySelector("#exampleModalLabel").innerText = hospitalName;
 	document.querySelector("#phone").innerHTML = phone;
 	document.querySelector("#address").innerHTML = address;
+
+    console.log(memVet[hospitalName])
+
 
 	// 조건문 충족 여부에 따른 정보 설정
 	if (memVet[hospitalName] != null && memVet[hospitalName]["address"] == address) {
@@ -121,6 +125,7 @@ function showModal(e) {
 		document.querySelector("#point").style.display = "inline-block";
 		document.querySelector("#point").innerHTML = memVet[hospitalName]["partnership"] ? "포인트제휴병원 ⭕" : "포인트제휴병원 ❌";
 		// 북마크 설정
+		document.querySelector("#bookmarkImg").style.display = "inline"; 
 		document.querySelector("#bookmarkImg").src = memVet[hospitalName]["bookmarked"] ? "/images/bookmark_fill.png" : "/images/bookmark.png"; 
 		// 사업자번호 설정
 		document.querySelector("#businessNumber").style.display = "inline-block";

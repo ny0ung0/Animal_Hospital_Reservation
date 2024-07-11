@@ -19,4 +19,5 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 
 	@Query(value = "SELECT * FROM reservation WHERE doctor_id = :doctorId", nativeQuery = true)
 	List<Reservation> findAllByDoctorId(@Param("doctorId")Long doctorId);
+
 }
