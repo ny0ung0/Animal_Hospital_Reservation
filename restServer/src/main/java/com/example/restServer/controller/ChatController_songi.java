@@ -13,19 +13,19 @@ import com.example.restServer.entity.ChatRoom;
 import com.example.restServer.service.ChatService;
 
 @RestController
-@CrossOrigin("*")
 public class ChatController_songi {
 	
 	@Autowired
 	private ChatService chatService;
 	
 		
-	@MessageMapping("/chat.sendMessage")
-    @SendTo("/topic/public")
-    public Chat sendMessage(@Payload Chat chatMessage) {
-        ChatRoom chatRoom = chatService.getChatRoom(chatMessage.getSender(), chatMessage.getReceiver());
-        return chatService.sendMessage(chatRoom, chatMessage.getSender(), chatMessage.getMessage());
-    }
+//	@MessageMapping("/chat.sendMessage")
+//    @SendTo("/topic/public")
+//    public Chat sendMessage(@Payload Chat chatMessage) {
+//        ChatRoom chatRoom = chatService.getChatRoom(chatMessage.getSender(), chatMessage.getReceiver());
+//        
+//        return chatService.sendMessage(chatRoom, chatMessage.getSender(), chatMessage.getMessage(), chatMessage.getReceiver());
+//    }
 
 	
     @MessageMapping("/chat.addUser")
@@ -36,9 +36,5 @@ public class ChatController_songi {
         return chatMessage;
     }
 	
-	
-	
-	
-	
-	
+
 }

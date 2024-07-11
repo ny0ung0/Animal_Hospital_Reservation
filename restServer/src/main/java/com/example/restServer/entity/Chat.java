@@ -1,5 +1,9 @@
 package com.example.restServer.entity;
 
+import java.time.LocalDateTime;
+
+import org.springframework.data.annotation.CreatedDate;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -16,7 +20,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Chat extends BaseEntity {
+public class Chat {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,4 +40,10 @@ public class Chat extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "chatRoomID")
     private ChatRoom chatRoom;
+    
+    private String type;
+    
+    @CreatedDate
+    private LocalDateTime sendDate;
+    
 }

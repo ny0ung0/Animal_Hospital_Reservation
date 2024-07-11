@@ -52,18 +52,42 @@ public class ChatService {
 	
 	
 	//메시지 전송
-	public Chat sendMessage(ChatRoom chatRoom, Member sender, String message) {
-        Chat chatMessage = new Chat();
-        chatMessage.setChatRoom(chatRoom);
-        chatMessage.setSender(sender);
-        chatMessage.setMessage(message);
-
-        return chatRepo.save(chatMessage);
-    }
+//	public Chat saveMessage(Long sender, Long receiver, String message) {
+//		
+//		
+//		ChatRoom chatRoom = getOrCreateChatRoom(sender, receiver);
+//		
+//		
+//        Chat chatMessage = new Chat();
+//        chatMessage.setChatRoom(chatRoom);
+//        chatMessage.setSender(sender);
+//        chatMessage.setReceiver(receiver);
+//        chatMessage.setIsRead(false);
+//        chatMessage.setMessage(message);
+//        
+//        return chatRepo.save(chatMessage);
+//    }
 	
 	
 	public ChatRoom getChatRoom(Member user, Member hospital) {
         return chatroomRepo.findByUserAndHospital(user, hospital);
+    }
+	
+	
+	
+	private ChatRoom getOrCreateChatRoom(Member sender, Member receiver) {
+        ChatRoom chatRoom = chatroomRepo.findByUserAndHospital(sender, receiver);
+        if(chatRoom != null) {
+        	return chatRoom;
+        }else {
+        	// 채팅 방이 없으면 새로 생성
+        	ChatRoom newChatRoom = new ChatRoom();
+            newChatRoom.setUser(sender);
+            newChatRoom.setHospital(receiver);
+            return chatroomRepo.save(newChatRoom);
+        }
+        
+
     }
 	
 }
