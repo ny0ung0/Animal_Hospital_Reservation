@@ -31,7 +31,7 @@ import com.example.restServer.util.MailService;
 
 import jakarta.annotation.Resource;
 
-@CrossOrigin("*")
+//@CrossOrigin("*")
 @RestController
 @RequestMapping("/api/v1/manager")
 public class AdminController_jisun {
