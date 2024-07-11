@@ -117,8 +117,8 @@ function submitForm(e){
 	
 	 const xhttp = new XMLHttpRequest();
 	  xhttp.onload = function() {
-	    alert("예약이 성공적으로 완료되었습니다");
-	    }
+	     alert("예약이 성공적으로 완료되었습니다");
+	  }
 	  xhttp.open("POST", "http://localhost:9001/api/v1/user/reservation", true);
 	  xhttp.setRequestHeader("username", 1);
 	  xhttp.setRequestHeader("Content-type", "application/json");
