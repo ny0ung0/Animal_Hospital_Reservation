@@ -663,7 +663,7 @@
 				  <div class="mb-3">
             <div class="inputBox">
                 <div class="d-flex">
-                    <label class="form-label">수의사 정보</label> 
+                    <label class="form-label">수의사 이름</label> 
                     <input type="text" class="form-control" name="doctorName">
                     <input type="button" class="btn btn-main ms-auto" onclick="addDoctor()" value="추가">
                 </div>
@@ -999,6 +999,13 @@
                 alert("아이디 중복 체크를 확인해 주세요.");
                 document.querySelector("#username").focus();
                 return false;
+            }
+            
+            //의사 유효성 검사
+            let doctorNamesField = frm.doctorNamesField.value.trim();
+            if(doctorNamesField ==""){
+            	alert("의사를 한명 이상 등록하세요.");
+            	return false;
             }
 
             
