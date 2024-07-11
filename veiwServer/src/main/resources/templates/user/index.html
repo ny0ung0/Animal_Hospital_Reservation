@@ -87,7 +87,7 @@
 		                        <button style="display:none; width: 100%;" class="btn btn-user-sub reservationBtn" onclick="makeReservation(event)">예약하기</button>
 		                    </div>
 		                    <div class="col-6 p-1">
-		                        <button style="display:none; width: 100%;" class="btn btn-hospital-sub chatBtn" onclick="">문의채팅</button>
+		                        <button style="display:none; width: 100%;" class="btn btn-hospital-sub chatBtn" onclick="chat(event)">문의채팅</button>
 		                    </div>
 	                	</div>
                 	</div>
@@ -106,6 +106,12 @@
 
 const mainGif = document.querySelector("#mainGif");
 
+function chat(e){
+	let hosId=e.target.closest("#exampleModal").querySelector("#exampleModalLabel").getAttribute("data-id");
+	console.log(e.target.closest("#exampleModal").querySelector("#exampleModalLabel").getAttribute("data-id"))
+	
+}
+
 /*
 function loading(){
 	setTimeout(() => {
@@ -115,6 +121,7 @@ function loading(){
 }
 
 */
+
 
 </script>
 </body>
