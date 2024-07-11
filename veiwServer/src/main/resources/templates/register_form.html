@@ -967,8 +967,10 @@
 			const xhttp = new XMLHttpRequest();
 			xhttp.onload = function() {
 				//alert(this.responseText);
+				
 				var result = this.responseText;
-				document.getElementById("result").innerHTML = result;
+				alert(result);
+				
 			}
 			xhttp.open("post", "http://localhost:9001/api/v1/common/joinHospital");
 			//xhttp.setRequestHeader("Content-type", "multipart/form-data");	
