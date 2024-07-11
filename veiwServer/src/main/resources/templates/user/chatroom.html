@@ -69,7 +69,8 @@ socket.onopen = function(event) {
     socket.send(JSON.stringify({
         type: 'join',
         sender: sender,
-        receiver: receiver
+        receiver: receiver,
+        message : "채팅연결"
     }));
 };
 
