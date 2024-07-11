@@ -1,9 +1,10 @@
 <header class="border-bottom" th:fragment="header">
 	<div class="d-flex bg-user-sub p-2 px-3">
 		<div class="ms-auto">
-		<a class="navbar-brand" href="/login_form">로그인</a>
-		<span class="mx-3"> | </span>
-		<a class="navbar-brand" href="/register_form">회원가입</a>
+		<a id="login-link" class="navbar-brand" href="/login_form">로그인</a>
+		 <a id="logout-link" class="navbar-brand" href="#" onclick="logout()" style="display: none;">로그아웃</a>
+		<span class="mx-3"id ="bar"> | </span>
+		<a id="register-link" class="navbar-brand" href="/register_form">회원가입</a>
 		</div>
 	</div>
 	<div class="d-flex flex-wrap justify-content-center align-items-center py-3">
@@ -25,4 +26,29 @@
         <li class="nav-item"><a href="#" class="nav-link fs-5">고객센터</a></li>
       </ul>
 	</div>
+	<script>
+            function logout() {
+                localStorage.clear();
+                window.location.href = "/";
+            }
+            
+            document.addEventListener("DOMContentLoaded", function() {
+                const memberId = localStorage.getItem('MemberId');
+                const loginLink = document.getElementById('login-link');
+                const registerLink = document.getElementById('register-link');
+                const logoutLink = document.getElementById('logout-link');
+                const bar = document.getElementById('bar');
+                if (memberId) {
+                    loginLink.style.display = 'none';
+                    registerLink.style.display = 'none';
+                    logoutLink.style.display = 'block';
+                    bar.style.display = 'none';
+                } else {
+                    loginLink.style.display = 'block';
+                    registerLink.style.display = 'block';
+                    logoutLink.style.display = 'none';
+                    bar.style.display = 'block';
+                }
+            });
+        </script>
 </header>
