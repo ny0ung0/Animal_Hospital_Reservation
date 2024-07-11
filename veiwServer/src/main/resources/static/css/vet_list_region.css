@@ -25,13 +25,35 @@
     border-color: #4C5CB3 !important;
 }
 
-.vet_list div {
+.vet {
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 20px;
     margin: 15px auto;
+    font-family: "Jua", sans-serif;
 }
 
 .vet_list button {
     margin-bottom: 10px;
 }
+
+.modal-sub-title{
+	font-family: "Jua", sans-serif;
+	margin-right:5px;
+}
+
+.modal-item{
+	 border-bottom: 1px solid #ddd;
+	 padding:10px;
+	 margin-bottom:10px;
+}
+
+.modal-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.modal-title {
+    color: #333;
+}
+

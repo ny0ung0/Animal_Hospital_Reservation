@@ -29,9 +29,7 @@ function loadBasicInfo(data){
 	let basicHours = JSON.parse(vetInfo[Object.keys(vetInfo)[0]].businessHours);
 	let basicHoursArr = getBasicBusinessHours(basicHours);
 	
-	
-	
-	//병원 이름 넣기
+	  //병원 이름 넣기
 	  document.querySelector("#vetName").setAttribute("value", Object.keys(vetInfo)[0]);
 	  //포인트정보넣기
 	  document.querySelector("#point").innerHTML = userInfo.pointList[0];
@@ -142,7 +140,7 @@ function convertingDate(basicHours, day){
 
 function showDates(startTime, endTime, lunchStart, lunchEnd){
 	if(startTime == 0|| endTime == 0 || lunchStart == 0 ||lunchEnd == 0){
-		document.querySelector("#time_slot").innerHTML="<div class='msg'>해당일은 예약가능한 시간이 없습니다🥲</div>"
+		document.querySelector("#time_slot").innerHTML="<div class='msg'>해당일은 예약가능한 시간이 없습니다😥</div>"
 		return;
 	}
     // 시간을 분 단위로 변환

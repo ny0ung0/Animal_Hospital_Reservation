@@ -1,4 +1,3 @@
-
 const cityContainer = document.querySelector(".cityContainer");
 const guContainer = document.querySelector(".guContainer");
 const searchBtn = document.querySelector("#searchBtn");
@@ -96,7 +95,8 @@ searchBtn.addEventListener("click", function() {
 	       	let data = JSON.parse(this.responseText);
 	       	data.forEach(hospital =>{
        		let addr = hospital.address.replaceAll("//", " ")
-       		memVet[hospital.hospitalName] = {"id":hospital.id,
+       		memVet[hospital.hospitalName] = {
+											"id":hospital.id,
 											"address" : addr, 
 								       		"avgReview" : hospital.avgReview,
 								       		"bookmarked" : hospital.bookmarked,
@@ -167,63 +167,77 @@ function fetchHospitalData(guMap, noGuCities) {
 function addHospitalToList(hospital) {
 	let phone = hospital["소재지전화"] ? hospital["소재지전화"] : '';
     let listItem = document.createElement("div");
-	listItem.innerHTML = '<button type="button" onclick="showModal(event)" class="btn btn-main" data-bs-toggle="modal" data-bs-target="#exampleModal">'
-	        + hospital["사업장명"] + '</button> , <span class="phone">' + phone
+    listItem.classList = "vet"
+	listItem.innerHTML = '<button type="button" onclick="showModal(event)" class="btn btn-hospital-sub" data-bs-toggle="modal" data-bs-target="#exampleModal">'
+	        + hospital["사업장명"] + '</button> , '
+	        + '<img class="pin" style="width:35px; display:none;" src="/images/pin_p.svg"/>'
+	        + '<img class="bookmark" style="width:35px;" src="/images/bookmark.png"/>'
+	        + '<span class="phone">' + phone
 	        + '</span> , <span class="address">' + hospital["소재지전체주소"] + '</span>';
 	document.querySelector(".vet_list").appendChild(listItem);
 	
 	if(memVet[hospital["사업장명"]] != null && memVet[hospital["사업장명"]]["address"] == hospital["소재지전체주소"]){
 		listItem.querySelector("button").classList="btn btn-user-sub"
 		if(memVet[hospital["사업장명"]]["partnership"] == true){
-			listItem.style.borderColor="red"
+			listItem.querySelector("img").style.display="inline-block"
 		}
 	}
 }
 
 //모달에 해당 병원 상세정보 보여주기
 function showModal(e){
+	//회원만 있는 병원 정보칸 가리기
+	document.querySelector(".modal-memVetInfo").style.display = "none";
+	
+	
 	let hospitalName = e.target.parentElement.querySelector("button").innerText;
 	let address = e.target.parentElement.querySelector(".address").innerText;
+	
+	
 	if(memVet[hospitalName] != null && memVet[hospitalName]["address"] == address){
-		//병원 id 심어주기
+		document.querySelector("#working_hour").innerHTML = "";
+		let basicHours = JSON.parse(memVet[hospitalName]["businessHours"]);
+		let hoursArr = getBasicBusinessHours(basicHours);
+
+		//회원만 있는 병원 정보칸 보이게하기
+		document.querySelector(".modal-memVetInfo").style.display = "block";
+
+		// 병원 id 설정
 		document.querySelector("#hospital_id").innerHTML = memVet[hospitalName]["id"];
-		//영업시간보여주기
-		document.querySelector("#working_hour").style.display="block";
-		document.querySelector("#working_hour").innerHTML = memVet[hospitalName]["businessHours"];
-		//리뷰보여주기
-		document.querySelector("#review").style.display="block";
+		// 영업시간 설정
+		document.querySelector("#working_hour").style.display = "block";
+		showBusinessHour(hoursArr);
+		// 리뷰 설정
+		document.querySelector("#review").style.display = "inline-block";
 		document.querySelector("#review").innerHTML = memVet[hospitalName]["review"];
-		//예약하기 버튼 보여주기
-		document.querySelector(".reservationBtn").style.display="block";
-		document.querySelector("#point").style.display="block";
-		//북마크 버튼 보여주기
-		document.querySelector("#bookmarked").style.display="block";
+		// 예약하기 버튼 설정
+		document.querySelector(".reservationBtn").style.display = "block";
+		// 채팅 버튼 설정
+		document.querySelector(".chatBtn").style.display = "block";
+		// 포인트제휴여부 설정
+		document.querySelector("#point").style.display = "inline-block";
+		document.querySelector("#point").innerHTML = memVet[hospitalName]["partnership"] ? "포인트제휴병원 ⭕" : "포인트제휴병원 ❌";
+		// 북마크 설정
+		document.querySelector("#bookmarked").style.display = "inline-block";
 		document.querySelector("#bookmarked").innerHTML = memVet[hospitalName]["bookmarked"];
-		//사업자번호 버튼 보여주기
-		document.querySelector("#businessNumber").style.display="block";
+		// 사업자번호 설정
+		document.querySelector("#businessNumber").style.display = "inline-block";
 		document.querySelector("#businessNumber").innerHTML = memVet[hospitalName]["businessNumber"];
-		//이메일 버튼 보여주기
-		document.querySelector("#email").style.display="block";
-		document.querySelector("#email").innerHTML = memVet[hospitalName]["email"];
-		//소개글 버튼 보여주기
-		document.querySelector("#introduction").style.display="block";
+		// 이메일 설정
+		document.querySelector("#email").style.display = "inline-block";
+		document.querySelector("#email").innerHTML= memVet[hospitalName]["email"];
+		// 소개글 설정
+		document.querySelector("#introduction").style.display = "block";
 		document.querySelector("#introduction").innerHTML = memVet[hospitalName]["introduction"];
-		//로고 버튼 보여주기
-		document.querySelector("#logo").style.display="block";
+		// 로고 설정
+		document.querySelector("#logo").style.display = "block";
 		document.querySelector("#logo").innerHTML = memVet[hospitalName]["logo"];
-		//대표자 버튼 보여주기
-		document.querySelector("#representative").style.display="block";
+		// 대표자 설정
+		document.querySelector("#representative").style.display = "inline-block";
 		document.querySelector("#representative").innerHTML = memVet[hospitalName]["representative"];
-		//평균별점 버튼 보여주기
-		document.querySelector("#avgReview").style.display="block";
+		// 평균별점 설정
+		document.querySelector("#avgReview").style.display = "inline-block";
 		document.querySelector("#avgReview").innerHTML = memVet[hospitalName]["avgReview"];
-		if(memVet[hospitalName]["partnership"] == true){
-		//포인트제휴여부보여주기
-		
-		document.querySelector("#point").innerHTML = "포인트제휴병원 ⭕";
-		}else{
-		document.querySelector("#point").innerHTML = "포인트제휴병원 ❌";
-		}
 	}
 	document.querySelector("#exampleModalLabel").innerText = hospitalName;
 	document.querySelector("#phone").innerHTML = e.target.parentElement.querySelector(".phone").innerText;
