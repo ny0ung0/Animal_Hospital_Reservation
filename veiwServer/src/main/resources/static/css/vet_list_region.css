@@ -26,15 +26,47 @@
 }
 
 .vet {
-    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+    transition: box-shadow 0.3s ease;
+    padding: 20px;
     border: 1px solid #ddd;
-    border-radius: 20px;
-    margin: 15px auto;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    margin-bottom: 15px;
     font-family: "Jua", sans-serif;
 }
 
-.vet_list button {
-    margin-bottom: 10px;
+.vet-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.vet-header .pin {
+    margin-left: 5px;
+}
+
+.vet-header .bookmark {
+    margin-left: auto;
+}
+
+.vet-body {
+    margin-top: 5px;
+}
+
+.vet:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+}
+.modal-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.modal-title {
+    color: #333;
 }
 
 .modal-sub-title{
@@ -48,15 +80,15 @@
 	 margin-bottom:10px;
 }
 
-.modal-header {
-    background-color: #f8f9fa;
-    border-bottom: 1px solid #dee2e6;
-}
-
-.modal-title {
-    color: #333;
+.img_container{
+	width:100%;
+	height: 200px;
+	text-align:center;
 }
 
 #logo{
-	width:100px;	
+	width:auto;	
+	height:100%;
 }
+
+
