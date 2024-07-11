@@ -21,7 +21,9 @@
 </div>
 <div th:replace="~{hospital/footer :: footer}"></div>
 <script type="text/javascript">
-fetch("http://localhost:9001/api/v1/hospital/doctor", {
+const memberId = localStorage.getItem("MemberId");
+const token = localStorage.getItem("token");
+fetch("http://localhost:9001/api/v1/hospital/doctor/" + memberId, {
 	method : "GET",
 	//headers: {
 	   // "Authorization": "application/json",

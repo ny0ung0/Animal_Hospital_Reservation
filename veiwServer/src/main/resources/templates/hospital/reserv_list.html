@@ -58,7 +58,10 @@
 </div>
 <div th:replace="~{hospital/footer :: footer}"></div>
 <script type="text/javascript">
-fetch("http://localhost:9001/api/v1/hospital/reservation/waiting", {
+const memberId = localStorage.getItem("MemberId");
+const token = localStorage.getItem("token");
+
+fetch("http://localhost:9001/api/v1/hospital/reservation/waiting/" + memberId, {
 	method : "GET",
 	//headers: {
 	   // "Authorization": "application/json",
@@ -92,7 +95,7 @@ fetch("http://localhost:9001/api/v1/hospital/reservation/waiting", {
 .catch(error => console.log(error));
 
 
-fetch("http://localhost:9001/api/v1/hospital/reservation/confirmed", {
+fetch("http://localhost:9001/api/v1/hospital/reservation/confirmed/"+ memberId, {
 	method : "GET",
 	//headers: {
 	   // "Authorization": "application/json",
@@ -126,7 +129,7 @@ fetch("http://localhost:9001/api/v1/hospital/reservation/confirmed", {
 .catch(error => console.log(error));
 
 
-fetch("http://localhost:9001/api/v1/hospital/reservation/complete", {
+fetch("http://localhost:9001/api/v1/hospital/reservation/complete/"+ memberId, {
 	method : "GET",
 	//headers: {
 	   // "Authorization": "application/json",
@@ -161,7 +164,7 @@ fetch("http://localhost:9001/api/v1/hospital/reservation/complete", {
 
 
 
-fetch("http://localhost:9001/api/v1/hospital/reservation/cancle", {
+fetch("http://localhost:9001/api/v1/hospital/reservation/cancle/"+ memberId, {
 	method : "GET",
 	//headers: {
 	   // "Authorization": "application/json",

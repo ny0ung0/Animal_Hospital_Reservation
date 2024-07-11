@@ -51,34 +51,34 @@ public class HospitalReservationController_js {
 	@Autowired
 	UnavailableTimeRepository unavailableTimeRepo;
 	
-	@GetMapping("/reservation/waiting")
-	public ResponseEntity<List<Reservation>> getWaitingReservation(){
+	@GetMapping("/reservation/waiting/{memberId}")
+	public ResponseEntity<List<Reservation>> getWaitingReservation(@PathVariable("memberId") Long memberId){
 		System.out.println("대기 예약정보가져오기");
-		List<Reservation> list = reservationRepo.findAllByHospitalIdAndStatus(3L, "대기");
+		List<Reservation> list = reservationRepo.findAllByHospitalIdAndStatus(memberId, "대기");
 		System.out.println(list);
 		return new ResponseEntity<>(list, HttpStatus.OK);
 	}
 	
-	@GetMapping("/reservation/confirmed")
-	public ResponseEntity<List<Reservation>> getConfirmedReservation(){
+	@GetMapping("/reservation/confirmed/{memberId}")
+	public ResponseEntity<List<Reservation>> getConfirmedReservation(@PathVariable("memberId") Long memberId){
 		System.out.println("확정 예약정보가져오기");
-		List<Reservation> list = reservationRepo.findAllByHospitalIdAndStatus(3L, "확정");
+		List<Reservation> list = reservationRepo.findAllByHospitalIdAndStatus(memberId, "확정");
 		System.out.println(list);
 		return new ResponseEntity<>(list, HttpStatus.OK);
 	}
 	
-	@GetMapping("/reservation/complete")
-	public ResponseEntity<List<Reservation>> getCompleteReservation(){
+	@GetMapping("/reservation/complete/{memberId}")
+	public ResponseEntity<List<Reservation>> getCompleteReservation(@PathVariable("memberId") Long memberId){
 		System.out.println("완료 예약정보가져오기");
-		List<Reservation> list = reservationRepo.findAllByHospitalIdAndStatus(3L, "완료");
+		List<Reservation> list = reservationRepo.findAllByHospitalIdAndStatus(memberId, "완료");
 		System.out.println(list);
 		return new ResponseEntity<>(list, HttpStatus.OK);
 	}
 	
-	@GetMapping("/reservation/cancle")
-	public ResponseEntity<List<Reservation>> getCancleReservation(){
+	@GetMapping("/reservation/cancle/{memberId}")
+	public ResponseEntity<List<Reservation>> getCancleReservation(@PathVariable("memberId") Long memberId){
 		System.out.println("취소 예약정보가져오기");
-		List<Reservation> list = reservationRepo.findAllByHospitalIdAndStatus(3L, "취소");
+		List<Reservation> list = reservationRepo.findAllByHospitalIdAndStatus(memberId, "취소");
 		System.out.println(list);
 		return new ResponseEntity<>(list, HttpStatus.OK);
 	}
@@ -112,10 +112,10 @@ public class HospitalReservationController_js {
 		return new ResponseEntity<>(reservation2, HttpStatus.OK);
 	}
 	
-	@GetMapping("/doctor")
-	public ResponseEntity<List<Doctor>> getDoctorList(){
+	@GetMapping("/doctor/{memberId}")
+	public ResponseEntity<List<Doctor>> getDoctorList(@PathVariable("memberId") Long memberId){
 		System.out.println("의사 리스트 가져오기");
-		List<Doctor> list =  doctorRepo.findAllByHospitalId(3L);
+		List<Doctor> list =  doctorRepo.findAllByHospitalId(memberId);
 		return new ResponseEntity<>(list, HttpStatus.OK);
 	}
 	

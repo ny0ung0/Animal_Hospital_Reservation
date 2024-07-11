@@ -145,7 +145,8 @@
 <script type="text/javascript">
 const selectedDate = document.querySelector("#selectedDate").value;
 const doctorId = document.querySelector("#doctorId").value;
-
+const memberId = localStorage.getItem("MemberId");
+const token = localStorage.getItem("token");
 
 let reservationTime = [];
 let unavailableTime = [];
