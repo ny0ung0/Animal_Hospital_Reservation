@@ -28,11 +28,15 @@ function loadBasicInfo(data){
 	let vetNamesNIds = Object.keys(vetAvailInfo);
 	let basicHours = JSON.parse(vetInfo[Object.keys(vetInfo)[0]].businessHours);
 	let basicHoursArr = getBasicBusinessHours(basicHours);
-	
 	  //병원 이름 넣기
 	  document.querySelector("#vetName").setAttribute("value", Object.keys(vetInfo)[0]);
 	  //포인트정보넣기
-	  document.querySelector("#point").innerHTML = userInfo.pointList[0];
+		  document.querySelector("#point").innerHTML = userInfo.pointList[0];
+	  if(!vetInfo[Object.keys(vetInfo)[0]].partnership == true){
+		  document.querySelector(".point_container").style.display="none";
+	  }
+	  
+	  
 	  //쿠폰 정보 넣기
 	  for(let i = 0; i < userInfo.couponList.length; i++){
 		  let coupon = userInfo.couponList[i];

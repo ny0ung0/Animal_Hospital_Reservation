@@ -23,7 +23,6 @@ import com.example.restServer.service.user.ReservationService;
 
 import jakarta.servlet.http.HttpServletRequest;
 
-@CrossOrigin("*")
 @RestController
 @RequestMapping("/api/v1/user")
 public class ReservationController_jia {

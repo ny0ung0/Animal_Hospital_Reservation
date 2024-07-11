@@ -28,8 +28,6 @@ public class VetListService {
 	public List<MemVetDto> getMemberVetList(String address, Long userId) {
 		List<Member> result = memRepo.findMemberVetList(address);
 		List<MemVetDto> MemVetList = new ArrayList<>();
-		System.out.println("serviceeee");
-		System.out.println(address);
 		for(int i = 0; i<result.size(); i++) {
 			Member hospital =  result.get(i);
 			Long hospitalId = result.get(i).getId();
@@ -48,6 +46,7 @@ public class VetListService {
 			
 			reserveRepo.findAvgReview(hospitalId);
 			mv.setAvgReview(reserveRepo.findAvgReview(hospitalId));
+			
 			if(userId != 0L) {
 				if(!bookmarkRepo.isBookmarked(hospitalId, userId).isEmpty()) {
 					mv.setBookmarked(true);
@@ -58,5 +57,19 @@ public class VetListService {
 			MemVetList.add(mv);
 		}
 		return MemVetList;
+	}
+	
+	public String isBookmarked(Long hosId, Long userId, Boolean isBookmarked) {
+		 if(bookmarkRepo.isBookmarked(hosId, userId).isEmpty()) {
+        	Bookmark newBookmark = new Bookmark();
+        	newBookmark.setUser(memRepo.findById(userId).get());
+        	newBookmark.setHospital(memRepo.findById(hosId).get());
+        	bookmarkRepo.save(newBookmark);
+        }else{
+        	Bookmark oldBookmark = bookmarkRepo.isBookmarked(hosId, userId).get();
+        	bookmarkRepo.delete(oldBookmark);
+        };
+		
+		return "";
 	}
 }
