@@ -61,12 +61,12 @@
 const memberId = localStorage.getItem("MemberId");
 const token = localStorage.getItem("token");
 
-fetch("http://localhost:9001/api/v1/hospital/reservation/waiting/" + memberId, {
+fetch("http://localhost:9001/api/v1/hospital/reservation/waiting", {
 	method : "GET",
-	//headers: {
-	   // "Authorization": "application/json",
-	   // "username": "application/json",
-	  //},
+	headers: {
+        'Authorization': `${token}`,
+        'memberId' : memberId
+    }
 })
 .then(response =>  response.json())
 .then(data => {
@@ -95,12 +95,12 @@ fetch("http://localhost:9001/api/v1/hospital/reservation/waiting/" + memberId, {
 .catch(error => console.log(error));
 
 
-fetch("http://localhost:9001/api/v1/hospital/reservation/confirmed/"+ memberId, {
+fetch("http://localhost:9001/api/v1/hospital/reservation/confirmed", {
 	method : "GET",
-	//headers: {
-	   // "Authorization": "application/json",
-	   // "username": "application/json",
-	  //},
+	headers: {
+        'Authorization': `${token}`,
+        'memberId' : memberId
+    }
 })
 .then(response =>  response.json())
 .then(data => {
@@ -129,12 +129,12 @@ fetch("http://localhost:9001/api/v1/hospital/reservation/confirmed/"+ memberId, 
 .catch(error => console.log(error));
 
 
-fetch("http://localhost:9001/api/v1/hospital/reservation/complete/"+ memberId, {
+fetch("http://localhost:9001/api/v1/hospital/reservation/complete", {
 	method : "GET",
-	//headers: {
-	   // "Authorization": "application/json",
-	   // "username": "application/json",
-	  //},
+	headers: {
+        'Authorization': `${token}`,
+        'memberId' : memberId
+    }
 })
 .then(response =>  response.json())
 .then(data => {
@@ -164,12 +164,12 @@ fetch("http://localhost:9001/api/v1/hospital/reservation/complete/"+ memberId, {
 
 
 
-fetch("http://localhost:9001/api/v1/hospital/reservation/cancle/"+ memberId, {
+fetch("http://localhost:9001/api/v1/hospital/reservation/cancle", {
 	method : "GET",
-	//headers: {
-	   // "Authorization": "application/json",
-	   // "username": "application/json",
-	  //},
+	headers: {
+        'Authorization': `${token}`,
+        'memberId' : memberId
+    }
 })
 .then(response =>  response.json())
 .then(data => {
