@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,7 +37,8 @@ public class InfoController_jun {
 	}
 	//병원정보 수정하기
 	@PutMapping("/hospital/hospitalInfo")
-	public ResponseEntity<?> UpdateHospitalInfo(@RequestBody MemberEditDto memberEditDto){
+	public ResponseEntity<?> UpdateHospitalInfo(@ModelAttribute MemberEditDto memberEditDto){
+		System.out.println("병원정보 수정 컨트롤러 들어옴");
 		System.out.println(memberEditDto);
 		joinService.updateEditUserInfo(memberEditDto);
 		return ResponseEntity.ok().body("수정하였습니다.");
