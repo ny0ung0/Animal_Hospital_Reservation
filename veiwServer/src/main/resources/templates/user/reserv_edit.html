@@ -93,7 +93,9 @@ xhttp.onload = function() {
 	loadReservationInfo(data)
 }
 xhttp.open("GET", "http://localhost:9001/api/v1/user/reservation/"+reservId, true);
-xhttp.setRequestHeader("username", 1);
+xhttp.setRequestHeader("MemberId", localStorage.getItem("MemberId"));
+xhttp.setRequestHeader("token", localStorage.getItem("token"));
+xhttp.setRequestHeader("role", localStorage.getItem("role"));
 xhttp.send();
 
 function loadReservationInfo(data){
@@ -172,7 +174,9 @@ function submitForm(e){
 // 	    location.href="/"
 	    }
 	  xhttp.open("PUT", "http://localhost:9001/api/v1/user/reservation", true);
-	  xhttp.setRequestHeader("username", 1);
+	  xhttp.setRequestHeader("MemberId", localStorage.getItem("MemberId"));
+	  xhttp.setRequestHeader("token", localStorage.getItem("token"));
+	  xhttp.setRequestHeader("role", localStorage.getItem("role"));
 	  xhttp.setRequestHeader("Content-type", "application/json");
 	  xhttp.send(JSON.stringify(formData));
 }

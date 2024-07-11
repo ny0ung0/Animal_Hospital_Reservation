@@ -122,7 +122,9 @@ searchBtn.addEventListener("click", function() {
     
     const url = "http://localhost:9001/api/v1/vet-list?" + params.toString();
     xhttp.open("GET", url, true);
-    xhttp.setRequestHeader("username", 1);
+    xhttp.setRequestHeader("MemberId", localStorage.getItem("MemberId"));
+    xhttp.setRequestHeader("token", localStorage.getItem("token"));
+    xhttp.setRequestHeader("role", localStorage.getItem("role"));
     xhttp.send();
 });
 
@@ -175,7 +177,7 @@ function addHospitalToList(hospital) {
 					            hospital["사업장명"] +
 					        '</button>' +
 					        '<img class="pin" style="width:35px; display:none;" src="/images/pin_p.svg"/>' +
-					        '<img onclick="checkBookmark(event)" class="bookmark" style="display:none; width:35px;" src="/images/bookmark.png"/>' +
+					        '<img onclick="return checkBookmark(event)" class="bookmark" style="display:none; width:35px;" src="/images/bookmark.png"/>' +
 					     '</div>' +
 					     '<div class="vet-body">' +
 					       '<span class="phone">' + phone + '</span> <span class="address">' + hospital["소재지전체주소"] + '</span>' +
