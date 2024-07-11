@@ -20,10 +20,8 @@
 }
 
 .info-window-content .clickable-text:hover {
-    font-weight: bold;
     color: #4C5CB3;
 }
-
 
 .vet {
     display: flex;
@@ -35,6 +33,7 @@
     border-radius: 5px;
     background-color: #f9f9f9;
     margin-bottom: 15px;
+    font-family: "Jua", sans-serif;
 }
 
 .vet-header {
@@ -119,7 +118,7 @@
 .partner-text {
     font-size: 20px; /* 폰트 크기 조정 */
     margin-left: 5px;
-    font-family: 'Do Hyeon', sans-serif;
+    font-family: "Jua", sans-serif;
 }
 
 #curBtn{
@@ -129,7 +128,7 @@
     top: 50px;
     right: 10px;
     animation: spinY 2s linear infinite; /* 애니메이션 추가 */
-    z-index:9999;
+    z-index:99;
 }
 
 /* 애니메이션 정의 */
@@ -143,10 +142,6 @@
 }
 
 
-.modal-content {
-    font-family: 'Do Hyeon', sans-serif;
-}
-
 .modal-header {
     background-color: #f8f9fa;
     border-bottom: 1px solid #dee2e6;
@@ -156,10 +151,16 @@
     color: #333;
 }
 
-.modal-body div {
-    margin-bottom: 10px;
+.modal-sub-title{
+	font-family: "Jua", sans-serif;
+	margin-right:5px;
 }
 
+.modal-item{
+	 border-bottom: 1px solid #ddd;
+	 padding:10px;
+	 margin-bottom:10px;
+}
 
 .carousel .carousel-item img {
     border-radius: 10px;

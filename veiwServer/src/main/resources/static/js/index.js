@@ -237,6 +237,9 @@ function addHospitalToList(map, currentPos) {
 
 // 모달에 해당 병원 상세정보 보여주기
 function showModal(e) {
+	//회원만 있는 병원 정보칸 가리기
+	document.querySelector(".modal-memVetInfo").style.display = "none";
+	
 	let hospitalName;
 	let address;
 	let phone;
@@ -260,9 +263,15 @@ function showModal(e) {
 
 	// 조건문 충족 여부에 따른 정보 설정
 	if (memVet[hospitalName] != null && memVet[hospitalName]["address"] == address) {
+		console.log(memVet[hospitalName])
+		
+		
 		document.querySelector("#working_hour").innerHTML = "";
 		let basicHours = JSON.parse(memVet[hospitalName]["businessHours"]);
 		let hoursArr = getBasicBusinessHours(basicHours);
+
+		//회원만 있는 병원 정보칸 보이게하기
+		document.querySelector(".modal-memVetInfo").style.display = "block";
 
 		// 병원 id 설정
 		document.querySelector("#hospital_id").innerHTML = memVet[hospitalName]["id"];
@@ -270,51 +279,38 @@ function showModal(e) {
 		document.querySelector("#working_hour").style.display = "block";
 		showBusinessHour(hoursArr);
 		// 리뷰 설정
-		document.querySelector("#review").style.display = "block";
+		document.querySelector("#review").style.display = "inline-block";
 		document.querySelector("#review").innerHTML = memVet[hospitalName]["review"];
 		// 예약하기 버튼 설정
 		document.querySelector(".reservationBtn").style.display = "block";
 		// 채팅 버튼 설정
 		document.querySelector(".chatBtn").style.display = "block";
 		// 포인트제휴여부 설정
-		document.querySelector("#point").style.display = "block";
+		document.querySelector("#point").style.display = "inline-block";
 		document.querySelector("#point").innerHTML = memVet[hospitalName]["partnership"] ? "포인트제휴병원 ⭕" : "포인트제휴병원 ❌";
 		// 북마크 설정
-		document.querySelector("#bookmarked").style.display = "block";
+		document.querySelector("#bookmarked").style.display = "inline-block";
 		document.querySelector("#bookmarked").innerHTML = memVet[hospitalName]["bookmarked"];
 		// 사업자번호 설정
-		document.querySelector("#businessNumber").style.display = "block";
+		document.querySelector("#businessNumber").style.display = "inline-block";
 		document.querySelector("#businessNumber").innerHTML = memVet[hospitalName]["businessNumber"];
 		// 이메일 설정
-		document.querySelector("#email").style.display = "block";
-		document.querySelector("#email").innerHTML = memVet[hospitalName]["email"];
+		document.querySelector("#email").style.display = "inline-block";
+		document.querySelector("#email").innerHTML= memVet[hospitalName]["email"];
 		// 소개글 설정
 		document.querySelector("#introduction").style.display = "block";
 		document.querySelector("#introduction").innerHTML = memVet[hospitalName]["introduction"];
 		// 로고 설정
 		document.querySelector("#logo").style.display = "block";
-		document.querySelector("#logo").innerHTML = memVet[hospitalName]["logo"];
+		document.querySelector("#logo").src = "/images/user/" + memVet[hospitalName]["logo"];
+		
 		// 대표자 설정
-		document.querySelector("#representative").style.display = "block";
+		document.querySelector("#representative").style.display = "inline-block";
 		document.querySelector("#representative").innerHTML = memVet[hospitalName]["representative"];
 		// 평균별점 설정
-		document.querySelector("#avgReview").style.display = "block";
+		document.querySelector("#avgReview").style.display = "inline-block";
 		document.querySelector("#avgReview").innerHTML = memVet[hospitalName]["avgReview"];
-	} else {
-		// 조건문을 충족하지 않을 때 나머지 필드 초기화
-		document.querySelector("#working_hour").style.display = "none";
-		document.querySelector("#review").style.display = "none";
-		document.querySelector(".reservationBtn").style.display = "none";
-		document.querySelector(".chatBtn").style.display = "none";
-		document.querySelector("#point").style.display = "none";
-		document.querySelector("#bookmarked").style.display = "none";
-		document.querySelector("#businessNumber").style.display = "none";
-		document.querySelector("#email").style.display = "none";
-		document.querySelector("#introduction").style.display = "none";
-		document.querySelector("#logo").style.display = "none";
-		document.querySelector("#representative").style.display = "none";
-		document.querySelector("#avgReview").style.display = "none";
-	}
+	} 
 }
 
 function makeReservation(e){
@@ -322,68 +318,5 @@ function makeReservation(e){
 	location.href="/user/reserv_form?id="+id;
 }
 
-function convertingDate(basicHours, day){
-	let startTime;
-	let endingTime;
-	let lunchStart;
-	let lunchEnd;
-	//영업하는 날 시간 구하기
-	if(basicHours[day][0].slice(7) !="영업 안함"){
-		startTime = basicHours[day][0].slice(7).split("//")[0];
-		endingTime = basicHours[day][0].slice(7).split("//")[1];
-		//영업하면서&점심시간있음
-		if(basicHours[day][1].slice(7) !="점심시간 없음"){
-			lunchStart = basicHours[day][1].slice(7).split("//")[0];
-			lunchEnd = basicHours["mon"][1].slice(7).split("//")[1];
-		}else{
-			//영업하지만&점심시간없음
-			lunchStart = 0;
-			lunchEnd = 0;
-		}
-	}else{
-		//영업 안 하는 날
-		startTime = 0;
-		endingTime = 0;
-		lunchStart = 0;
-		lunchEnd = 0;
-	}
-	return {day : [startTime, endingTime, lunchStart, lunchEnd]};
-}
 
-function getBasicBusinessHours(basicHours){
-	let sun = convertingDate(basicHours, "sun");
-	let mon = convertingDate(basicHours, "mon");
-	let tue = convertingDate(basicHours, "tue");
-	let wed = convertingDate(basicHours, "wed");
-	let thu = convertingDate(basicHours, "thu");
-	let fri = convertingDate(basicHours, "fri");
-	let sat = convertingDate(basicHours, "sat");
-	let hol = convertingDate(basicHours, "hol");
-	return [sun, mon, tue, wed, thu, fri, sat, hol];
-}
-
-function showBusinessHour(hoursArr){
-    let week = ["일", "월", "화", "수", "목", "금", "토", "공휴일"];
-    //0:일, 1:월, 2:화 .... 6:토
-    for(let i = 0; i < hoursArr.length; i++){
-        let day = hoursArr[i];
-        let startTime = day.day[0];
-        let endTime = day.day[1];
-        let lunchStart = day.day[2];
-        let lunchEnd = day.day[3];
-        
-        let listItem = document.createElement("div");
-        listItem.innerHTML = week[i] + " - 영업시간 : <span class='workHour'>" + startTime + " ~ " + endTime
-                             +"</span> , 점심시간 : <span class='lunchHour'>" + lunchStart + " ~ " + lunchEnd +"</span>";
-
-        if(startTime === 0){
-            listItem.querySelector(".workHour").innerHTML = "휴무";
-        }
-        if(lunchStart === 0){
-            listItem.querySelector(".lunchHour").innerHTML = "-";
-        }
-        
-        document.querySelector("#working_hour").appendChild(listItem);
-    }
-}
 

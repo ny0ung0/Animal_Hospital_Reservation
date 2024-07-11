@@ -14,7 +14,7 @@ import com.example.restServer.repository.SupportRepository;
 
 import jakarta.servlet.http.HttpServletRequest;
 
-@CrossOrigin("*")
+
 @RestController
 @RequestMapping("/api/v1/hospital")
 public class HospitalQnAListController_jia {
