@@ -103,7 +103,10 @@ const token = localStorage.getItem("token");
 const reservId = document.querySelector("input[name='reservId']").value;
 console.log(reservId);
 fetch("http://localhost:9001/api/v1/hospital/reservation/" + reservId, {
-	method : "GET"
+	method : "GET",
+	headers: {
+        'Authorization': token
+    }
 })
 .then(response => response.text())
 .then(data => {
@@ -146,7 +149,10 @@ function statusComplete(){
 	let status = "완료";
 	console.log(status);
 	fetch("http://localhost:9001/api/v1/hospital/reservation/" + reservId + "/"+ status, {
-		method : "PUT"
+		method : "PUT",
+		headers: {
+	        'Authorization': token
+	    }
 	})
 	.then(response => response.text())
 	.then(data => {
@@ -161,6 +167,7 @@ function statusConfirmed(){
 	console.log(status);
 	fetch("http://localhost:9001/api/v1/hospital/reservation/" + reservId + "/"+ status, {
 		method : "PUT"
+		
 	})
 	.then(response => response.text())
 	.then(data => {
@@ -174,7 +181,10 @@ function statusCancle(){
 	let status = "취소";
 	console.log(status);
 	fetch("http://localhost:9001/api/v1/hospital/reservation/" + reservId + "/"+ status, {
-		method : "PUT"
+		method : "PUT",
+		headers: {
+	        'Authorization': token
+	    }
 	})
 	.then(response => response.text())
 	.then(data => {
