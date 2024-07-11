@@ -109,7 +109,7 @@ const mainGif = document.querySelector("#mainGif");
 function chat(e){
 	let hosId=e.target.closest("#exampleModal").querySelector("#exampleModalLabel").getAttribute("data-id");
 	console.log(e.target.closest("#exampleModal").querySelector("#exampleModalLabel").getAttribute("data-id"))
-	
+	window.location.href = "/user/chat/" + hosId;
 }
 
 /*

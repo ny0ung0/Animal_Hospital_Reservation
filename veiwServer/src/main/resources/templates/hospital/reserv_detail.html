@@ -78,7 +78,7 @@
 			</div>
 			<div class="row mb-2">
 				<div class="col-4 text-secondary">몸무게</div>
-				<div class="col-8" id="petWeight">5kg</div>
+				<div class="col-8"><span id="petWeight">5kg</span>kg</div>
 			</div>
 		</div>
 	</div>
@@ -98,6 +98,8 @@
 <div th:replace="~{hospital/footer :: footer}"></div>
 
 <script type="text/javascript" >
+const memberId = localStorage.getItem("MemberId");
+const token = localStorage.getItem("token");
 const reservId = document.querySelector("input[name='reservId']").value;
 console.log(reservId);
 fetch("http://localhost:9001/api/v1/hospital/reservation/" + reservId, {
@@ -106,7 +108,12 @@ fetch("http://localhost:9001/api/v1/hospital/reservation/" + reservId, {
 .then(response => response.text())
 .then(data => {
 	const obj = JSON.parse(data);
+	let isNeutered = "";
+	let gender = "";
+	obj.pet.isNeutered ? isNeutered = "Y" : isNeutered = "N";
+	obj.pet.gender=="female" ? gender = "여아" : gender = "남아";
 	let dateTime = obj.reservationDatetime.replace("T", " ");
+	let birthdate = obj.pet.birthdate.split('T', 1);
 	document.getElementById("status").innerHTML = obj.status;
 	document.getElementById("datetime").innerHTML = dateTime;
 	document.getElementById("username").innerHTML = obj.user.name;
@@ -117,9 +124,10 @@ fetch("http://localhost:9001/api/v1/hospital/reservation/" + reservId, {
 	document.getElementById("petPhoto").innerHTML = obj.pet.photo;
 	document.getElementById("petType").innerHTML = obj.pet.type;
 	document.getElementById("petName").innerHTML = obj.pet.name;
-	document.getElementById("petBirthdate").innerHTML = obj.pet.birthday;
-	document.getElementById("petGender").innerHTML = obj.pet.gender;
-	document.getElementById("petIsNeutred").innerHTML = obj.pet.isNeutred;
+	document.getElementById("petBirthdate").innerHTML = birthdate;
+	document.getElementById("petGender").innerHTML = gender;
+	document.getElementById("petIsNeutred").innerHTML = isNeutered;
+	console.log("isNeutered "+ isNeutered);
 	document.getElementById("petWeight").innerHTML = obj.pet.weight;
 	
 	if(obj.status == "대기"){

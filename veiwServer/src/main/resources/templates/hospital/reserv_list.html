@@ -58,12 +58,15 @@
 </div>
 <div th:replace="~{hospital/footer :: footer}"></div>
 <script type="text/javascript">
+const memberId = localStorage.getItem("MemberId");
+const token = localStorage.getItem("token");
+
 fetch("http://localhost:9001/api/v1/hospital/reservation/waiting", {
 	method : "GET",
-	//headers: {
-	   // "Authorization": "application/json",
-	   // "username": "application/json",
-	  //},
+	headers: {
+        'Authorization': `${token}`,
+        'memberId' : memberId
+    }
 })
 .then(response =>  response.json())
 .then(data => {
@@ -94,10 +97,10 @@ fetch("http://localhost:9001/api/v1/hospital/reservation/waiting", {
 
 fetch("http://localhost:9001/api/v1/hospital/reservation/confirmed", {
 	method : "GET",
-	//headers: {
-	   // "Authorization": "application/json",
-	   // "username": "application/json",
-	  //},
+	headers: {
+        'Authorization': `${token}`,
+        'memberId' : memberId
+    }
 })
 .then(response =>  response.json())
 .then(data => {
@@ -128,10 +131,10 @@ fetch("http://localhost:9001/api/v1/hospital/reservation/confirmed", {
 
 fetch("http://localhost:9001/api/v1/hospital/reservation/complete", {
 	method : "GET",
-	//headers: {
-	   // "Authorization": "application/json",
-	   // "username": "application/json",
-	  //},
+	headers: {
+        'Authorization': `${token}`,
+        'memberId' : memberId
+    }
 })
 .then(response =>  response.json())
 .then(data => {
@@ -163,10 +166,10 @@ fetch("http://localhost:9001/api/v1/hospital/reservation/complete", {
 
 fetch("http://localhost:9001/api/v1/hospital/reservation/cancle", {
 	method : "GET",
-	//headers: {
-	   // "Authorization": "application/json",
-	   // "username": "application/json",
-	  //},
+	headers: {
+        'Authorization': `${token}`,
+        'memberId' : memberId
+    }
 })
 .then(response =>  response.json())
 .then(data => {

@@ -18,7 +18,6 @@ import com.example.restServer.repository.SupportRepository;
 import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
-@CrossOrigin("*")
 public class SupportController_songi {
 	
 	@Autowired
