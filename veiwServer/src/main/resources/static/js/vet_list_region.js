@@ -97,6 +97,7 @@ searchBtn.addEventListener("click", function() {
        		let addr = hospital.address.replaceAll("//", " ")
        		memVet[hospital.hospitalName] = {
 											"id":hospital.id,
+											"phone":hospital.phone,
 											"address" : addr, 
 								       		"avgReview" : hospital.avgReview,
 								       		"bookmarked" : hospital.bookmarked,
@@ -178,6 +179,7 @@ function addHospitalToList(hospital) {
 	
 	if(memVet[hospital["사업장명"]] != null && memVet[hospital["사업장명"]]["address"] == hospital["소재지전체주소"]){
 		listItem.querySelector("button").classList="btn btn-user-sub"
+		listItem.querySelector(".phone").innerText = memVet[hospital["사업장명"]]["phone"]
 		if(memVet[hospital["사업장명"]]["partnership"] == true){
 			listItem.querySelector("img").style.display="inline-block"
 		}
@@ -229,9 +231,11 @@ function showModal(e){
 		// 소개글 설정
 		document.querySelector("#introduction").style.display = "block";
 		document.querySelector("#introduction").innerHTML = memVet[hospitalName]["introduction"];
-		// 로고 설정
-		document.querySelector("#logo").style.display = "block";
-		document.querySelector("#logo").innerHTML = memVet[hospitalName]["logo"];
+		if(memVet[hospitalName]["logo"] != null){
+			// 로고 설정
+			document.querySelector("#logo").style.display = "block";
+			document.querySelector("#logo").src = "/images/user/" + memVet[hospitalName]["logo"];
+		}
 		// 대표자 설정
 		document.querySelector("#representative").style.display = "inline-block";
 		document.querySelector("#representative").innerHTML = memVet[hospitalName]["representative"];

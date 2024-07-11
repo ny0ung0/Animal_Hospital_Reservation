@@ -3,8 +3,8 @@ proj4.defs("EPSG:2097","+proj=tmerc +lat_0=38 +lon_0=127.0028902777778 +k=1 +x_0
 // EPSG:4326 (WGS84) 정의
 proj4.defs("EPSG:4326", "+proj=longlat +datum=WGS84 +no_defs");
 
-var markers = [];
-var infoWindows = [];
+if (!window.markers) window.markers = [];
+if (!window.infoWindows) window.infoWindows = [];
 let memVet = {};
 let nearVet = [];
 
@@ -61,7 +61,7 @@ xhttp.onload = function() {
             let lng = wgs84[0];
             var hospitalPos = new naver.maps.LatLng(lat, lng);
 
-            //현재 내 위치와 거리가 1km미만인 병원 구하기
+            //현재 내 위치와 거리가 2km미만인 병원 구하기
             const projection = map.getProjection();
             const distance = projection.getDistance(currentPos, hospitalPos);
             return distance <= 2000;
@@ -110,8 +110,10 @@ function getMemVetList(params, map, currentPos) {
             let data = JSON.parse(this.responseText);
             data.forEach(hospital => {
                 let addr = hospital.address.replaceAll("//", " ");
+                
                 memVet[hospital.hospitalName] = {
 					"id":hospital.id,
+					"phone":hospital.phone,
                     "address": addr,
                     "avgReview": hospital.avgReview,
                     "bookmarked": hospital.bookmarked,
@@ -192,12 +194,13 @@ function addHospitalToList(map, currentPos) {
 						        '<img class="bookmark" style="width:35px;" src="/images/bookmark.png"/>' +
 						    '</div>' +
 						    '<div class="vet-body">' +
-						        '<span class="phone">' + phone + '</span>, <span class="address">' + hospital["소재지전체주소"] + '</span>' +
+						        '<span class="phone">' + phone + '</span> <span class="address">' + hospital["소재지전체주소"] + '</span>' +
 						    '</div>';
         document.querySelector(".inner").appendChild(listItem);
 
         if (memVet[hospital["사업장명"]] != null && memVet[hospital["사업장명"]]["address"] == hospital["소재지전체주소"]) {
             listItem.querySelector("button").classList = "btn btn-user-sub"
+            listItem.querySelector(".phone").innerText = memVet[hospital["사업장명"]]["phone"]
             if (memVet[hospital["사업장명"]]["partnership"] == true) {
                 listItem.querySelector("img").style.display="inline-block"
             }
@@ -206,10 +209,12 @@ function addHospitalToList(map, currentPos) {
         //리스트에 div클릭시 해당 마커로 지도 자동이동
          document.querySelector(".inner").addEventListener("click", function(e) {
         	if (e.target.closest(".vet")) { // Ensure that the clicked element is within the vet div
-            let markerIndex = e.target.closest(".vet").getAttribute("data-marker-index");
-            let marker = markers[markerIndex];
-            if (marker) {
-                map.panTo(marker.getPosition());
+	           	let markerIndex = e.target.closest(".vet").getAttribute("data-marker-index");
+	            let marker = markers[markerIndex];
+	            let infoWindow = infoWindows[markerIndex];
+	            if (marker && infoWindow) {
+	                map.panTo(marker.getPosition());
+	                infoWindow.open(map, marker);
 	            }
 	         }
 	     });
@@ -300,9 +305,11 @@ function showModal(e) {
 		// 소개글 설정
 		document.querySelector("#introduction").style.display = "block";
 		document.querySelector("#introduction").innerHTML = memVet[hospitalName]["introduction"];
-		// 로고 설정
-		document.querySelector("#logo").style.display = "block";
-		document.querySelector("#logo").src = "/images/user/" + memVet[hospitalName]["logo"];
+		if(memVet[hospitalName]["logo"] != null){
+			// 로고 설정
+			document.querySelector("#logo").style.display = "block";
+			document.querySelector("#logo").src = "/images/user/" + memVet[hospitalName]["logo"];
+		}
 		
 		// 대표자 설정
 		document.querySelector("#representative").style.display = "inline-block";
