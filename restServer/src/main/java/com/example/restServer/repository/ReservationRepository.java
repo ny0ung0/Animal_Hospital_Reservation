@@ -15,4 +15,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 	
 	@Query(value = "SELECT AVG(RATING) FROM reservation WHERE hospital_id = :hospitalId AND !ISNULL(RATING);", nativeQuery = true)
 	Long findAvgReview(@Param("hospitalId") Long hospitalId);
+	
+	
+//	SELECT * FROM reservation WHERE hospital_id=28 AND !isnull(review) ORDER BY updated_at DESC;
 }

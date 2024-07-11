@@ -188,6 +188,7 @@ function showDates(startTime, endTime, lunchStart, lunchEnd){
                 selectedSlot.style.backgroundColor = ""; 
             }
             e.target.style.backgroundColor = "#4C5CB3";
+            e.target.style.color = "white";
             
             selectedSlot = e.target;
         });
