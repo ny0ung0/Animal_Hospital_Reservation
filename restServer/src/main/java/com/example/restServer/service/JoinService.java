@@ -2,6 +2,7 @@ package com.example.restServer.service;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -195,7 +196,18 @@ public class JoinService {
 		memberRepository.save(member);
 		
 		//동물병원의사 처리
-		List<Doctor> doctors = doctorRepository.findAllByHospitalId(memberEditDto.getMemberId());
+		String doctor_ =memberEditDto.getDoctorNamesField();
+		doctorRepository.deleteByHospitalId(memberEditDto.getMemberId());
+		String[] doctors = doctor_.split("//");
+		if(!(doctors[0].equals(""))){
+			for(String d : doctors) {
+				System.out.println("doctor:"+d);
+				Doctor doctor = new Doctor();
+				doctor.setHospital(member);
+				doctor.setName(d);
+				doctorRepository.save(doctor);
+			}
+		}
 		
 		
 		//List<String> newDoctors = memberEditDto.getDoctorNamesField().
