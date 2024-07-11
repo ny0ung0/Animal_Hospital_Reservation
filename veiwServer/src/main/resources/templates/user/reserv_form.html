@@ -90,7 +90,9 @@ xhttp.onload = function() {
 	loadBasicInfo(data);
 }
 xhttp.open("GET", "http://localhost:9001/api/v1/user/reservation?id="+hosId, true);
-xhttp.setRequestHeader("username", 1);
+xhttp.setRequestHeader("MemberId", localStorage.getItem("MemberId"));
+xhttp.setRequestHeader("token", localStorage.getItem("token"));
+xhttp.setRequestHeader("role", localStorage.getItem("role"));
 xhttp.send();
 
 

@@ -153,7 +153,10 @@ function showModal(e) {
 
 function checkBookmark(e){
 	let hosId;
-	
+	if(!localStorage.getItem("MemberId")){
+		alert("로그인한 회원만 이용 가능한 서비스입니다. 로그인 후 이용해주세요");
+		return false;
+	}
 	if(!e.target.parentElement.parentElement.querySelector("button").getAttribute("data-id")){
 		hosId = e.target.parentElement.querySelector("#exampleModalLabel").getAttribute("data-id");
 	}else{
@@ -179,7 +182,9 @@ function checkBookmark(e){
 	     alert("성공적으로 즐겨찾기목록이 업데이트 되었습니다.")
 	  }
 	  xhttp.open("POST", "http://localhost:9001/api/v1/user/bookmark/"+isBookmarked+"/"+hosId, true);
-	  xhttp.setRequestHeader("username", 1);
+	  xhttp.setRequestHeader("MemberId", localStorage.getItem("MemberId"));
+	  xhttp.setRequestHeader("token", localStorage.getItem("token"));
+	  xhttp.setRequestHeader("role", localStorage.getItem("role"));
 	  xhttp.send();
 }
 

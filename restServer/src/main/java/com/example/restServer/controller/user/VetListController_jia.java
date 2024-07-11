@@ -33,8 +33,8 @@ public class VetListController_jia {
 	public ResponseEntity<List<MemVetDto>> vetList(@RequestParam Map<String, String> address, HttpServletRequest request) {
 		List<MemVetDto> memList = new ArrayList<>();
 		
-		if(request.getHeader("username") != null ) {
-			Long userId = Long.parseLong(request.getHeader("username"));
+		if(!request.getHeader("MemberId").equals("null")) {
+			Long userId = Long.parseLong(request.getHeader("MemberId"));
 			
 			address.forEach((key, value) -> {
 //	            System.out.println("Key: " + key + ", Value: " + value);
@@ -45,8 +45,6 @@ public class VetListController_jia {
 	            	List<MemVetDto> list = vetListService.getMemberVetList(key + "//"+gu+"%", userId);
 	            	memList.addAll(list);
 	            }
-	            System.out.println(memList);
-	            System.out.println(memList.size());
 	        });
 		}else {
 			address.forEach((key, value) -> {
@@ -58,12 +56,8 @@ public class VetListController_jia {
 	            	List<MemVetDto> list = vetListService.getMemberVetList(key + "//"+gu+"%", 0L);
 	            	memList.addAll(list);
 	            }
-	            System.out.println(memList);
-	            System.out.println(memList.size());
 	        });
 		}
-	
-		
 		
 		return ResponseEntity.ok(memList);
 	}
@@ -71,36 +65,28 @@ public class VetListController_jia {
 	@GetMapping("/near-vet-list")
 	public ResponseEntity<List<MemVetDto>> nearVetList(@RequestParam Map<String, String> address, HttpServletRequest request) {
 		List<MemVetDto> memList = new ArrayList<>();
-		System.out.println(address);
 	
-		if(request.getHeader("username") != null ) {
-			Long userId = Long.parseLong(request.getHeader("username"));
+	
+		if(!request.getHeader("MemberId").equals("null")) {
+			Long userId = Long.parseLong(request.getHeader("MemberId"));
 			
 			address.forEach((key, value) -> {
             	List<MemVetDto> list = vetListService.getMemberVetList(value+"%", userId);
             	memList.addAll(list);
-	            System.out.println(memList);
-	            System.out.println(memList.size());
 	        });
 		}else {
 			address.forEach((key, value) -> {
             	List<MemVetDto> list = vetListService.getMemberVetList(value+"%", 0L);
             	memList.addAll(list);
-	            System.out.println(memList);
-	            System.out.println(memList.size());
 	        });
 		}
-	
-		
 		
 		return ResponseEntity.ok(memList);
 	}
 	
 	@PostMapping("/user/bookmark/{isBookmarked}/{hosId}")
 	public ResponseEntity<String> isBookmarekd(@PathVariable("isBookmarked") Boolean isBookmarked, @PathVariable("hosId") Long hosId, HttpServletRequest request){
-		Long userId = Long.parseLong(request.getHeader("username"));
-		
-			
+		Long userId = Long.parseLong(request.getHeader("MemberId"));
         vetListService.isBookmarked(hosId, userId, isBookmarked);
        
 		return ResponseEntity.ok("");
