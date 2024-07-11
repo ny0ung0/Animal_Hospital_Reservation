@@ -23,7 +23,7 @@
             </div>
             <div class="mb-3">
                 <input type="checkbox" id="passwordCheckBox" name="passwordCheckBox" onchange="togglePasswordCheckBox()">
-                <label class="form-label">비밀번호</label>
+                <label class="form-label">비밀번호 변경</label>
                 <input type="password" name="passwordNew" class="form-control" readonly>
                 <input type="hidden" name="passwordOrigin">
                 <div>비밀번호는 5자 이상, 15자 이하, 영어, 숫자, 특수문자를 포함해야 합니다.</div>
@@ -64,7 +64,7 @@
         <div><input type="hidden" name="commonWeek" value="com" id="commonCheckbox">공통</div>
         <div class="d-flex">
           <div>오픈시간<br>
-            <select name="commonStartHour">
+            <select name="commonStartHour" onchange="updateCommonEndTimeOptions()">
               <option th:each="hour : ${#numbers.sequence(0, 23)}" th:value="${hour}" th:text="${hour < 10 ? '0' + hour : hour}"></option>
             </select>
             :
@@ -87,7 +87,7 @@
         </div>
         <div class="d-flex">
           <div>점심시간<br>
-            <select name="commonLunchStartHour">
+            <select name="commonLunchStartHour" onchange="updateCommonLunchEndTimeOptions()">
               <option th:each="hour : ${#numbers.sequence(0, 23)}" th:value="${hour}" th:text="${hour < 10 ? '0' + hour : hour}"></option>
             </select>
             :
@@ -126,7 +126,7 @@
         </div>
         <div class="d-flex">
           <div>오픈시간<br>
-            <select name="startHour_mon" disabled>
+            <select name="startHour_mon" onchange="updateEndTimeOptions('mon')" disabled>
               <option th:each="hour : ${#numbers.sequence(0, 23)}" th:value="${hour}" th:text="${hour < 10 ? '0' + hour : hour}"></option>
             </select>
             :
@@ -149,7 +149,7 @@
         </div>
         <div class="d-flex">
           <div>점심시간<br>
-            <select name="lunchStartHour_mon" disabled>
+            <select name="lunchStartHour_mon"  onchange="updateLunchEndTimeOptions('mon')" disabled>
               <option th:each="hour : ${#numbers.sequence(0, 23)}" th:value="${hour}" th:text="${hour < 10 ? '0' + hour : hour}"></option>
             </select>
             :
@@ -186,7 +186,7 @@
 					        
 					        <div class="d-flex">
 					          <div>오픈시간<br>
-					            <select name="startHour_tue" disabled>
+					            <select name="startHour_tue" onchange="updateEndTimeOptions('tue')" disabled>
 					              <option th:each="hour : ${#numbers.sequence(0, 23)}" th:value="${hour}" th:text="${hour < 10 ? '0' + hour : hour}"></option>
 					            </select>
 					            :
@@ -209,7 +209,7 @@
 					        </div>
 					        <div class="d-flex">
 					          <div>점심시간<br>
-					            <select name="lunchStartHour_tue" disabled>
+					            <select name="lunchStartHour_tue" onchange="updateLunchEndTimeOptions('tue')" disabled>
 					              <option th:each="hour : ${#numbers.sequence(0, 23)}" th:value="${hour}" th:text="${hour < 10 ? '0' + hour : hour}"></option>
 					            </select>
 					            :
@@ -246,7 +246,7 @@
 					        <input type="checkbox" onclick="copyCommonSchedule(this, 'wed')">공통 복사</div>
 					        <div class="d-flex">
 					          <div>오픈시간<br>
-					            <select name="startHour_wed" disabled>
+					            <select name="startHour_wed" onchange="updateEndTimeOptions('wed')" disabled>
 					              <option th:each="hour : ${#numbers.sequence(0, 23)}" th:value="${hour}" th:text="${hour < 10 ? '0' + hour : hour}"></option>
 					            </select>
 					            :
@@ -269,7 +269,7 @@
 					        </div>
 					        <div class="d-flex">
 					          <div>점심시간<br>
-					            <select name="lunchStartHour_wed" disabled>
+					            <select name="lunchStartHour_wed" onchange="updateLunchEndTimeOptions('wed')" disabled>
 					              <option th:each="hour : ${#numbers.sequence(0, 23)}" th:value="${hour}" th:text="${hour < 10 ? '0' + hour : hour}"></option>
 					            </select>
 					            :
@@ -306,8 +306,8 @@
 					        <input type="checkbox" onclick="copyCommonSchedule(this, 'thu')">공통 복사</div>
 					        <div class="d-flex">
 					          <div>오픈시간<br>
-					            <select name="startHour_thu" disabled>
-					              <option th:each="hour : ${#numbers.sequence(0, 23)}" th:value="${hour}" th:text="${hour < 10 ? '0' + hour : hour}"></option>
+					            <select name="startHour_thu" onchange="updateEndTimeOptions('thu')" disabled>
+					              <option th:each="hour : ${#numbers.sequence(0, 23)}" th:value="${hour}" th:text="${hour < 10 ? '0' + hour : hour}" ></option>
 					            </select>
 					            :
 					            <select name="startMinute_thu" disabled>
@@ -329,7 +329,7 @@
 					        </div>
 					        <div class="d-flex">
 					          <div>점심시간<br>
-					            <select name="lunchStartHour_thu" disabled>
+					            <select name="lunchStartHour_thu" onchange="updateLunchEndTimeOptions('thu')" disabled>
 					              <option th:each="hour : ${#numbers.sequence(0, 23)}" th:value="${hour}" th:text="${hour < 10 ? '0' + hour : hour}"></option>
 					            </select>
 					            :
@@ -366,7 +366,7 @@
 					        <input type="checkbox" onclick="copyCommonSchedule(this, 'fri')">공통 복사</div>
 					        <div class="d-flex">
 					          <div>오픈시간<br>
-					            <select name="startHour_fri" disabled>
+					            <select name="startHour_fri" onchange="updateEndTimeOptions('fri')" disabled>
 					              <option th:each="hour : ${#numbers.sequence(0, 23)}" th:value="${hour}" th:text="${hour < 10 ? '0' + hour : hour}"></option>
 					            </select>
 					            :
@@ -389,7 +389,7 @@
 					        </div>
 					        <div class="d-flex">
 					          <div>점심시간<br>
-					            <select name="lunchStartHour_fri" disabled>
+					            <select name="lunchStartHour_fri" onchange="updateLunchEndTimeOptions('fri')" disabled>
 					              <option th:each="hour : ${#numbers.sequence(0, 23)}" th:value="${hour}" th:text="${hour < 10 ? '0' + hour : hour}"></option>
 					            </select>
 					            :
@@ -426,7 +426,7 @@
 					        <input type="checkbox" onclick="copyCommonSchedule(this, 'sat')">공통 복사</div>
 					        <div class="d-flex">
 					          <div>오픈시간<br>
-					            <select name="startHour_sat" disabled>
+					            <select name="startHour_sat" onchange="updateEndTimeOptions('sat')" disabled>
 					              <option th:each="hour : ${#numbers.sequence(0, 23)}" th:value="${hour}" th:text="${hour < 10 ? '0' + hour : hour}"></option>
 					            </select>
 					            :
@@ -449,7 +449,7 @@
 					        </div>
 					        <div class="d-flex">
 					          <div>점심시간<br>
-					            <select name="lunchStartHour_sat" disabled>
+					            <select name="lunchStartHour_sat" onchange="updateLunchEndTimeOptions('sat')" disabled>
 					              <option th:each="hour : ${#numbers.sequence(0, 23)}" th:value="${hour}" th:text="${hour < 10 ? '0' + hour : hour}"></option>
 					            </select>
 					            :
@@ -486,7 +486,7 @@
 					        <input type="checkbox" onclick="copyCommonSchedule(this, 'sun')">공통 복사</div>
 					        <div class="d-flex">
 					          <div>오픈시간<br>
-					            <select name="startHour_sun" disabled>
+					            <select name="startHour_sun" onchange="updateEndTimeOptions('sun')" disabled>
 					              <option th:each="hour : ${#numbers.sequence(0, 23)}" th:value="${hour}" th:text="${hour < 10 ? '0' + hour : hour}"></option>
 					            </select>
 					            :
@@ -509,7 +509,7 @@
 					        </div>
 					        <div class="d-flex">
 					          <div>점심시간<br>
-					            <select name="lunchStartHour_sun" disabled>
+					            <select name="lunchStartHour_sun" onchange="updateLunchEndTimeOptions('sun')" disabled>
 					              <option th:each="hour : ${#numbers.sequence(0, 23)}" th:value="${hour}" th:text="${hour < 10 ? '0' + hour : hour}"></option>
 					            </select>
 					            :
@@ -546,7 +546,7 @@
 					        <input type="checkbox" onclick="copyCommonSchedule(this, 'hol')">공통 복사</div>
 					        <div class="d-flex">
 					          <div>오픈시간<br>
-					            <select name="startHour_hol" disabled>
+					            <select name="startHour_hol" onchange="updateEndTimeOptions('hol')" disabled>
 					              <option th:each="hour : ${#numbers.sequence(0, 23)}" th:value="${hour}" th:text="${hour < 10 ? '0' + hour : hour}"></option>
 					            </select>
 					            :
@@ -569,7 +569,7 @@
 					        </div>
 					        <div class="d-flex">
 					          <div>점심시간<br>
-					            <select name="lunchStartHour_hol" disabled>
+					            <select name="lunchStartHour_hol" onchange="updateLunchEndTimeOptions('hol')" disabled>
 					              <option th:each="hour : ${#numbers.sequence(0, 23)}" th:value="${hour}" th:text="${hour < 10 ? '0' + hour : hour}"></option>
 					            </select>
 					            :
@@ -916,40 +916,128 @@
     
   //예약 관련(받은정보 문자열로 반환)
 	  function gatherFormData() {
-const days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun', 'hol'];
-const jsonData = {};
+		const days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun', 'hol'];
+		const jsonData = {};
+		
+		days.forEach(day => {
+		  const accordionItem = document.querySelector(`input[name="week"][value="${day}"]`).closest('.accordion-item');
+		  const isChecked = accordionItem.querySelector(`input[name="week"][value="${day}"]`).checked;
+		
+		  if (isChecked) {
+		      const startHour = accordionItem.querySelector(`select[name="startHour_${day}"]`).value;
+		      const startMinute = accordionItem.querySelector(`select[name="startMinute_${day}"]`).value;
+		      const endHour = accordionItem.querySelector(`select[name="endHour_${day}"]`).value;
+		      const endMinute = accordionItem.querySelector(`select[name="endMinute_${day}"]`).value;
+		      const lunchStartHour = accordionItem.querySelector(`select[name="lunchStartHour_${day}"]`).value;
+		      const lunchStartMinute = accordionItem.querySelector(`select[name="lunchStartMinute_${day}"]`).value;
+		      const lunchEndHour = accordionItem.querySelector(`select[name="lunchEndHour_${day}"]`).value;
+		      const lunchEndMinute = accordionItem.querySelector(`select[name="lunchEndMinute_${day}"]`).value;
+		      const noLunch = accordionItem.querySelector(`input[name="lunch_${day}"][value="no"]`).checked;
+		
+		      const start = `${startHour}:${startMinute}`;
+		      const end = `${endHour}:${endMinute}`;
+		      const lunchStart = `${lunchStartHour}:${lunchStartMinute}`;
+		      const lunchEnd = `${lunchEndHour}:${lunchEndMinute}`;
+		
+		      const businessTime = `${start}//${end}`;
+		      const lunchTime = noLunch ? '점심시간 없음' : `${lunchStart}//${lunchEnd}`;
+		
+		      jsonData[day] = [`영업시간 : ${businessTime}`, `점심시간 : ${lunchTime}`];
+		  } else {
+		      jsonData[day] = ['영업시간 : 영업 안함'];
+		  }
+		});
+		
+		return jsonData;
+		}
+  		//영업시작시간 누르면 마감시간은 그 이후만 선택가능 
+	  	function updateEndTimeOptions(day) {
+	        const startHourSelect = document.querySelector(`select[name="startHour_${day}"]`);
+	        const startMinuteSelect = document.querySelector(`select[name="startMinute_${day}"]`);
+	        const endHourSelect = document.querySelector(`select[name="endHour_${day}"]`);
+	        const endMinuteSelect = document.querySelector(`select[name="endMinute_${day}"]`);
+	        
+	        const startHour = parseInt(startHourSelect.value);
+	        const startMinute = parseInt(startMinuteSelect.value);
 
-days.forEach(day => {
-  const accordionItem = document.querySelector(`input[name="week"][value="${day}"]`).closest('.accordion-item');
-  const isChecked = accordionItem.querySelector(`input[name="week"][value="${day}"]`).checked;
+	        // Clear end time options
+	        endHourSelect.innerHTML = '';
+	        
 
-  if (isChecked) {
-      const startHour = accordionItem.querySelector(`select[name="startHour_${day}"]`).value;
-      const startMinute = accordionItem.querySelector(`select[name="startMinute_${day}"]`).value;
-      const endHour = accordionItem.querySelector(`select[name="endHour_${day}"]`).value;
-      const endMinute = accordionItem.querySelector(`select[name="endMinute_${day}"]`).value;
-      const lunchStartHour = accordionItem.querySelector(`select[name="lunchStartHour_${day}"]`).value;
-      const lunchStartMinute = accordionItem.querySelector(`select[name="lunchStartMinute_${day}"]`).value;
-      const lunchEndHour = accordionItem.querySelector(`select[name="lunchEndHour_${day}"]`).value;
-      const lunchEndMinute = accordionItem.querySelector(`select[name="lunchEndMinute_${day}"]`).value;
-      const noLunch = accordionItem.querySelector(`input[name="lunch_${day}"][value="no"]`).checked;
+	        for (let hour = startHour; hour < 24; hour++) {
+	            const hourOption = document.createElement('option');
+	            hourOption.value = hour;
+	            hourOption.textContent = hour < 10 ? '0' + hour : hour;
+	            endHourSelect.appendChild(hourOption);
+	       }
+	  	}
+	  	//점심시간 선택하면 마감시간은 그이후만 선택가능
+	  	function updateLunchEndTimeOptions(day) {
+	  	    const lunchStartHourSelect = document.querySelector(`select[name="lunchStartHour_${day}"]`);
+	  	    const lunchStartMinuteSelect = document.querySelector(`select[name="lunchStartMinute_${day}"]`);
+	  	    const lunchEndHourSelect = document.querySelector(`select[name="lunchEndHour_${day}"]`);
+	  	    const lunchEndMinuteSelect = document.querySelector(`select[name="lunchEndMinute_${day}"]`);
 
-      const start = `${startHour}:${startMinute}`;
-      const end = `${endHour}:${endMinute}`;
-      const lunchStart = `${lunchStartHour}:${lunchStartMinute}`;
-      const lunchEnd = `${lunchEndHour}:${lunchEndMinute}`;
+	  	    const lunchStartHour = parseInt(lunchStartHourSelect.value);
+	  	    const lunchStartMinute = parseInt(lunchStartMinuteSelect.value);
 
-      const businessTime = `${start}//${end}`;
-      const lunchTime = noLunch ? '점심시간 없음' : `${lunchStart}//${lunchEnd}`;
+	  	    lunchEndHourSelect.innerHTML = '';
+	  	    
 
-      jsonData[day] = [`영업시간 : ${businessTime}`, `점심시간 : ${lunchTime}`];
-  } else {
-      jsonData[day] = ['영업시간 : 영업 안함'];
-  }
-});
+	  	    for (let hour = lunchStartHour; hour < 24; hour++) {
+	  	        const hourOption = document.createElement('option');
+	  	        hourOption.value = hour;
+	  	        hourOption.textContent = hour < 10 ? '0' + hour : hour;
+	  	        lunchEndHourSelect.appendChild(hourOption);
+	  	    }
 
-return jsonData;
-}
+	  	   
+	  	}
+	  	
+	  	function updateCommonEndTimeOptions() {
+	  	    const commonStartHourSelect = document.querySelector('select[name="commonStartHour"]');
+	  	    const commonStartMinuteSelect = document.querySelector('select[name="commonStartMinute"]');
+	  	    const commonEndHourSelect = document.querySelector('select[name="commonEndHour"]');
+	  	    const commonEndMinuteSelect = document.querySelector('select[name="commonEndMinute"]');
+
+	  	    const commonStartHour = parseInt(commonStartHourSelect.value);
+	  	    const commonStartMinute = parseInt(commonStartMinuteSelect.value);
+
+	  	    commonEndHourSelect.innerHTML = '';
+	  	    
+
+	  	    for (let hour = commonStartHour; hour < 24; hour++) {
+	  	        const hourOption = document.createElement('option');
+	  	        hourOption.value = hour;
+	  	        hourOption.textContent = hour < 10 ? '0' + hour : hour;
+	  	        commonEndHourSelect.appendChild(hourOption);
+	  	    }
+
+	  	   
+	  	}
+	  	
+	  	
+	  	function updateCommonLunchEndTimeOptions() {
+	  	    const commonLunchStartHourSelect = document.querySelector('select[name="commonLunchStartHour"]');
+	  	    const commonLunchStartMinuteSelect = document.querySelector('select[name="commonLunchStartMinute"]');
+	  	    const commonLunchEndHourSelect = document.querySelector('select[name="commonLunchEndHour"]');
+	  	    const commonLunchEndMinuteSelect = document.querySelector('select[name="commonLunchEndMinute"]');
+
+	  	    const commonLunchStartHour = parseInt(commonLunchStartHourSelect.value);
+	  	    const commonLunchStartMinute = parseInt(commonLunchStartMinuteSelect.value);
+
+	  	    commonLunchEndHourSelect.innerHTML = '';
+	  	    
+
+	  	    for (let hour = commonLunchStartHour; hour < 24; hour++) {
+	  	        const hourOption = document.createElement('option');
+	  	        hourOption.value = hour;
+	  	        hourOption.textContent = hour < 10 ? '0' + hour : hour;
+	  	        commonLunchEndHourSelect.appendChild(hourOption);
+	  	    }
+
+	  	   
+	  	}
     </script>
 </body>
 </html>
