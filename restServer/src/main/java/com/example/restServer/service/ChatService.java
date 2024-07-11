@@ -13,6 +13,7 @@ import com.example.restServer.entity.ChatRoom;
 import com.example.restServer.entity.Member;
 import com.example.restServer.repository.ChatRepository;
 import com.example.restServer.repository.ChatRoomRepository;
+import com.example.restServer.repository.MemberRepository;
 
 @Service
 public class ChatService {
@@ -21,6 +22,10 @@ public class ChatService {
 	
 	@Autowired
 	private ChatRepository chatRepo;
+	
+	@Autowired
+	private MemberRepository memberRepo;
+	
 
 	//채팅방 리스트 불러오기
 	//추후 유저에 따른 채팅방 분리
@@ -52,21 +57,24 @@ public class ChatService {
 	
 	
 	//메시지 전송
-//	public Chat saveMessage(Long sender, Long receiver, String message) {
-//		
-//		
-//		ChatRoom chatRoom = getOrCreateChatRoom(sender, receiver);
-//		
-//		
-//        Chat chatMessage = new Chat();
-//        chatMessage.setChatRoom(chatRoom);
-//        chatMessage.setSender(sender);
-//        chatMessage.setReceiver(receiver);
-//        chatMessage.setIsRead(false);
-//        chatMessage.setMessage(message);
-//        
-//        return chatRepo.save(chatMessage);
-//    }
+	public Chat saveMessage(Member sender, Member receiver, String message) {
+		
+		
+		ChatRoom chatRoom = getOrCreateChatRoom(sender, receiver);
+		
+		//Member receiver = memberRepo.findById(receiverId).get();
+	    //Member sender = memberRepo.findById(senderId).get();
+		
+		
+        Chat chatMessage = new Chat();
+        chatMessage.setChatRoom(chatRoom);
+        chatMessage.setSender(sender);
+        chatMessage.setReceiver(receiver);
+        chatMessage.setIsRead(false);
+        chatMessage.setMessage(message);
+        
+        return chatRepo.save(chatMessage);
+    }
 	
 	
 	public ChatRoom getChatRoom(Member user, Member hospital) {
@@ -76,6 +84,11 @@ public class ChatService {
 	
 	
 	private ChatRoom getOrCreateChatRoom(Member sender, Member receiver) {
+		
+		//Member receiver = memberRepo.findById(receiverId).get();
+	    //Member sender = memberRepo.findById(senderId).get();
+		
+		
         ChatRoom chatRoom = chatroomRepo.findByUserAndHospital(sender, receiver);
         if(chatRoom != null) {
         	return chatRoom;
