@@ -51,32 +51,34 @@
 		</div>
 		<div class="col-md-6">
 			<div class="row mb-2">
-				<div class="col-12 fs-5 fw-bold">반려동물 정보</div>
+				<div class="col-12 fs-5 fw-bold text-center">반려동물 정보</div>
 			</div>
 			<div class="row mb-2">
-				<img id="petPhoto" src="/images/" alt="반려동물사진">
+				<div class="mx-auto" style="max-width:300px;">
+					<img id="petPhoto" src="" class="img-thumbnail img-fluid" alt="반려동물사진">
+				</div>
 			</div>
-			<div class="row mb-2">
+			<div class="row mb-2 px-md-5">
 				<div class="col-4 text-secondary">종류</div>
 				<div class="col-8" id="petType">강아지</div>
 			</div>
-			<div class="row mb-2">
+			<div class="row mb-2 px-md-5">
 				<div class="col-4 text-secondary">이름</div>
 				<div class="col-8" id="petName">이름</div>
 			</div>
-			<div class="row mb-2">
+			<div class="row mb-2 px-md-5">
 				<div class="col-4 text-secondary">생년월일</div>
 				<div class="col-8" id="petBirthdate">2020.07.05(4세)</div>
 			</div>
-			<div class="row mb-2">
+			<div class="row mb-2 px-md-5">
 				<div class="col-4 text-secondary">성별</div>
 				<div class="col-8" id="petGender">여아</div>
 			</div>
-			<div class="row mb-2">
+			<div class="row mb-2 px-md-5">
 				<div class="col-4 text-secondary">중성화 여부</div>
 				<div class="col-8" id="petIsNeutred">Y</div>
 			</div>
-			<div class="row mb-2">
+			<div class="row mb-2 px-md-5">
 				<div class="col-4 text-secondary">몸무게</div>
 				<div class="col-8"><span id="petWeight">5kg</span>kg</div>
 			</div>
@@ -90,7 +92,7 @@
 	<button id="completeBtn" class="btn btn-main float-end me-1" onclick="statusComplete()">진료 완료</button>
 </div>
 
-<div>
+<div class="mb-5">
 	<a href="/hospital/reservList" class="btn btn-outline-secondary">목록 보기</a>
 </div>
 
@@ -115,16 +117,30 @@ fetch("http://localhost:9001/api/v1/hospital/reservation/" + reservId, {
 	let gender = "";
 	obj.pet.isNeutered ? isNeutered = "Y" : isNeutered = "N";
 	obj.pet.gender=="female" ? gender = "여아" : gender = "남아";
-	let dateTime = obj.reservationDatetime.replace("T", " ");
-	let birthdate = obj.pet.birthdate.split('T', 1);
+	let dateTime = obj.reservationDatetime[0] + "-" + obj.reservationDatetime[1] + "-" + obj.reservationDatetime[2] + " " + obj.reservationDatetime[3] + ":" + obj.reservationDatetime[4] + "0";
+	console.log(obj.pet.birthdate);
+	// 서버에서 받은 UTC 시간을 Date 객체로 변환
+    const utcDate = new Date(obj.pet.birthdate);
+   // console.log("utcDate", utcDate);
+    
+    // UTC 시간을 로컬 시간대로 변환
+    const localDate = new Date(utcDate.getTime() - new Date().getTimezoneOffset() * 60000);
+    //console.log("localDate", localDate);
+    
+    // 로컬 날짜를 ISO 포맷의 문자열로 변환하여 날짜 부분만 추출
+    let birthdate = localDate.toISOString().split('T')[0];
+	
+	let couponeChek ="";
+	
+	obj.coupon == null ? couponeChek = "사용 쿠폰 없음" : couponeChek = obj.coupon.name;
 	document.getElementById("status").innerHTML = obj.status;
 	document.getElementById("datetime").innerHTML = dateTime;
 	document.getElementById("username").innerHTML = obj.user.name;
 	document.getElementById("type").innerHTML = obj.type;
 	document.getElementById("memo").innerHTML = obj.memo;
-	document.getElementById("couponname").innerHTML = obj.coupon.name;
-	document.getElementById("point").innerHTML = obj.pointsUsed;
-	document.getElementById("petPhoto").innerHTML = obj.pet.photo;
+	document.getElementById("couponname").innerHTML = couponeChek;
+	document.getElementById("point").innerHTML = obj.pointsUsed == null ? 0 : obj.pointsUsed;
+	document.getElementById("petPhoto").setAttribute("src", "/images/user/"+obj.pet.photo);
 	document.getElementById("petType").innerHTML = obj.pet.type;
 	document.getElementById("petName").innerHTML = obj.pet.name;
 	document.getElementById("petBirthdate").innerHTML = birthdate;

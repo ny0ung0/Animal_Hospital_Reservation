@@ -1,5 +1,6 @@
 package com.example.restServer.repository;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,5 +18,8 @@ public interface UnavailableTimeRepository extends JpaRepository<UnavailableTime
 	
 	@Query(value="SELECT * FROM unavailable_time WHERE doctor_id= :doctorId AND DATE=:date AND TIME=:time;", nativeQuery=true)
 	UnavailableTime findTimeByDoctorIdNDatetime(@Param("doctorId")long doctorId, @Param("date") String string, @Param("time") String string2);
+
+	@Query(value="delete FROM unavailable_time WHERE doctor_id= :doctorId AND DATE=:date", nativeQuery=true)
+	void deleteAllByIdDate(@Param("doctorId")Long doctorId, @Param("date")Date date);
 	
 }

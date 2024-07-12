@@ -65,9 +65,9 @@ public class HospitalReservationController_js {
 
 	    Long memberId = Long.parseLong(memberIdHeader);
 	    
-		System.out.println("대기 예약정보가져오기");
+		System.out.println("대기 예약정보가져오기" + memberId);
 		List<Reservation> list = reservationRepo.findAllByHospitalIdAndStatus(memberId, "대기");
-		System.out.println(list);
+		System.out.println("대기" + list);
 		return new ResponseEntity<>(list, HttpStatus.OK);
 	}
 	
@@ -122,10 +122,10 @@ public class HospitalReservationController_js {
 		return new ResponseEntity<>(list, HttpStatus.OK);
 	}
 	
-	@GetMapping("/reservation/{id}")
-	public ResponseEntity<Reservation> getHospitalReservationById( @PathVariable("id") Long id){
+	@GetMapping("/reservation/{reservId}")
+	public ResponseEntity<Reservation> getHospitalReservationById( @PathVariable("reservId") Long reservId){
 		System.out.println("예약정보 디테일 가져오기");
-		Optional<Reservation> result = reservationRepo.findById(id);
+		Optional<Reservation> result = reservationRepo.findById(reservId);
 		Reservation reservation = result.get();
 		System.out.println(reservation);
 		return new ResponseEntity<>(reservation, HttpStatus.OK);
@@ -219,6 +219,7 @@ public class HospitalReservationController_js {
 		Doctor doctor = doctorRepo.findById(unavailableTimeDto.getDoctorId()).get();
 		Member member = memberRepo.findById(unavailableTimeDto.getHospitalId()).get();
 		System.out.println("date" + date);
+		unavailableTimeRepo.deleteAllByIdDate(unavailableTimeDto.getDoctorId(), date);
 		List<String> times =  unavailableTimeDto.getTime();
 		for(int i = 0 ; i < times.size(); i++) {
 			String timeStr = times.get(i);
@@ -232,13 +233,7 @@ public class HospitalReservationController_js {
 			unavailableTime.setHospital(member);
 			unavailableTime.setTime(time);
 			System.out.println(unavailableTime);
-			UnavailableTime unavailableTime2 = unavailableTimeRepo.findTimeByDoctorIdNDatetime(unavailableTimeDto.getDoctorId(), unavailableTimeDto.getDate(), times.get(i));
-			if(unavailableTime2 != null) {
-				unavailableTime.setId(unavailableTime2.getId());
-				unavailableTimeRepo.save(unavailableTime);
-			}else {
-				unavailableTimeRepo.save(unavailableTime);
-			} 	
+			unavailableTimeRepo.save(unavailableTime);
 		}
 		
 		return new ResponseEntity<>("아ㅏㅇ", HttpStatus.OK);
