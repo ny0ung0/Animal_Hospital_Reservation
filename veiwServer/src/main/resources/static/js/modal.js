@@ -145,9 +145,9 @@ function showModal(e) {
 		// 리뷰 설정
 		document.querySelector(".reviewContainer").style.display = "inline-block";
 		// 1. 평균별점 설정
-//		document.querySelector("#avgReview").innerHTML = memVet[hospitalName]["avgReview"] ? 
-//														memVet[hospitalName]["avgReview"] + "/5" 
-//														: "아직 별점이 없어요😅 예약 후, 첫 별점을 남겨보세요 :)";
+		document.querySelector("#avgReview").innerHTML = memVet[hospitalName]["avgReview"] ? 
+														memVet[hospitalName]["avgReview"] + "/5" + repeatCharacters("⭐", memVet[hospitalName]["avgReview"])
+														: "아직 별점이 없어요😅 예약 후, 첫 별점을 남겨보세요 :)";
 		// 2. 리뷰 뿌려주기
 		memVet[hospitalName]["review"].forEach(review =>{
 			let listItem = document.createElement("div");
@@ -163,16 +163,17 @@ function showModal(e) {
 	} 
 }
 
-function repeatCharacters(str) {
+function repeatCharacters(str, rate) {
     // 문자열의 길이만큼 반복
-    for (let i = 0; i < str.length; i++) {
+    for (let i = 0; i < rate; i++) {
         // 현재 문자를 문자열의 길이만큼 반복해서 출력
         let repeatedChar = '';
-        for (let j = 0; j < str.length; j++) {
+        for (let j = 0; j < rate; j++) {
             repeatedChar += str[i];
         }
-        console.log(repeatedChar);
-    }
+	return repeatedChar;
+}
+}
 
 function checkBookmark(e){
 	let hosId;
@@ -218,5 +219,4 @@ function makeReservation(e){
 		let hosId = e.target.closest("#exampleModal").querySelector("#exampleModalLabel").getAttribute("data-id");
 		location.href="/user/reserv_form?id="+hosId;
 	}
-}
 }
