@@ -55,12 +55,14 @@ public class ReservationService {
 	//보호자 아이디를 주면 => 반려동물 이름이랑 쿠폰여부랑 포인트
 	public Map<String, Object> getPetInfo(Long userId, Long hospitalId) {
 		//반려동물 리스트 가져오기
+		Member user = memRepo.findById(userId).get();
 		List<Pet> petList = petRepo.findAllByMemberId(userId);
 		List<Coupon> couponList = couponRepo.findCouponByUserAndHospital(userId,hospitalId);
 		Integer point = pointRepo.findByUserIdRemainingPoints(userId);
 		List<Integer> pointList = new ArrayList<>();
 		pointList.add(point);
 		Map<String, Object> map = new HashMap<>();
+		map.put("user", user);
 		map.put("petList", petList);
 		map.put("couponList", couponList);
 		map.put("pointList", pointList);
@@ -112,15 +114,19 @@ public class ReservationService {
         } catch (DateTimeParseException e) {
             e.printStackTrace();
         }
-		if(!formData.get("point").equals("") || !formData.get("point").equals("0")) {
-			reservation.setPointsUsed(Integer.parseInt(formData.get("point")));
-			Point usedPoint = new Point();
-			usedPoint.setUser(memRepo.findById(userId).get());
-			usedPoint.setUseDate(now);
-			usedPoint.setPointsUsed(Integer.parseInt(formData.get("point")));
-			usedPoint.setComment("예약포인트사용");
-			pointRepo.save(usedPoint);
-		}
+        
+        String point = formData.get("point");
+        
+        if (point != null && !point.equals("") && !point.equals("0")) {
+            reservation.setPointsUsed(Integer.parseInt(point));
+            Point usedPoint = new Point();
+            usedPoint.setUser(memRepo.findById(userId).get());
+            usedPoint.setUseDate(now);
+            usedPoint.setPointsUsed(Integer.parseInt(point));
+            usedPoint.setComment("예약포인트사용");
+            pointRepo.save(usedPoint);
+        }
+        
 		if(!formData.get("coupon").equals("쿠폰사용 안함")) {
 			Coupon coupon = couponRepo.findById(Long.parseLong(formData.get("coupon"))).get();
 			coupon.setIsUsed(true);
