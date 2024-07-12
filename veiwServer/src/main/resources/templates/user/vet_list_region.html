@@ -52,14 +52,14 @@
         	<div class="inner"></div> 
     	</div>
 	</div>
-		<!-- Modal -->
+	<!-- Modal -->
 	<div class="modal fade" id="exampleModal" tabindex="-1"
 		aria-labelledby="exampleModalLabel" aria-hidden="true">
 		<div class="modal-dialog modal-lg">
 			<div class="modal-content">
 				<div class="modal-header">
 					<h1 class="modal-title fs-5" id="exampleModalLabel">Modal
-						title</h1><img onclick="checkBookmark(event)" id="bookmarkImg" style="width:40px;" src="/images/bookmark.png">
+						title</h1><img onclick="checkBookmark(event)" id="bookmarkImg" style="width:40px; display:none;" src="/images/bookmark.png">
 					<button type="button" class="btn-close" data-bs-dismiss="modal"
 						aria-label="Close"></button>
 				</div>
@@ -72,8 +72,7 @@
 						<div class="modal-item img_container" style="display:none;"><img id="logo" src="" style="display:none;" alt="로고"/></div>
 						<div class='modal-item'><img style="width:35px; transform: rotate(-20deg);" src="/images/pin_p.svg"><span class="modal-sub-title">포인트제휴여부</span><span id="point" style="display:none;">포인트제휴여부</span></div>
 						<div class='modal-item'><span class="modal-sub-title">병원소개</span><span id="introduction" style="display:none;">병원소개</span></div>
-						<div class='modal-item'><span class="modal-sub-title">평균별점</span><span id="avgReview" style="display:none;">평균별점</span></div>
-						<div class='modal-item'><span class="modal-sub-title">리뷰</span><span id="review">리뷰</span></div>
+						<div class='modal-item'><span class="modal-sub-title">평균별점</span><span class="reviewContainer" style="display:none;"><span id="avgReview" >평균별점</span> <span id="review"></span></span></div>
 						<div class='modal-item'><span class="modal-sub-title">대표자이름</span><span id="representative" style="display:none;">대표자이름</span></div>
 						<div class='modal-item'><span class="modal-sub-title">이메일</span><span id="email" style="display:none;">이메일</span></div>
 						<div class='modal-item'><span class="modal-sub-title">사업자번호</span><span id="businessNumber" style="display:none;">사업자번호</span></div>
@@ -82,7 +81,7 @@
 		                        <button style="display:none; width: 100%;" class="btn btn-user-sub reservationBtn" onclick="makeReservation(event)">예약하기</button>
 		                    </div>
 		                    <div class="col-6 p-1">
-		                        <button style="display:none; width: 100%;" class="btn btn-hospital-sub chatBtn" onclick="">문의채팅</button>
+		                        <button style="display:none; width: 100%;" class="btn btn-hospital-sub chatBtn" onclick="chat(event)">문의채팅</button>
 		                    </div>
 	                	</div>
                 	</div>

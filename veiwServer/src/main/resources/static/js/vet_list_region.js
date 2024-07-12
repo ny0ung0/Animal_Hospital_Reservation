@@ -96,20 +96,20 @@ searchBtn.addEventListener("click", function() {
 	       	data.forEach(hospital =>{
        		let addr = hospital.address.replaceAll("//", " ")
        		memVet[hospital.hospitalName] = {
-											"id":hospital.id,
-											"phone":hospital.phone,
-											"address" : addr, 
-								       		"avgReview" : hospital.avgReview,
-								       		"bookmarked" : hospital.bookmarked,
-								       		"businessNumber" : hospital.businessNumber,
-								       		"email" : hospital.email,
-								       		"introduction" : hospital.introduction,
-								       		"logo" : hospital.logo,
-								       		"representative" : hospital.representative,
-								       		"partnership" : hospital.partnership, 
-								       		"businessHours" : hospital.businessHours};
+												"id":hospital.id,
+												"phone":hospital.phone,
+												"address" : addr, 
+									       		"avgReview" : hospital.avgReview,
+									       		"review" : hospital.review,
+									       		"bookmarked" : hospital.bookmarked,
+									       		"businessNumber" : hospital.businessNumber,
+									       		"email" : hospital.email,
+									       		"introduction" : hospital.introduction,
+									       		"logo" : hospital.logo,
+									       		"representative" : hospital.representative,
+									       		"partnership" : hospital.partnership, 
+									       		"businessHours" : hospital.businessHours};
 	       	})
-	       	console.log(memVet)
         }
         fetchHospitalData(guMap, Array.from(citiesWithNoGu));
     };
@@ -196,7 +196,6 @@ function addHospitalToList(hospital) {
 		}
 	}
 }
-
 
 
 function resetFilter(){
