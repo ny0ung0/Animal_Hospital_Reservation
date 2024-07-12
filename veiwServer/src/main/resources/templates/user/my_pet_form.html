@@ -30,8 +30,8 @@
 
 <div class="row">
     <div class="col-md-6 col-lg-3 mb-3">
-        <label for="petType" class="form-label">반려동물 종류</label>
-        <select id="petType" class="form-select" name="bigtype">
+        <label for="petBigType" class="form-label">반려동물 종류</label>
+        <select id="petBigType" class="form-select" name="bigtype">
             <option value="">선택하세요</option>
             <option value="강아지">강아지</option>
             <option value="고양이">고양이</option>
@@ -39,8 +39,8 @@
         </select>
     </div>
     <div class="col-md-6 col-lg-3 mb-3">
-        <label for="petBreed" class="form-label">반려동물 품종</label>
-        <select id="petBreed" class="form-select" name="type">
+        <label for="petType" class="form-label">반려동물 품종</label>
+        <select id="petType" class="form-select" name="type">
             <option value="">반려동물 종류를 먼저 선택하세요</option>
         </select>
     </div>
@@ -83,14 +83,18 @@
 </div>
 <div th:replace="~{user/footer :: footer}"></div>
 <script>
-document.getElementById('petType').addEventListener('change', function() {
-    const petBreed = document.getElementById('petBreed');
-    petBreed.innerHTML = ''; // 두 번째 셀렉트 박스를 초기화
+const token = localStorage.getItem("token");
+const MemberId = localStorage.getItem("MemberId");
 
-    const petType = this.value;
+
+document.getElementById('petBigType').addEventListener('change', function() {
+    const petType = document.getElementById('petType');
+    petType.innerHTML = ''; // 두 번째 셀렉트 박스를 초기화
+
+    const petBigType = this.value;
     let options = '';
 
-    if (petType === '강아지') {
+    if (petBigType === '강아지') {
         options = `
         	<option value="믹스견">믹스견</option>
             <option value="시바견">시바견</option>
@@ -106,7 +110,7 @@ document.getElementById('petType').addEventListener('change', function() {
             <option value="하운드">하운드</option>
             <option value="코카스파니엘">코카스파니엘</option>
         `;
-    } else if (petType === '고양이') {
+    } else if (petBigType === '고양이') {
         options = `
         	<option value="믹스묘">믹스묘</option>
             <option value="페르시안">페르시안</option>
@@ -120,7 +124,7 @@ document.getElementById('petType').addEventListener('change', function() {
             <option value="러시안블루">러시안블루</option>
             <option value="친칠라">친칠라</option>
         `;
-    } else if (petType === '기타') {
+    } else if (petBigType === '기타') {
         options = `
             <option value="토끼">토끼</option>
             <option value="햄스터">햄스터</option>
@@ -132,7 +136,7 @@ document.getElementById('petType').addEventListener('change', function() {
         `;
     }
 
-    petBreed.innerHTML = options;
+    petType.innerHTML = options;
 });
 
 
@@ -170,24 +174,26 @@ document.getElementById('regBtn').addEventListener('click', function() {
     formData.append('gender', document.querySelector('input[name="gender"]:checked').value);
     formData.append('isNeutered', document.querySelector('input[name="isNeutered"]:checked').value);
 
-    const xhttp = new XMLHttpRequest();
-    xhttp.open("POST", "http://localhost:9001/user/mypage/myPet", true);
-    //xhttp.setRequestHeader("jwtToken", localStorage.getItem("jwtToken"));
-    xhttp.onload = function() {
-        if (xhttp.status === 200) {
+    $.ajax({
+        url: "http://localhost:9001/user/mypage/myPet",
+        type: "POST",
+        data: formData,
+        headers: {
+            'Authorization': token,
+            'MemberId': MemberId
+        },
+        processData: false,
+        contentType: false,
+        success: function(response) {
             console.log("반려동물 등록 성공!");
             alert("나의 반려동물이 성공적으로 등록되었습니다.");
-            window.location.href="/user/myPetList";
-        } else {
+            window.location.href = "/user/myPetList";
+        },
+        error: function(xhr, status, error) {
             console.error("반려동물 등록 실패");
             alert("반려동물 등록에 실패했습니다.");
         }
-    };
-    xhttp.onerror = function() {
-        console.error("AJAX 요청 실패");
-        alert("반려동물 등록 중 오류가 발생했습니다.");
-    };
-    xhttp.send(formData);
+    });
 });
 </script>
 <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
