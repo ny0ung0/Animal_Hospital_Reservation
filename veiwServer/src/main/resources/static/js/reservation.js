@@ -28,10 +28,14 @@ function loadBasicInfo(data){
 	let vetNamesNIds = Object.keys(vetAvailInfo);
 	let basicHours = JSON.parse(vetInfo[Object.keys(vetInfo)[0]].businessHours);
 	let basicHoursArr = getBasicBusinessHours(basicHours);
+	
+console.log(userInfo)
 	  //병원 이름 넣기
 	  document.querySelector("#vetName").setAttribute("value", Object.keys(vetInfo)[0]);
+	  //로그인한 사용자 이름 넣어주기
+	  document.querySelector("input[name=user_name]").value = userInfo.user.name;
 	  //포인트정보넣기
-		  document.querySelector("#point").innerHTML = userInfo.pointList[0];
+	  document.querySelector("#point").innerHTML = userInfo.pointList[0] ? userInfo.pointList[0] : "0";
 	  if(!vetInfo[Object.keys(vetInfo)[0]].partnership == true){
 		  document.querySelector(".point_container").style.display="none";
 	  }
@@ -143,16 +147,15 @@ function convertingDate(basicHours, day){
 }
 
 function showDates(startTime, endTime, lunchStart, lunchEnd){
-	if(startTime == 0|| endTime == 0 || lunchStart == 0 ||lunchEnd == 0){
+	if(startTime == 0|| endTime == 0){
 		document.querySelector("#time_slot").innerHTML="<div class='msg'>해당일은 예약가능한 시간이 없습니다😥</div>"
 		return;
 	}
     // 시간을 분 단위로 변환
     let [startHour, startMinute] = startTime.split(":").map(Number);
     let [endHour, endMinute] = endTime.split(":").map(Number);
-    let [lunchStartHour, lunchStartMinute] = lunchStart.split(":").map(Number);
-    let [lunchEndHour, lunchEndMinute] = lunchEnd.split(":").map(Number);
-    
+    let [lunchStartHour, lunchStartMinute] = lunchStart != 0 ? lunchStart.split(":").map(Number) : [0,0];
+    let [lunchEndHour, lunchEndMinute] = lunchEnd != 0 ? lunchEnd.split(":").map(Number) : [0,0];
     let startTotalMinutes = startHour * 60 + startMinute;
     let endTotalMinutes = endHour * 60 + endMinute;
     let lunchStartTotalMinutes = lunchStartHour * 60 + lunchStartMinute;

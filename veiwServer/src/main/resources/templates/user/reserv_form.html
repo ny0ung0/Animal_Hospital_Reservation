@@ -42,7 +42,7 @@
 			<div id="time_slot">
 			</div>
 		</div>
-		<div class="mt-3 item"><div>보호자</div><input type="text" value="로그인한회원이름" disabled></div>
+		<div class="mt-3 item"><div>보호자</div><input type="text" name="user_name" value="" disabled></div>
 		<div class="mt-3 item">
 			<div>반려동물 선택*</div>
 			<select id="pet" class="form-select" aria-label="Default select example">
@@ -122,7 +122,9 @@ function submitForm(e){
 	     alert("예약이 성공적으로 완료되었습니다");
 	  }
 	  xhttp.open("POST", "http://localhost:9001/api/v1/user/reservation", true);
-	  xhttp.setRequestHeader("username", 1);
+	  xhttp.setRequestHeader("MemberId", localStorage.getItem("MemberId"));
+	  xhttp.setRequestHeader("token", localStorage.getItem("token"));
+	  xhttp.setRequestHeader("role", localStorage.getItem("role"));
 	  xhttp.setRequestHeader("Content-type", "application/json");
 	  xhttp.send(JSON.stringify(formData));
 }
