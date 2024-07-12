@@ -62,9 +62,13 @@
 
 
 <script>
+const token = localStorage.getItem("token");
 const memberId = document.querySelector("#memberId").value;
 fetch("http://localhost:9001/api/v1/manager/user/" + memberId, {
-	method : "GET"
+	method : "GET",
+	headers: {
+        'Authorization': `${token}`
+    }
 })
 .then(response => response.text())
 .then(data => {

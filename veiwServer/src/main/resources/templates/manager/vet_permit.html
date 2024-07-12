@@ -32,8 +32,12 @@
 	</div>
 </div>
 <script>
+const token = localStorage.getItem("token");
 fetch("http://localhost:9001/api/v1/manager/permit", {
-	method : "GET"
+	method : "GET",
+	headers: {
+        'Authorization': `${token}`
+    }
 })
 .then(response => response.text())
 .then(data => {
@@ -72,7 +76,10 @@ fetch("http://localhost:9001/api/v1/manager/permit", {
 function permitOk(event, id){
 	if(confirm("승인하시겠습니까?")){
 		fetch("http://localhost:9001/api/v1/manager/permit/" + id,{
-			method : "PUT"
+			method : "PUT",
+			headers: {
+		        'Authorization': `${token}`
+		    }
 		})
 		.then(response => response.text())
 		.then(data =>{
@@ -90,7 +97,10 @@ function permitOk(event, id){
 function permitNo(event, id){
 	if(confirm("반려하시겠습니까?")){
 		fetch("http://localhost:9001/api/v1/manager/permit/" + id,{
-			method : "DELETE"
+			method : "DELETE",
+			headers: {
+		        'Authorization': `${token}`
+		    }
 		})
 		.then(response => response.text())
 		.then(data =>{
