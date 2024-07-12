@@ -1,30 +1,21 @@
 package com.example.restServer.dto;
 
-import java.time.LocalDateTime;
-
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
-public class BookmarkDto  {
+public interface BookmarkDto  {
 
  
-    private Long id;
-    private Long hospotal_id;
-    private Long user_id;
+   Long getId();
+     Long getHospotal_id();
+     Long getUser_id();
     
-    private String hospital_name;
-    private String address;
-    private String phone;
+     String getHospital_name();
+     String getAddress();
+     String getPhone();
     
-    private LocalDateTime created_at;
-    private LocalDateTime updated_at;
+    //private LocalDateTime created_at;
+    //private LocalDateTime updated_at;
     
    
    

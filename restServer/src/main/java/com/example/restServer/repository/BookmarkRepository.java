@@ -16,7 +16,7 @@ public interface BookmarkRepository extends JpaRepository<Bookmark, Long> {
 	@Query(value = "SELECT * FROM bookmark WHERE hospital_id = :hospitalId AND user_id= :userId;", nativeQuery = true)
 	Optional<Bookmark> isBookmarked(@Param("hospitalId") Long hospitalId, @Param("userId") Long userId);
 	
-	@Query(value ="SELECT b.*, m.hospital_name, m.address, m.phone FROM bookmark b LEFT JOIN member m ON m.id = b.hospital_id WHERE b.user_id= :userId;", nativeQuery = true)
+	@Query(value ="SELECT b.id,b.hospital_id,b.user_id, m.hospital_name, m.address, m.phone FROM bookmark b LEFT JOIN member m ON m.id = b.hospital_id WHERE b.user_id= :userId;", nativeQuery = true)
 	List<BookmarkDto> findAllByUserId(@Param("userId") Long userId);
 
 }
