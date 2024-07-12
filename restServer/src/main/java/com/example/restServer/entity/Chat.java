@@ -43,7 +43,7 @@ public class Chat {
     
     private String type;
     
-    @CreatedDate
+
     private LocalDateTime sendDate;
     
 }

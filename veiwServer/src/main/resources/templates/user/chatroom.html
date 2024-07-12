@@ -70,7 +70,7 @@ socket.onopen = function(event) {
         type: 'join',
         sender: sender,
         receiver: receiver,
-        message : "채팅연결"
+        message : "채팅이 연결되었습니다."
     }));
 };
 
@@ -78,7 +78,7 @@ socket.onmessage = function(event) {
     const message = JSON.parse(event.data);
     const messageElement = document.createElement('div');
     messageElement.className = 'message';
-    messageElement.innerText = message.sender + ": " + message.message;
+    messageElement.innerText =  message.message;
     document.getElementById('chat-box').appendChild(messageElement);
     console.log(message.sender + " :  message");
 };

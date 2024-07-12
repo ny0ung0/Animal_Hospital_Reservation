@@ -31,11 +31,16 @@ public class ChatHandler extends TextWebSocketHandler{
 	@Autowired
 	private MemberRepository memberRepo;
 	
-	private ObjectMapper objectMapper = new ObjectMapper();
+	 private final ObjectMapper objectMapper;
+
+    @Autowired
+    public ChatHandler(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
 	
 	@Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
-		 // 1. WebSocket에서 수신한 메시지를 Chat 객체로 변환합니다.
+		// 1. WebSocket에서 수신한 메시지를 Chat 객체로 변환합니다.
 	    //Chat chatMessage = objectMapper.readValue(message.getPayload(), Chat.class);
 	    
 	    // WebSocket에서 수신한 메시지를 JsonNode로 변환합니다.

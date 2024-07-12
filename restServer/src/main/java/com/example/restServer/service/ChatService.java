@@ -1,5 +1,6 @@
 package com.example.restServer.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,7 +73,7 @@ public class ChatService {
         chatMessage.setReceiver(receiver);
         chatMessage.setIsRead(false);
         chatMessage.setMessage(message);
-        
+        chatMessage.setSendDate(LocalDateTime.now());
         return chatRepo.save(chatMessage);
     }
 	
