@@ -3,6 +3,7 @@ package com.example.restServer.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -12,7 +13,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.restServer.entity.Member;
 import com.example.restServer.entity.Support;
+import com.example.restServer.repository.MemberRepository;
 import com.example.restServer.repository.SupportRepository;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,9 +26,26 @@ public class SupportController_songi {
 	@Autowired
 	private SupportRepository supportRepo;
 	
+	@Autowired
+	private MemberRepository memberRepo;
+	
 	//문의등록
 	@PostMapping("/qna")
 	public ResponseEntity<?> qnaForm(HttpServletRequest request) {
+		
+	   String memberIdHeader = request.getHeader("MemberId");
+	   String authHeader = request.getHeader("Authorization");
+
+	   if (memberIdHeader == null || authHeader == null) {
+    	   String errorMessage = "MemberId 또는 Authorization 헤더가 없습니다.";
+    	    return ResponseEntity.badRequest().body(errorMessage);
+       }
+	       
+       Long memberId = Long.parseLong(memberIdHeader);
+	   Member member = memberRepo.findById(memberId).get();
+	   
+	   
+	       
 		String title = request.getParameter("title");
         String content = request.getParameter("content");
         String category = request.getParameter("category");
@@ -35,7 +55,7 @@ public class SupportController_songi {
         support.setTitle(title);
         support.setContent(content);
         support.setIsConfirmed(false);
-        //support.setMember(1);
+        support.setMember(member);
         
         supportRepo.save(support);
         
@@ -45,8 +65,15 @@ public class SupportController_songi {
 	
 	//문의 상세페이지
 	@GetMapping("/qna/{id}")
-	public ResponseEntity<?> qnaDetail(@PathVariable("id")Long id) {
-		
+	public ResponseEntity<?> qnaDetail(@PathVariable("id")Long id, HttpServletRequest request) {
+	   String memberIdHeader = request.getHeader("MemberId");
+	   String authHeader = request.getHeader("Authorization");
+
+	   if (memberIdHeader == null || authHeader == null) {
+    	   String errorMessage = "MemberId 또는 Authorization 헤더가 없습니다.";
+    	    return ResponseEntity.badRequest().body(errorMessage);
+       }  
+	       
 		Support qna = supportRepo.findById(id).get();
 		System.out.println("qna 상세정보 출력 : " + qna);
 		return ResponseEntity.ok(qna);
@@ -58,6 +85,15 @@ public class SupportController_songi {
 	//문의 수정
 	@PutMapping("/qna/{id}")
 	public ResponseEntity<?> qnaEdit(@PathVariable("id")Long id, HttpServletRequest request) {
+		String memberIdHeader = request.getHeader("MemberId");
+	   String authHeader = request.getHeader("Authorization");
+
+	   if (memberIdHeader == null || authHeader == null) {
+    	   String errorMessage = "MemberId 또는 Authorization 헤더가 없습니다.";
+    	    return ResponseEntity.badRequest().body(errorMessage);
+       }
+	       
+	       
 		String title = request.getParameter("title");
         String content = request.getParameter("content");
         
@@ -74,7 +110,16 @@ public class SupportController_songi {
 	
 	//문의 삭제
 	@DeleteMapping("/qna/{id}")
-	public ResponseEntity<?> qnaDelete(@PathVariable("id")Long id){
+	public ResponseEntity<?> qnaDelete(@PathVariable("id")Long id, HttpServletRequest request){
+	   String memberIdHeader = request.getHeader("MemberId");
+	   String authHeader = request.getHeader("Authorization");
+
+       if (memberIdHeader == null || authHeader == null) {
+    	   String errorMessage = "MemberId 또는 Authorization 헤더가 없습니다.";
+    	    return ResponseEntity.badRequest().body(errorMessage);
+       }
+	       
+	       
 		supportRepo.deleteById(id);
 		return ResponseEntity.ok("문의 삭제 성공");
 	}
