@@ -29,6 +29,7 @@ function loadBasicInfo(data){
 	let basicHours = JSON.parse(vetInfo[Object.keys(vetInfo)[0]].businessHours);
 	let basicHoursArr = getBasicBusinessHours(basicHours);
 	
+console.log(data)
 console.log(userInfo)
 	  //병원 이름 넣기
 	  document.querySelector("#vetName").setAttribute("value", Object.keys(vetInfo)[0]);
@@ -100,6 +101,7 @@ function getBasicBusinessHours(basicHours){
 }
 
 function convertToTimeZone(date, timeZone) {
+	
     // 시간대를 변환한 날짜를 생성
     const dateInTimeZone = new Date(date.toLocaleString('en-US', { timeZone }));
 
