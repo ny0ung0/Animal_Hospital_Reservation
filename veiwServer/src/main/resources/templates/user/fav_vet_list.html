@@ -32,10 +32,14 @@
 ready();
 	function ready(){
 		const favList = document.querySelector("#favList");
-		
+		favList.innerHTML='';
 		const xhttp = new XMLHttpRequest();
 		xhttp.onload = function() {
 			alert(this.responseText);
+			const list = JSON.parse(this.responseText);
+			list.forEach(vet =>{
+				favList.innerHTML += `<div name='item'><div name='top'>aa</div></div>`;
+			});
 			
 			
 		}
