@@ -249,10 +249,31 @@
         })
         .then(response => response.json())
         .then(data => {
+        	
             data.forEach(reserve => {
-                if (reserve.reservationDatetime.startsWith(selectedDate)) {
-                    let time1 = reserve.reservationDatetime.split("T")[1];
-                    reservationTime.push(time1.slice(0, 5));
+            	console.log(reserve.reservationDatetime);
+            	console.log(reserve.reservationDatetime[1].toString().length);
+            	let dateIndex1 = "";
+            	if(reserve.reservationDatetime[1].toString().length === 1){
+            		dateIndex1 = "0" + reserve.reservationDatetime[1];
+            	}else{
+            		dateIndex1 = reserve.reservationDatetime[1];
+            	}
+            	
+            	let dateIndex4 = "";
+            	if(reserve.reservationDatetime[4].toString().length === 1){
+            		dateIndex4 = reserve.reservationDatetime[4] + "0";
+            	}else{
+            		dateIndex4 = reserve.reservationDatetime[4];
+            	}
+            	
+            	let newDate = reserve.reservationDatetime[0] + "-" + dateIndex1 + "-" + reserve.reservationDatetime[2];
+            	let newTime = reserve.reservationDatetime[3] + ":" + dateIndex4;
+            	console.log(newDate);
+            	console.log(newTime);
+                if (newDate.startsWith(selectedDate)) {
+                	
+                    reservationTime.push(newTime.slice(0, 5));
                     
                 }
             });
