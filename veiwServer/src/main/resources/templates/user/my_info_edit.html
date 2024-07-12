@@ -29,7 +29,7 @@
 			<div class="mb-3">
 				<input type="checkbox" id="passwordCheckBox" onchange="togglePasswordCheckBox()">
  				<label class="form-label">비밀번호</label> 
-				<input type="password" name="password" class="form-control" disabled>
+				<input type="password" name="passwordNew" class="form-control" disabled>
 				<input type="hidden" name="passwordOrigin">
 				<div>비밀번호는 5자 이상, 15자 이하, 영어, 숫자, 특수문자를 포함해야 합니다.</div>
 			</div>
@@ -126,21 +126,20 @@
 		}
 		const frm = document.querySelector("#frmEditUser");
 		const passwordChecked = document.querySelector("#passwordCheckBox").checked;
-		var pw='';
-		if(passwordChecked){
-			pw=frm.password.value;
-		}else{
-			pw=frm.passwordOrigin.value;
-		}
+		
+		
 		const frm_ = {
 			"memberId": localStorage.getItem("MemberId"),
 			"username": frm.username.value,
-			"password": pw,
+			
 			"name": frm.name.value,
 			"email": frm.email.value,
 			"address": frm.address1.value + "//" + frm.address2.value + "//" + frm.detailAddress.value,
 			"phone": frm.phone.value,
-			"nickname": frm.nickname.value
+			"nickname": frm.nickname.value,
+			"passwordCheckBox" : frm.passwordCheckBox.value,
+			"passwordOrigin" : frm.passwordOrigin.value,
+			"passwordNew" : frm.passwordNew.value
 			
 		};
 		const data = JSON.stringify(frm_);
@@ -196,7 +195,7 @@
 			return false;
 		}
 		if(document.querySelector("#passwordCheckBox").checked){
-			const password = frm.password.value.trim();
+			const password = frm.passwordNew.value.trim();
 			if (!validatePassword(password)) {
 				alert("비밀번호는 5자 이상 15자 이하의 길이여야 하며, 영어, 숫자, 특수문자를 포함해야 합니다.");
 				frm.password.focus();
@@ -240,7 +239,7 @@
 	function togglePasswordCheckBox(){
 		const isChecked = document.querySelector("#passwordCheckBox").checked;
 	    
-	    const password = document.querySelector('input[name=password]')
+	    const password = document.querySelector('input[name=passwordNew]')
 	    
 	   	password.disabled = !isChecked;
 	   
