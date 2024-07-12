@@ -132,6 +132,8 @@ function loadData() {
     .catch(error => console.error('Error:', error))
 }
 
+
+
 function saveData() {
   const data = {
     Id: userId,
@@ -167,10 +169,10 @@ function saveData() {
 function checkAndGiveTickets() {
   const currentHour = new Date().getHours()
   const now = new Date()
-
   if (currentHour >= 7 && currentHour < 9) {
     if (lastGivenTimeMorning) {
       const lastGivenDate = new Date(lastGivenTimeMorning)
+      
       if (lastGivenDate.getDate() === now.getDate()) {
         return // 이미 현재 시간대에 티켓을 지급받았으므로 더 이상 처리하지 않음
       }
@@ -180,6 +182,8 @@ function checkAndGiveTickets() {
   } else if (currentHour >= 12 && currentHour < 15) {
     if (lastGivenTimeAfternoon) {
       const lastGivenDate = new Date(lastGivenTimeAfternoon)
+      console.log(lastGivenDate.getDate)
+      console.log(now.getDate)
       if (lastGivenDate.getDate() === now.getDate()) {
         return // 이미 현재 시간대에 티켓을 지급받았으므로 더 이상 처리하지 않음
       }
