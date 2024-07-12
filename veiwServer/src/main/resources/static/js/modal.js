@@ -189,10 +189,10 @@ function checkBookmark(e){
 }
 
 function makeReservation(e){
-	if(localStorage.getItem("username") == null || localStorage.getItem("role") != "ROLE_USER"){
+	if(localStorage.getItem("MemberId") == null || localStorage.getItem("role") != "ROLE_USER"){
 		alert("로그인한 회원만 사용할 수 있는 기능입니다. 로그인 후 이용해주세요")
 	}else{
-		let id = e.target.parentElement.querySelector("#hospital_id").innerText;
-		location.href="/user/reserv_form?id="+id;
+		let hosId = e.target.closest("#exampleModal").querySelector("#exampleModalLabel").getAttribute("data-id");
+		location.href="/user/reserv_form?id="+hosId;
 	}
 }
