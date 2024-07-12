@@ -2,7 +2,6 @@ package com.example.restServer.service;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -150,7 +149,6 @@ public class JoinService {
 	
 	//유저정보수정
 	public void updateEditUserInfo(MemberEditDto memberEditDto) {
-		
 		System.out.println("병원정보수정서비스 들어옴");
 		if(memberEditDto.getPasswordCheckBox()!=null) {
 			System.out.println("병원정보수정서비스 새 비밀번호 if문 들어옴");
@@ -197,18 +195,7 @@ public class JoinService {
 		memberRepository.save(member);
 		
 		//동물병원의사 처리
-		String doctor_ =memberEditDto.getDoctorNamesField();
-		doctorRepository.deleteByHospitalId(memberEditDto.getMemberId());
-		String[] doctors = doctor_.split("//");
-		if(!(doctors[0].equals(""))){
-			for(String d : doctors) {
-				System.out.println("doctor:"+d);
-				Doctor doctor = new Doctor();
-				doctor.setHospital(member);
-				doctor.setName(d);
-				doctorRepository.save(doctor);
-			}
-		}
+		List<Doctor> doctors = doctorRepository.findAllByHospitalId(memberEditDto.getMemberId());
 		
 		
 		//List<String> newDoctors = memberEditDto.getDoctorNamesField().
