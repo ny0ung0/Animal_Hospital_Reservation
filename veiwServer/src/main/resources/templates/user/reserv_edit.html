@@ -42,7 +42,7 @@
 			<div id="time_slot">
 			</div>
 		</div>
-		<div class="mt-3 item"><div>보호자</div><input type="text" value="로그인한회원이름" disabled></div>
+		<div class="mt-3 item"><div>보호자</div><input name="user_name" type="text" disabled></div>
 		<div class="mt-3 item">
 			<div>반려동물 선택*</div>
 			<select id="pet" class="form-select" aria-label="Default select example">
@@ -105,12 +105,20 @@ function loadReservationInfo(data){
 	let reservInfo = data[3].reservation;
 	let basicHours = JSON.parse(vetInfo[Object.keys(vetInfo)[0]].businessHours);
 	let basicHoursArr = getBasicBusinessHours(basicHours);
-	selectedDate = convertToTimeZone(reservInfo.reservationDatetime,'Asia/Seoul')
+	
+	// 배열에서 년, 월, 일, 시, 분을 추출
+    const [year, month, day, hour, minute] = reservInfo.reservationDatetime;
+    // Date 객체 생성 (월은 0부터 시작하므로 month - 1)
+    const date = new Date(year, month - 1, day, hour, minute);
+
+    console.log(date)
+	selectedDate = convertToTimeZone(date,'Asia/Seoul');
 	selectedDay = new Date(selectedDate).getDay();
 	selectedVet = reservInfo.doctor.id
-	console.log(reservInfo.reservationDatetime.slice(11, -3))
-	console.log(reservInfo.coupon)
-	console.log(reservInfo.pointsUsed )
+
+
+	
+
 	 //병원 이름 넣기
 	 document.querySelector("#vetName").setAttribute("value", Object.keys(vetInfo)[0]);
 	 //포인트정보넣기
@@ -137,8 +145,11 @@ function loadReservationInfo(data){
 	 //예약날짜 넣기
 	 document.querySelector("input[type=date]").value = selectedDate;
 	 
+	 console.log(vetAvailInfo)
+	 console.log(selectedDay)
 	 loadTimeslot(basicHoursArr,vetAvailInfo);
-	 selectedTime = reservInfo.reservationDatetime.slice(11, -3);
+	 
+	 selectedTime = hour.toString().padStart(2, '0')+":"+minute.toString().padStart(2, '0');
 	 selectedSlot = oriSelectedTimeslot;
 	 oriSelectedTimeslot = document.querySelector("span[value='"+ selectedTime +"']")
 	 oriSelectedTimeslot.style.backgroundColor= "#84e3d0";
