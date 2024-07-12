@@ -114,9 +114,6 @@ function showModal(e) {
 		// 영업시간 설정
 		document.querySelector("#working_hour").style.display = "block";
 		showBusinessHour(hoursArr);
-		// 리뷰 설정
-		document.querySelector("#review").style.display = "inline-block";
-		document.querySelector("#review").innerHTML = memVet[hospitalName]["review"];
 		// 예약하기 버튼 설정
 		document.querySelector(".reservationBtn").style.display = "block";
 		// 채팅 버튼 설정
@@ -145,11 +142,37 @@ function showModal(e) {
 		// 대표자 설정
 		document.querySelector("#representative").style.display = "inline-block";
 		document.querySelector("#representative").innerHTML = memVet[hospitalName]["representative"];
-		// 평균별점 설정
-		document.querySelector("#avgReview").style.display = "inline-block";
-		document.querySelector("#avgReview").innerHTML = memVet[hospitalName]["avgReview"];
+		// 리뷰 설정
+		document.querySelector(".reviewContainer").style.display = "inline-block";
+		// 1. 평균별점 설정
+//		document.querySelector("#avgReview").innerHTML = memVet[hospitalName]["avgReview"] ? 
+//														memVet[hospitalName]["avgReview"] + "/5" 
+//														: "아직 별점이 없어요😅 예약 후, 첫 별점을 남겨보세요 :)";
+		// 2. 리뷰 뿌려주기
+		memVet[hospitalName]["review"].forEach(review =>{
+			let listItem = document.createElement("div");
+			listItem.classList = "review_item"
+			listItem.innerHTML = review.review + " ,  " + review.type + " by  " 
+			+ review.doctor.name + " at " + review.updatedAt[0]+"-"+ review.updatedAt[1]+"-"
+			+ review.updatedAt[2];
+			document.querySelector("#review").appendChild(listItem);
+		})
+		
+		
+		
 	} 
 }
+
+function repeatCharacters(str) {
+    // 문자열의 길이만큼 반복
+    for (let i = 0; i < str.length; i++) {
+        // 현재 문자를 문자열의 길이만큼 반복해서 출력
+        let repeatedChar = '';
+        for (let j = 0; j < str.length; j++) {
+            repeatedChar += str[i];
+        }
+        console.log(repeatedChar);
+    }
 
 function checkBookmark(e){
 	let hosId;
@@ -183,7 +206,7 @@ function checkBookmark(e){
 	  }
 	  xhttp.open("POST", "http://localhost:9001/api/v1/user/bookmark/"+isBookmarked+"/"+hosId, true);
 	  xhttp.setRequestHeader("MemberId", localStorage.getItem("MemberId"));
-	  xhttp.setRequestHeader("token", localStorage.getItem("token"));
+	  xhttp.setRequestHeader("Authorization", localStorage.getItem("token"));
 	  xhttp.setRequestHeader("role", localStorage.getItem("role"));
 	  xhttp.send();
 }
@@ -195,4 +218,5 @@ function makeReservation(e){
 		let hosId = e.target.closest("#exampleModal").querySelector("#exampleModalLabel").getAttribute("data-id");
 		location.href="/user/reserv_form?id="+hosId;
 	}
+}
 }

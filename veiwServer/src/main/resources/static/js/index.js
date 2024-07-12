@@ -135,7 +135,7 @@ xhttp.onload = function() {
 }
 xhttp.open("GET", "/json/vet_list.json", true);
 xhttp.setRequestHeader("MemberId", localStorage.getItem("MemberId"));
-xhttp.setRequestHeader("token", localStorage.getItem("token"));
+xhttp.setRequestHeader("Authorization", localStorage.getItem("token"));
 //xhttp.setRequestHeader("role", localStorage.getItem("role"));
 xhttp.send();
 
@@ -145,6 +145,7 @@ function getMemVetList(params, map, currentPos) {
         if (this.status === 200) {
             let data = JSON.parse(this.responseText);
             data.forEach(hospital => {
+				
                 let addr = hospital.address.replaceAll("//", " ");
                 
                 memVet[hospital.hospitalName] = {
@@ -152,6 +153,7 @@ function getMemVetList(params, map, currentPos) {
 					"phone":hospital.phone,
                     "address": addr,
                     "avgReview": hospital.avgReview,
+                    "review" : hospital.review,
                     "bookmarked": hospital.bookmarked,
                     "businessNumber": hospital.businessNumber,
                     "email": hospital.email,
@@ -161,6 +163,7 @@ function getMemVetList(params, map, currentPos) {
                     "partnership": hospital.partnership,
                     "businessHours": hospital.businessHours
                 };
+                
             });
         }
         addHospitalToList(map, currentPos);
@@ -168,13 +171,13 @@ function getMemVetList(params, map, currentPos) {
     const url = "http://localhost:9001/api/v1/near-vet-list?" + params.toString();
     xhttp.open("GET", url, true);
     xhttp.setRequestHeader("MemberId", localStorage.getItem("MemberId"));
-    xhttp.setRequestHeader("token", localStorage.getItem("token"));
+    xhttp.setRequestHeader("Authorization", localStorage.getItem("token"));
 //    xhttp.setRequestHeader("role", localStorage.getItem("role"));
     xhttp.send();
 }
 
 function addHospitalToList(map, currentPos) {
-//    console.log(memVet)
+    console.log(memVet)
     nearVet.forEach((hospital,index) => {
         let x = parseFloat(hospital["좌표정보(x)"]);
         let y = parseFloat(hospital["좌표정보(y)"]);

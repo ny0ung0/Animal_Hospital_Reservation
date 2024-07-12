@@ -91,7 +91,7 @@ xhttp.onload = function() {
 }
 xhttp.open("GET", "http://localhost:9001/api/v1/user/reservation?id="+hosId, true);
 xhttp.setRequestHeader("MemberId", localStorage.getItem("MemberId"));
-xhttp.setRequestHeader("token", localStorage.getItem("token"));
+xhttp.setRequestHeader("Authorization", localStorage.getItem("token"));
 xhttp.setRequestHeader("role", localStorage.getItem("role"));
 xhttp.send();
 
@@ -123,7 +123,7 @@ function submitForm(e){
 	  }
 	  xhttp.open("POST", "http://localhost:9001/api/v1/user/reservation", true);
 	  xhttp.setRequestHeader("MemberId", localStorage.getItem("MemberId"));
-	  xhttp.setRequestHeader("token", localStorage.getItem("token"));
+	  xhttp.setRequestHeader("Authorization", localStorage.getItem("token"));
 	  xhttp.setRequestHeader("role", localStorage.getItem("role"));
 	  xhttp.setRequestHeader("Content-type", "application/json");
 	  xhttp.send(JSON.stringify(formData));

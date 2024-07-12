@@ -1,6 +1,8 @@
 package com.example.restServer.dto;
 
-import java.time.LocalDateTime;
+import java.util.List;
+
+import com.example.restServer.entity.Reservation;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,6 +27,7 @@ public class MemVetDto {
     private String email;
     private boolean bookmarked;
     private Long avgReview;
+    private List<Reservation> review;
 
 
 }

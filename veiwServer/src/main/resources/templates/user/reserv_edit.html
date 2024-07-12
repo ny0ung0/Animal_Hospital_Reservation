@@ -94,7 +94,7 @@ xhttp.onload = function() {
 }
 xhttp.open("GET", "http://localhost:9001/api/v1/user/reservation/"+reservId, true);
 xhttp.setRequestHeader("MemberId", localStorage.getItem("MemberId"));
-xhttp.setRequestHeader("token", localStorage.getItem("token"));
+xhttp.setRequestHeader("Authorization", localStorage.getItem("token"));
 xhttp.setRequestHeader("role", localStorage.getItem("role"));
 xhttp.send();
 
@@ -110,15 +110,9 @@ function loadReservationInfo(data){
     const [year, month, day, hour, minute] = reservInfo.reservationDatetime;
     // Date 객체 생성 (월은 0부터 시작하므로 month - 1)
     const date = new Date(year, month - 1, day, hour, minute);
-
-    console.log(date)
 	selectedDate = convertToTimeZone(date,'Asia/Seoul');
 	selectedDay = new Date(selectedDate).getDay();
 	selectedVet = reservInfo.doctor.id
-
-
-	
-
 	 //병원 이름 넣기
 	 document.querySelector("#vetName").setAttribute("value", Object.keys(vetInfo)[0]);
 	 //포인트정보넣기
@@ -186,7 +180,7 @@ function submitForm(e){
 	    }
 	  xhttp.open("PUT", "http://localhost:9001/api/v1/user/reservation", true);
 	  xhttp.setRequestHeader("MemberId", localStorage.getItem("MemberId"));
-	  xhttp.setRequestHeader("token", localStorage.getItem("token"));
+	  xhttp.setRequestHeader("Authorization", localStorage.getItem("token"));
 	  xhttp.setRequestHeader("role", localStorage.getItem("role"));
 	  xhttp.setRequestHeader("Content-type", "application/json");
 	  xhttp.send(JSON.stringify(formData));

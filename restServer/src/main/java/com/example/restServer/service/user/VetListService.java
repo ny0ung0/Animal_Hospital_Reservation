@@ -46,6 +46,7 @@ public class VetListService {
 			
 			reserveRepo.findAvgReview(hospitalId);
 			mv.setAvgReview(reserveRepo.findAvgReview(hospitalId));
+			mv.setReview(reserveRepo.findReservWithReview(hospitalId));
 			
 			if(userId != 0L) {
 				if(!bookmarkRepo.isBookmarked(hospitalId, userId).isEmpty()) {
