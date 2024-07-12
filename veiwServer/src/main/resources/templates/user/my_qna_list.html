@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html class="h-100" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>견강할고양</title>
+<script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+<link href="/css/style.css" rel="stylesheet">
+<link href="/css/myPetList.css" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Jua&display=swap" rel="stylesheet">
+</head>
+<body class="d-flex flex-column h-100">
+<div th:replace="~{user/header :: header}"></div>
+	<div class="container-xl">
+	<h1 class="mt-3 mt-md-5 mb-3 mb-md-3">문의내역</h1>
+	<hr>
+	<div id="qnaList" class="row">
+		<div class="col-md-6 mb-3">
+			<div class="border rounded p-3 p-md-4 position-relative">
+				<div class="mb-2">#1</div>
+				<div class="mb-2">제목</div>
+				<div class="d-flex">
+					<div class="badge rounded-pill text-bg-info text-white p-2 px-4">답변 완료</div>
+					<div class="badge rounded-pill text-bg-light p-2 px-4">미답변</div>
+					<div class="ms-auto text-secondary">2024-07-10</div>
+				</div>
+				<div class="position-absolute" style="top:1.5rem; right:1.5rem;">
+					<button class="btn btn-sm btn-user-sub">수정</button>
+					<button class="btn btn-sm btn-secondary">삭제</button>
+				</div>
+				
+			</div>
+		</div>
+	</div>
+	</div>
+<div th:replace="~{user/footer :: footer}"></div>
+
+
+<script>
+const token = localStorage.getItem("token");
+const MemberId = localStorage.getItem("MemberId");
+
+
+$(document).ready(function() {
+
+	console.log("memId 출력 : " + MemberId);
+    $.ajax({
+        url: 'http://localhost:9001/user/mypage/qna-list',
+        type: 'GET',
+        dataType: 'json',
+        headers: {
+            'Authorization': token,
+            'MemberId': MemberId
+        },
+        success: function(response) {
+            console.log(response);
+			if(response == null){
+				console.log("데이터 없음");
+			}else{
+				console.log(response.length);
+				let cnt = response.length;
+				response.forEach(qna =>{
+	            	console.log(qna.reply == null);
+	            	let replyCheck = '';
+	            	if(qna.reply == null){
+	            		replyCheck = '<div class="badge rounded-pill text-bg-light p-2 px-4">미답변</div>';
+	            	}else{
+	            		replyCheck = '<div class="badge rounded-pill text-bg-info text-white p-2 px-4">답변 완료</div>';
+	            	}
+	            	
+	            	document.querySelector("#qnaList").innerHTML += 
+	            		'<div class="col-md-6 mb-3">'
+			    			+'<div class="border rounded p-3 p-md-4 position-relative">'
+			    				+'<div class="mb-2">#' + cnt + '</div>'
+			    				+'<div class="mb-2">' + qna.title + '</div>'
+			    				+'<div class="d-flex">'
+			    					+ replyCheck
+			    					+'<div class="ms-auto text-secondary">' + '여기에 날짜' + '</div>'
+			    				+'</div>'
+			    				+'<div class="position-absolute" style="top:1.5rem; right:1.5rem;">'
+			    					+'<button class="btn btn-sm btn-user-sub me-2">수정</button>'
+			    					+'<button class="btn btn-sm btn-secondary">삭제</button>'
+			    				+'</div>'
+			    			+'</div>'
+			    		+'</div>';
+	            	cnt--;
+	            });
+			}
+            
+            
+        },
+        error: function(xhr, status, error) {
+            console.error('Error fetching pet data:', error);
+        }
+    });
+});
+
+function edit(id) {
+	 window.location.href = '/user/myPetEdit?id=' + id;
+}
+
+function deletePet(id) {
+        
+    $.ajax({
+        url: 'http://localhost:9001/user/mypage/myPet/'+id,
+        type: 'DELETE',
+        headers: {
+            'Authorization': token,
+            'MemberId': MemberId
+        },
+        success: function(response) {
+            alert(response);
+            window.location.reload();
+        },
+        error: function(xhr, status, error) {
+            alert("삭제 실패")
+        }
+    });
+}
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</body>
+</html>

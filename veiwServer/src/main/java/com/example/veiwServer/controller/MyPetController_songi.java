@@ -28,4 +28,12 @@ public class MyPetController_songi {
 		
 		return "/user/my_pet_edit";
 	}
+	
+	@RequestMapping("/myQnaList")
+	public String myQnaList() {
+		
+		
+		return "/user/my_qna_list";
+	}
+	
 }

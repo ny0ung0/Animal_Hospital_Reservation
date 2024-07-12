@@ -41,5 +41,10 @@ public class ManagerController_jisun {
 		return "/manager/qna_list";
 	}
 	
+	@RequestMapping("/")
+	public String dashboard() {
+		return "/manager/dashboard";
+	}
+	
 	
 }
