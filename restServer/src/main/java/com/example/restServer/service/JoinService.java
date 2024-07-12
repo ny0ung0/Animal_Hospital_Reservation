@@ -150,6 +150,7 @@ public class JoinService {
 	
 	//유저정보수정
 	public void updateEditUserInfo(MemberEditDto memberEditDto) {
+		
 		System.out.println("병원정보수정서비스 들어옴");
 		if(memberEditDto.getPasswordCheckBox()!=null) {
 			System.out.println("병원정보수정서비스 새 비밀번호 if문 들어옴");

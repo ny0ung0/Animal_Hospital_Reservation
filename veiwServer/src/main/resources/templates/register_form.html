@@ -804,8 +804,15 @@
 			const xhttp = new XMLHttpRequest();
 			xhttp.onload = function() {
 				//alert(this.responseText);
-				var result = this.responseText;
-				document.getElementById("result").innerHTML = result;
+				
+				//var result = this.responseText;
+				//document.getElementById("result").innerHTML = result;
+				if (this.status === 200){
+					alert("회원가입에 성공했습니다.")
+					window.location.href="/login_form";
+				}else{
+					alert("회원가입에 실패했습니다.")
+				}
 			}
 			xhttp.open("post", "http://localhost:9001/api/v1/common/joinUser");
 			xhttp.setRequestHeader("Content-type", "application/json");	
