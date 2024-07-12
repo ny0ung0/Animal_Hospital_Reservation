@@ -101,6 +101,7 @@ function getBasicBusinessHours(basicHours){
 }
 
 function convertToTimeZone(date, timeZone) {
+	
     // 시간대를 변환한 날짜를 생성
     const dateInTimeZone = new Date(date.toLocaleString('en-US', { timeZone }));
 
