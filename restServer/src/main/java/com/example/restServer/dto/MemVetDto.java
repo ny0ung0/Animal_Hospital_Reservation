@@ -26,4 +26,5 @@ public class MemVetDto {
     private boolean bookmarked;
     private Long avgReview;
 
+
 }

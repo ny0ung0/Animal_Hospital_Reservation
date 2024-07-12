@@ -28,10 +28,15 @@ function loadBasicInfo(data){
 	let vetNamesNIds = Object.keys(vetAvailInfo);
 	let basicHours = JSON.parse(vetInfo[Object.keys(vetInfo)[0]].businessHours);
 	let basicHoursArr = getBasicBusinessHours(basicHours);
+	
+console.log(data)
+console.log(userInfo)
 	  //병원 이름 넣기
 	  document.querySelector("#vetName").setAttribute("value", Object.keys(vetInfo)[0]);
+	  //로그인한 사용자 이름 넣어주기
+	  document.querySelector("input[name=user_name]").value = userInfo.user.name;
 	  //포인트정보넣기
-		  document.querySelector("#point").innerHTML = userInfo.pointList[0];
+	  document.querySelector("#point").innerHTML = userInfo.pointList[0] ? userInfo.pointList[0] : "0";
 	  if(!vetInfo[Object.keys(vetInfo)[0]].partnership == true){
 		  document.querySelector(".point_container").style.display="none";
 	  }
@@ -96,6 +101,7 @@ function getBasicBusinessHours(basicHours){
 }
 
 function convertToTimeZone(date, timeZone) {
+	
     // 시간대를 변환한 날짜를 생성
     const dateInTimeZone = new Date(date.toLocaleString('en-US', { timeZone }));
 
@@ -108,6 +114,26 @@ function convertToTimeZone(date, timeZone) {
     return year+"-"+ month+"-"+day;
 }
 
+function convertTimestamp(timestamp) {
+    // Unix 타임스탬프를 Date 객체로 변환
+    const date = new Date(timestamp);
+
+    // 서울 시간대(KST)로 변환한 날짜 객체를 문자열로 변환
+    const options = {
+        timeZone: 'Asia/Seoul',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+    };
+
+    // 변환된 날짜 문자열을 가져옴 (MM/dd/yyyy 형식)
+    const seoulDateString = new Intl.DateTimeFormat('en-US', options).format(date);
+
+    // "yyyy-MM-dd" 형식으로 변환된 문자열 반환
+    const [month, day, year] = seoulDateString.split(/\D/);
+
+    return  year+"-"+ month+"-"+day;
+}
 
 function formattingDate(date){
 	let newDate = date.slice(0,10);
@@ -143,16 +169,15 @@ function convertingDate(basicHours, day){
 }
 
 function showDates(startTime, endTime, lunchStart, lunchEnd){
-	if(startTime == 0|| endTime == 0 || lunchStart == 0 ||lunchEnd == 0){
+	if(startTime == 0|| endTime == 0){
 		document.querySelector("#time_slot").innerHTML="<div class='msg'>해당일은 예약가능한 시간이 없습니다😥</div>"
 		return;
 	}
     // 시간을 분 단위로 변환
     let [startHour, startMinute] = startTime.split(":").map(Number);
     let [endHour, endMinute] = endTime.split(":").map(Number);
-    let [lunchStartHour, lunchStartMinute] = lunchStart.split(":").map(Number);
-    let [lunchEndHour, lunchEndMinute] = lunchEnd.split(":").map(Number);
-    
+    let [lunchStartHour, lunchStartMinute] = lunchStart != 0 ? lunchStart.split(":").map(Number) : [0,0];
+    let [lunchEndHour, lunchEndMinute] = lunchEnd != 0 ? lunchEnd.split(":").map(Number) : [0,0];
     let startTotalMinutes = startHour * 60 + startMinute;
     let endTotalMinutes = endHour * 60 + endMinute;
     let lunchStartTotalMinutes = lunchStartHour * 60 + lunchStartMinute;
@@ -196,6 +221,7 @@ function showDates(startTime, endTime, lunchStart, lunchEnd){
 }
 
 function loadTimeslot(basicHoursArr,vetAvailInfo){
+	console.log("로딩타임슬롯")
 	//해당날짜 기본 타임슬롯보여주기
 	if(basicHoursArr[selectedDay] !=null){
 		let selectedBasicTime = basicHoursArr[selectedDay]["day"]
@@ -204,9 +230,18 @@ function loadTimeslot(basicHoursArr,vetAvailInfo){
 		Object.keys(vetAvailInfo).forEach(key=>{
 			if(key.split("//")[0] == selectedVet){
 				for(v of vetAvailInfo[key]){
-					if(convertToTimeZone(v.date, 'Asia/Seoul') == selectedDate){
+					console.log(v.date)
+					console.log(selectedDate)
+					console.log(convertTimestamp(v.date))
+					console.log(convertTimestamp(v.date) == selectedDate)
+					
+				
+			
+					if(convertTimestamp(v.date) == selectedDate){
 						console.log(v.time.slice(0,5))
-						document.querySelector("span[value='"+v.time.slice(0,5)+"']").classList.add("disabled");
+						console.log(v.time)
+						let time =  v.time[0].toString().padStart(2, '0')+":"+v.time[1].toString().padStart(2, '0')
+						document.querySelector("span[value='"+time+"']").classList.add("disabled");
 					}
 				}
 			}

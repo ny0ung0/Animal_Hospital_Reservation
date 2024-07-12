@@ -83,7 +83,7 @@ public class Securityconfig {
 					.requestMatchers("/", "/login", "/images/**","api/v1/common/**",  "/api/v1/near-vet-list", "/api/v1/vet-list").permitAll()
 					//.requestMatchers("/v3/**","/swagger-ui/**").permitAll()
 					//.requestMatchers("/hospital/**").hasRole("HOSPITAL")
-					//.requestMatchers("/user/**").hasAnyRole("USER")
+					//.requestMatchers("/api/v1/user/**").hasAnyRole("USER")
 					//.requestMatchers("/aaa").hasRole("USER")
 					.anyRequest().permitAll() );
 			
