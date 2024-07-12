@@ -50,6 +50,8 @@
 </div>
 <div th:replace="~{user/footer :: footer}"></div>
 <script>
+const token = localStorage.getItem("token");
+const MemberId = localStorage.getItem("MemberId");
 
 document.getElementById('regBtn').addEventListener('click', function() {
     const formData = new FormData();
@@ -59,23 +61,32 @@ document.getElementById('regBtn').addEventListener('click', function() {
     formData.append('category', document.querySelector('select[name="category"]').value);
     
     
-    const xhttp = new XMLHttpRequest();
-    xhttp.open("POST", "http://localhost:9001/qna", true);
-    xhttp.onload = function() {
-        if (xhttp.status === 200) {
+    $.ajax({
+        url: "http://localhost:9001/qna",
+        type: "POST",
+        data: formData,
+        processData: false,
+        contentType: false,
+        headers: {
+            'Authorization': token,
+            'MemberId': MemberId
+        },
+        success: function(response) {
             console.log("문의 등록 성공!");
             alert("문의가 성공적으로 등록되었습니다.");
-            window.location.href="/qnaList";
-        } else {
-            console.error("문의 등록 실패");
-            alert("문의 등록에 실패했습니다.");
+            window.location.href = "/qnaList";
+        },
+        error: function(xhr, status, error) {
+            if (xhr.status === 200) {
+                console.log("문의 등록 성공!");
+                alert("문의가 성공적으로 등록되었습니다.");
+                window.location.href = "/qnaList";
+            } else {
+                console.error("문의 등록 실패");
+                alert("문의 등록에 실패했습니다.");
+            }
         }
-    };
-    xhttp.onerror = function() {
-        console.error("AJAX 요청 실패");
-        alert("문의 등록 중 오류가 발생했습니다.");
-    };
-    xhttp.send(formData);
+    });
 });
 
 
