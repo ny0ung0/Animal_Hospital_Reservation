@@ -40,7 +40,7 @@ public class InfoController_jun {
 	public ResponseEntity<?> UpdateHospitalInfo(@ModelAttribute MemberEditDto memberEditDto){
 		System.out.println("병원정보 수정 컨트롤러 들어옴");
 		System.out.println(memberEditDto);
-		joinService.updateEditUserInfo(memberEditDto);
+		joinService.updateEditHospitalInfo(memberEditDto);
 		return ResponseEntity.ok().body("수정하였습니다.");
 	}
 	//의사정보 가져오기

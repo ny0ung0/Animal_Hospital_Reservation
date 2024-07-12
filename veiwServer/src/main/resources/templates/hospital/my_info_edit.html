@@ -24,7 +24,7 @@
             <div class="mb-3">
                 <input type="checkbox" id="passwordCheckBox" name="passwordCheckBox" onchange="togglePasswordCheckBox()">
                 <label class="form-label">비밀번호 변경</label>
-                <input type="password" name="passwordNew" class="form-control" readonly>
+                <input type="password" name="passwordNew" class="form-control" disabled>
                 <input type="hidden" name="passwordOrigin">
                 <div>비밀번호는 5자 이상, 15자 이하, 영어, 숫자, 특수문자를 포함해야 합니다.</div>
             </div>
@@ -663,6 +663,10 @@
            
         }
         xhttp.open("get", "http://localhost:9001/api/v1/hospital/hospitalInfo/" + localStorage.getItem("MemberId"));
+        var token = localStorage.getItem('token');
+		if (token) {
+			xhttp.setRequestHeader("Authorization",token);
+		}
         xhttp.send();
     }
     
@@ -679,6 +683,10 @@
             });
         }
         xhttp.open("get", "http://localhost:9001/api/v1/hospital/doctorInfo/" + localStorage.getItem("MemberId"));
+        var token = localStorage.getItem('token');
+		if (token) {
+			xhttp.setRequestHeader("Authorization",token);
+		}
         xhttp.send();
     }
     
@@ -766,6 +774,10 @@
         }
         xhttp.open("put", "http://localhost:9001/api/v1/hospital/hospitalInfo");
         //xhttp.setRequestHeader("Content-type", "application/json");
+        var token = localStorage.getItem('token');
+		if (token) {
+			xhttp.setRequestHeader("Authorization",token);
+		}
         xhttp.send(formData);
     }
 
@@ -825,7 +837,7 @@
     function togglePasswordCheckBox(){
         const isChecked = document.querySelector("#passwordCheckBox").checked;
         const passwordNew = document.querySelector('input[name=passwordNew]')
-        passwordNew.readOnly = !isChecked;
+        passwordNew.disabled = false;
     }
 
     // 의사 추가

@@ -149,7 +149,7 @@ public class JoinService {
 	
 	//유저정보수정
 	public void updateEditUserInfo(MemberEditDto memberEditDto) {
-		System.out.println("병원정보수정서비스 들어옴");
+		System.out.println("유저정보수정서비스 들어옴");
 		if(memberEditDto.getPasswordCheckBox()!=null) {
 			System.out.println("병원정보수정서비스 새 비밀번호 if문 들어옴");
 			Login login = loginRepository.findByUsername(memberEditDto.getUsername());
@@ -159,49 +159,14 @@ public class JoinService {
 			//비밀번호 잘 바뀌는지 확인 해야함!!!!!!!!
 		}
 		Member member = memberRepository.findById(memberEditDto.getMemberId()).get();
+		member.setAddress(memberEditDto.getAddress());
 		member.setPhone(memberEditDto.getPhone());
 		member.setEmail(memberEditDto.getEmail());
-		member.setRepresentative(memberEditDto.getRepresentative());
-		member.setBusinessHours(memberEditDto.getBusinessHours());
-		member.setPartnership(memberEditDto.getPartnership());
-		member.setIntroduction(memberEditDto.getIntroduction());
-		//이미지 파일 처리
-		if(memberEditDto.getFile() != null && !memberEditDto.getFile().isEmpty()) {
-			String originName = memberEditDto.getFileName();
-			String newName = UUID.randomUUID().toString() + originName;
-			member.setLogo(newName);
-			File file = new File(newName);
-			
-			try {
-				memberEditDto.getFile().transferTo(file);
-				System.out.println("파일 업로드 성공....");
-				
-				//썸네일 생성
-				//String thumbnailSaveName = "s_" + newName;
-				//board.setThumbnailName(thumbnailSaveName);
-				
-				//File thumbfile = new File(uploadPath + thumbnailSaveName);
-				File ufile = new File(uploadPath + newName);
-				
-				//Thumbnails.of(ufile).size(100,100).toFile(thumbfile);
-				System.out.println(memberEditDto);
-				
-				
-			}catch(Exception e){
-				
-			}
-			
-		}
+		member.setName(memberEditDto.getName());
+		member.setNickname(memberEditDto.getNickname());
 		memberRepository.save(member);
-		
-		//동물병원의사 처리
-		List<Doctor> doctors = doctorRepository.findAllByHospitalId(memberEditDto.getMemberId());
-		
-		
-		//List<String> newDoctors = memberEditDto.getDoctorNamesField().
-		
-		
 	}
+	
 	
 	//병원정보 가져오기
 	public List<IMemberEditDto> getEditHospitalInfo(String memberId) {
@@ -210,6 +175,62 @@ public class JoinService {
 		
 		return data;
 	}
+	
+	//병원정보수정
+		public void updateEditHospitalInfo(MemberEditDto memberEditDto) {
+			System.out.println("병원정보수정서비스 들어옴");
+			if(memberEditDto.getPasswordCheckBox()!=null) {
+				System.out.println("병원정보수정서비스 새 비밀번호 if문 들어옴");
+				Login login = loginRepository.findByUsername(memberEditDto.getUsername());
+				String password = bCryptPasswordEncoder.encode(memberEditDto.getPasswordNew());
+				login.setPassword(password);
+				loginRepository.save(login);
+				//비밀번호 잘 바뀌는지 확인 해야함!!!!!!!!
+			}
+			Member member = memberRepository.findById(memberEditDto.getMemberId()).get();
+			member.setPhone(memberEditDto.getPhone());
+			member.setEmail(memberEditDto.getEmail());
+			member.setRepresentative(memberEditDto.getRepresentative());
+			member.setBusinessHours(memberEditDto.getBusinessHours());
+			member.setPartnership(memberEditDto.getPartnership());
+			member.setIntroduction(memberEditDto.getIntroduction());
+			//이미지 파일 처리
+			if(memberEditDto.getFile() != null && !memberEditDto.getFile().isEmpty()) {
+				String originName = memberEditDto.getFileName();
+				String newName = UUID.randomUUID().toString() + originName;
+				member.setLogo(newName);
+				File file = new File(newName);
+				
+				try {
+					memberEditDto.getFile().transferTo(file);
+					System.out.println("파일 업로드 성공....");
+					
+					//썸네일 생성
+					//String thumbnailSaveName = "s_" + newName;
+					//board.setThumbnailName(thumbnailSaveName);
+					
+					//File thumbfile = new File(uploadPath + thumbnailSaveName);
+					File ufile = new File(uploadPath + newName);
+					
+					//Thumbnails.of(ufile).size(100,100).toFile(thumbfile);
+					System.out.println(memberEditDto);
+					
+					
+				}catch(Exception e){
+					
+				}
+				
+			}
+			memberRepository.save(member);
+			
+			//동물병원의사 처리
+			List<Doctor> doctors = doctorRepository.findAllByHospitalId(memberEditDto.getMemberId());
+			
+			
+			//List<String> newDoctors = memberEditDto.getDoctorNamesField().
+			
+			
+		}
 	
 
 }
