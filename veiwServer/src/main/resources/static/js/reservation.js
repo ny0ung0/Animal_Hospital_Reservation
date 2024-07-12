@@ -101,7 +101,6 @@ function getBasicBusinessHours(basicHours){
 }
 
 function convertToTimeZone(date, timeZone) {
-	
     // 시간대를 변환한 날짜를 생성
     const dateInTimeZone = new Date(date.toLocaleString('en-US', { timeZone }));
 
@@ -114,6 +113,26 @@ function convertToTimeZone(date, timeZone) {
     return year+"-"+ month+"-"+day;
 }
 
+function convertTimestamp(timestamp) {
+    // Unix 타임스탬프를 Date 객체로 변환
+    const date = new Date(timestamp);
+
+    // 서울 시간대(KST)로 변환한 날짜 객체를 문자열로 변환
+    const options = {
+        timeZone: 'Asia/Seoul',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+    };
+
+    // 변환된 날짜 문자열을 가져옴 (MM/dd/yyyy 형식)
+    const seoulDateString = new Intl.DateTimeFormat('en-US', options).format(date);
+
+    // "yyyy-MM-dd" 형식으로 변환된 문자열 반환
+    const [month, day, year] = seoulDateString.split(/\D/);
+
+    return  year+"-"+ month+"-"+day;
+}
 
 function formattingDate(date){
 	let newDate = date.slice(0,10);
@@ -201,6 +220,7 @@ function showDates(startTime, endTime, lunchStart, lunchEnd){
 }
 
 function loadTimeslot(basicHoursArr,vetAvailInfo){
+	console.log("로딩타임슬롯")
 	//해당날짜 기본 타임슬롯보여주기
 	if(basicHoursArr[selectedDay] !=null){
 		let selectedBasicTime = basicHoursArr[selectedDay]["day"]
@@ -209,9 +229,18 @@ function loadTimeslot(basicHoursArr,vetAvailInfo){
 		Object.keys(vetAvailInfo).forEach(key=>{
 			if(key.split("//")[0] == selectedVet){
 				for(v of vetAvailInfo[key]){
-					if(convertToTimeZone(v.date, 'Asia/Seoul') == selectedDate){
+					console.log(v.date)
+					console.log(selectedDate)
+					console.log(convertTimestamp(v.date))
+					console.log(convertTimestamp(v.date) == selectedDate)
+					
+				
+			
+					if(convertTimestamp(v.date) == selectedDate){
 						console.log(v.time.slice(0,5))
-						document.querySelector("span[value='"+v.time.slice(0,5)+"']").classList.add("disabled");
+						console.log(v.time)
+						let time =  v.time[0].toString().padStart(2, '0')+":"+v.time[1].toString().padStart(2, '0')
+						document.querySelector("span[value='"+time+"']").classList.add("disabled");
 					}
 				}
 			}
