@@ -37,9 +37,13 @@
 	</div>
 </div>
 <script>
+const token = localStorage.getItem("token");
 function allList(){
 	fetch("http://localhost:9001/api/v1/manager/user", {
-		method : "GET"
+		method : "GET",
+		headers: {
+	        'Authorization': `${token}`
+	    }
 	})
 	.then(response => response.text())
 	.then(data => {
@@ -102,7 +106,10 @@ document.querySelector("#searchBtn").addEventListener("click", function(){
 	}else{
 		console.log(keyword.value);
 		fetch("http://localhost:9001/api/v1/manager/user/keyword/" + keyword.value, {
-			method : "GET"
+			method : "GET",
+			headers: {
+		        'Authorization': `${token}`
+		    }
 		})
 		.then(response => response.text())
 		.then(data => {
