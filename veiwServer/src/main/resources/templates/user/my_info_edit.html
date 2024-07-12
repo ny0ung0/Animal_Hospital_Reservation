@@ -111,6 +111,10 @@
 		}
 		xhttp.open("get", "http://localhost:9001/api/v1/user/userInfo/"+localStorage.getItem("MemberId"));
 		//xhttp.setRequestHeader("Content-type", "application/json");
+		var token = localStorage.getItem('token');
+		if (token) {
+			xhttp.setRequestHeader("Authorization",token);
+		}
 		xhttp.send();
 	}
 	
@@ -149,6 +153,10 @@
 		}
 		xhttp.open("put", "http://localhost:9001/api/v1/user/userInfo");
 		xhttp.setRequestHeader("Content-type", "application/json");
+		var token = localStorage.getItem('token');
+		if (token) {
+			xhttp.setRequestHeader("Authorization",token);
+		}
 		xhttp.send(data);
 	}
 
