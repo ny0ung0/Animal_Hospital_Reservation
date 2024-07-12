@@ -103,6 +103,7 @@ function showModal(e) {
 	if (memVet[hospitalName] != null && memVet[hospitalName]["address"] == address) {
 		document.querySelector("#exampleModalLabel").setAttribute("data-id", memVet[hospitalName]["id"]);
 		document.querySelector("#working_hour").innerHTML = "";
+		document.querySelector("#review").innerHTML ="";
 		let basicHours = JSON.parse(memVet[hospitalName]["businessHours"]);
 		let hoursArr = getBasicBusinessHours(basicHours);
 

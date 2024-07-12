@@ -211,40 +211,80 @@ function resetFilter(){
 	})
 }
 
-//function sortingReserv(e){
-//	console.log("예약가능병원순")
-//	console.log(searchResult)
-//	console.log(memVet)
-//}
+function sortingReserv(e){
+	 if(searchResult.length != 0){
+        searchResult.sort((a, b) => {
+            const aInMemVet = Object.keys(memVet).includes(a["사업장명"]);
+            const bInMemVet = Object.keys(memVet).includes(b["사업장명"]);
+
+            if (aInMemVet && !bInMemVet) {
+                return -1; // a를 b보다 앞으로
+            }
+            if (!aInMemVet && bInMemVet) {
+                return 1; // b를 a보다 앞으로
+            }
+            return 0; // 변화 없음
+        });
+
+        // 정렬된 결과를 콘솔에 출력
+        document.querySelector(".vet_list").innerHTML="";
+        searchResult.forEach(vetItem=>{
+			addHospitalToList(vetItem);
+		})
+    }
+}
 
 
-//function sortingPoint(e) {
-//     console.log("포인트제휴병원순");
-//    console.log("memVet:", memVet);
-//    console.log("searchResult before sort:", searchResult);
-//
-//    searchResult.sort((a, b) => {
-//        const aName = a["사업장명"];
-//        const bName = b["사업장명"];
-//        const aValue = memVet[aName];
-//        const bValue = memVet[bName];
-//
-//        const aInMemVet = aValue ? 1 : 0;
-//        const bInMemVet = bValue ? 1 : 0;
-//
-//        // memVet에 있는 요소를 먼저 위로 정렬
-//        if (aInMemVet !== bInMemVet) {
-//            return bInMemVet - aInMemVet;
-//        }
-//
-//    });
-//
-//    // 정렬된 결과를 vetContainer에 다시 렌더링
-//    vetContainer.innerHTML = "";
-//    searchResult.forEach(hospital => addHospitalToList(hospital));
-//
-//    console.log("searchResult after sort:", searchResult);
-//}
+function sortingPoint(e) {
+     if (searchResult.length != 0) {
+		sortingReserv(e);
+        searchResult.sort((a, b) => {
+            const aPartnership = memVet[a["사업장명"]] && memVet[a["사업장명"]].partnership === true;
+            const bPartnership = memVet[b["사업장명"]] && memVet[b["사업장명"]].partnership === true;
+
+            if (aPartnership && !bPartnership) {
+                return -1; // a를 b보다 앞으로
+            }
+            if (!aPartnership && bPartnership) {
+                return 1; // b를 a보다 앞으로
+            }
+            return 0; // 변화 없음
+        });
+
+        // 정렬된 결과를 콘솔에 출력
+        document.querySelector(".vet_list").innerHTML="";
+        searchResult.forEach(vetItem=>{
+			addHospitalToList(vetItem);
+		})
+    }
+}
 
 
+// 디바운스를 위한 타이머 변수
+let debounceTimer;
+
+document.querySelector("input[name=search_vet]").addEventListener("keydown", function(e){
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => {
+        console.log(e.target.value);
+        const xhttp = new XMLHttpRequest();
+        xhttp.onload = function () {
+            let jsonData = JSON.parse(this.responseText);
+            let datas = jsonData["동물병원"];
+            console.log(datas);
+
+            datas.forEach(hos => {
+                const address = hos["소재지전체주소"] || "";
+                const name = hos["사업장명"] || "";
+
+                if (address.includes(e.target.value) || name.includes(e.target.value)) {
+                    console.log(hos);
+                }
+            });
+        };
+
+        xhttp.open("GET", "/json/vet_list.json", true);
+        xhttp.send();
+    }, 300); // 300ms의 디바운스 시간
+});
 
