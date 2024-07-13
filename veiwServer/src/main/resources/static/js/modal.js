@@ -142,37 +142,82 @@ function showModal(e) {
 		// 대표자 설정
 		document.querySelector("#representative").style.display = "inline-block";
 		document.querySelector("#representative").innerHTML = memVet[hospitalName]["representative"];
+		
 		// 리뷰 설정
-		document.querySelector(".reviewContainer").style.display = "inline-block";
 		// 1. 평균별점 설정
 		document.querySelector("#avgReview").innerHTML = memVet[hospitalName]["avgReview"] ? 
-														memVet[hospitalName]["avgReview"] + "/5" + repeatCharacters("⭐", memVet[hospitalName]["avgReview"])
-														: "아직 별점이 없어요😅 예약 후, 첫 별점을 남겨보세요 :)";
-		// 2. 리뷰 뿌려주기
-		memVet[hospitalName]["review"].forEach(review =>{
-			let listItem = document.createElement("div");
-			listItem.classList = "review_item"
-			listItem.innerHTML = review.review + " ,  " + review.type + " by  " 
-			+ review.doctor.name + " at " + review.updatedAt[0]+"-"+ review.updatedAt[1]+"-"
-			+ review.updatedAt[2];
-			document.querySelector("#review").appendChild(listItem);
-		})
-		
-		
-		
-	} 
-}
+		    memVet[hospitalName]["avgReview"] + "/5" + repeatCharacters("⭐", memVet[hospitalName]["avgReview"]) :
+		    "<span style=\"font-size: 18px; font-family: 'Jua', sans-serif; font-weight: normal;\">아직 별점이 없어요😅 <br> 예약 후, 첫 별점을 남겨보세요 :)</span>";
 
-function repeatCharacters(str, rate) {
-    // 문자열의 길이만큼 반복
-    for (let i = 0; i < rate; i++) {
-        // 현재 문자를 문자열의 길이만큼 반복해서 출력
-        let repeatedChar = '';
-        for (let j = 0; j < rate; j++) {
-            repeatedChar += str[i];
-        }
-	return repeatedChar;
-}
+	    const hasReviews = memVet[hospitalName]["review"].length > 0;
+	
+	    if (hasReviews) {
+	      document.querySelector("#reviewCount").innerText = "리뷰 " + memVet[hospitalName]["review"].length + "개";
+	      document.querySelector("#reviewDistribution").style.display = "block";
+	      document.querySelector("#toggleReviews").style.display = "block";
+	      document.querySelector("#reviewList").style.display = "none"; // 초기 상태는 숨김
+	
+	      // 3. 리뷰 분포 그래프 설정
+	      let reviewDistributionHTML = '';
+	      const reviewCounts = [0, 0, 0, 0, 0]; // 5점부터 1점까지의 리뷰 개수
+	      const maxReviewCount = memVet[hospitalName]["review"].length || 1; // 최대 리뷰 개수
+	
+	      memVet[hospitalName]["review"].forEach(function(review) {
+	        reviewCounts[review.rating - 1]++;
+	      });
+	
+	      for (let i = 4; i >= 0; i--) {
+	        const barWidth = (reviewCounts[i] / maxReviewCount) * 100 + "%";
+	        reviewDistributionHTML += 
+	          "<div class='review-bar'><span>" + (i + 1) + "점:</span>" + 
+	          "<div style='width:" + barWidth + ";'></div>" + 
+	          "</div>";
+	      }
+	
+	      document.querySelector("#reviewDistribution").innerHTML = reviewDistributionHTML;
+	
+	      // 4. 리뷰 뿌려주기
+	      document.querySelector("#review").innerHTML = ''; // 기존 리뷰 초기화
+	
+	      memVet[hospitalName]["review"].forEach(function(review) {
+	        let listItem = document.createElement("div");
+	        listItem.classList = "review-item";
+	        listItem.innerHTML = 
+	          "<span>" + review.review + "</span>" +
+	          "<span><div>" + review.type + "</div> || <div>" + review.doctor.name + " 수의사</div> || " +
+	          review.updatedAt[0] + "-" + review.updatedAt[1] + "-" + review.updatedAt[2] + "</span>";
+	        document.querySelector("#review").appendChild(listItem);
+	      });
+	
+	      // 리뷰 보기 버튼 이벤트 설정
+	      document.querySelector("#toggleReviews").onclick = function() {
+	        const reviewList = document.querySelector("#reviewList");
+	        if (reviewList.style.display === "none") {
+	          reviewList.style.display = "block";
+	          this.innerText = "리뷰 숨기기";
+	        } else {
+	          reviewList.style.display = "none";
+	          this.innerText = "리뷰 보기";
+	        }
+	      };
+	    } else {
+	      document.querySelector("#reviewCount").innerText = "";
+	      document.querySelector("#reviewDistribution").style.display = "none";
+	      document.querySelector("#toggleReviews").style.display = "none";
+	    }
+	  }
+	}
+	
+	function repeatCharacters(str, rate) {
+	    // 문자열의 길이만큼 반복
+	    for (let i = 0; i < rate; i++) {
+	        // 현재 문자를 문자열의 길이만큼 반복해서 출력
+	        let repeatedChar = '';
+	        for (let j = 0; j < rate; j++) {
+	            repeatedChar += str[i];
+	        }
+		return repeatedChar;
+	}
 }
 
 function checkBookmark(e){
