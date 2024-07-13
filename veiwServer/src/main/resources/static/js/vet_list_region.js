@@ -3,6 +3,8 @@ const guContainer = document.querySelector(".guContainer");
 const searchBtn = document.querySelector("#searchBtn");
 const resetBtn = document.querySelector("#resetBtn");
 const vetContainer = document.querySelector(".vet_list");
+const resultsContainer = document.querySelector(".result_container");
+
 let citiesWithNoGu = new Set();
 let guMap = new Map();
 let memVet = {};
@@ -10,6 +12,7 @@ let activeCity = null;
 let cities = null;
 let gus = null;
 let searchResult = [];
+let keywordSearchResult=[];
 //지역리스트
 function loadRegionList() {
     fetch('/json/korea-administrative-district.json')
@@ -87,7 +90,6 @@ function loadRegionList() {
 searchBtn.addEventListener("click", function() {
 	vetContainer.innerHTML="";
 	searchResult=[];
-    console.log(memVet)
     //예약되는 병원 + 포인트 제휴병원 여부 보여주기
     const xhttp = new XMLHttpRequest();
     xhttp.onload = function () {
@@ -141,15 +143,19 @@ function fetchHospitalData(guMap, noGuCities) {
                 datas.forEach(hospital => {
                     if (hospital["소재지전체주소"] != null) {
                         let address = hospital["소재지전체주소"].split(" ");
-                        if (guMap.has(address[0]) || noGuCities.includes(address[0])) {
-                            if (guMap.get(address[0]).size === 0 || guMap.get(address[0]).has(address[1])) {
-                                searchResult.push(hospital);
-                                addHospitalToList(hospital);
-                            }
-                        }
+                        
+                        if (guMap.has(address[0])) {
+						    const guSet = guMap.get(address[0]);
+						    if (guSet.size === 0 || guSet.has(address[1])) {
+						        searchResult.push(hospital);
+						        addHospitalToList(hospital);
+						    }
+						} else if (noGuCities.includes(address[0])) {
+						    searchResult.push(hospital);
+						    addHospitalToList(hospital);
+						}
                     }
                 });
-                console.log(searchResult)
             } catch (e) {
                 console.log(e);
             }
@@ -180,7 +186,7 @@ function addHospitalToList(hospital) {
 					        '<img onclick="return checkBookmark(event)" class="bookmark" style="display:none; width:35px;" src="/images/bookmark.png"/>' +
 					     '</div>' +
 					     '<div class="vet-body">' +
-					       '<span class="phone">' + phone + '</span> <span class="address">' + hospital["소재지전체주소"] + '</span>' +
+					       '<span class="phone">' + phone + '</span> </br> <span class="address">' + hospital["소재지전체주소"] + '</span>' +
 					     '</div>';
 	document.querySelector(".vet_list").appendChild(listItem);
 	
@@ -265,22 +271,27 @@ let debounceTimer;
 
 document.querySelector("input[name=search_vet]").addEventListener("keydown", function(e){
     clearTimeout(debounceTimer);
+    resultsContainer.innerHTML = '';
+	keywordSearchResult=[];
+	
     debounceTimer = setTimeout(() => {
-        console.log(e.target.value);
         const xhttp = new XMLHttpRequest();
         xhttp.onload = function () {
             let jsonData = JSON.parse(this.responseText);
             let datas = jsonData["동물병원"];
-            console.log(datas);
 
             datas.forEach(hos => {
                 const address = hos["소재지전체주소"] || "";
                 const name = hos["사업장명"] || "";
 
                 if (address.includes(e.target.value) || name.includes(e.target.value)) {
-                    console.log(hos);
+                    displayResults(hos);
+                    keywordSearchResult.push(hos);
                 }
             });
+            if(keywordSearchResult.length ==0){
+				resultsContainer.innerHTML="<div class='resultMsg'>검색결과가 없습니다🥲</div>";
+			}
         };
 
         xhttp.open("GET", "/json/vet_list.json", true);
@@ -288,3 +299,58 @@ document.querySelector("input[name=search_vet]").addEventListener("keydown", fun
     }, 300); // 300ms의 디바운스 시간
 });
 
+
+function displayResults(hospital) {
+    const item = document.createElement('div');
+    item.classList.add('result-item');
+    item.innerHTML = "<div>" + hospital["사업장명"] + "</div> 📍 " + hospital["소재지전체주소"];
+    resultsContainer.appendChild(item);
+    item.addEventListener("click", function(){
+		document.querySelector(".vet_list").innerHTML="";
+		addHospitalToList(hospital);
+	})
+}
+
+document.querySelector("#keywordSearchBtn").addEventListener("click", function() {
+    document.querySelector(".vet_list").innerHTML = "";
+    let keywordVetResult = [];
+
+    keywordSearchResult.forEach(hos => {
+        let vet = {};
+        vet.vetName = hos["사업장명"];
+        vet.vetAddr = hos["도로명전체주소"].split(" ")[0] + "//" + hos["도로명전체주소"].split(" ")[1];
+        keywordVetResult.push(vet);
+    });
+
+    const xhttp = new XMLHttpRequest();
+    xhttp.onload = function() {
+           	let data = JSON.parse(this.responseText);
+           	
+	       	data.forEach(hospital =>{
+				console.log(hospital.hospitalName)
+       		let addr = hospital.address.replaceAll("//", " ")
+       		memVet[hospital.hospitalName] = {
+												"id":hospital.id,
+												"phone":hospital.phone,
+												"address" : addr, 
+									       		"avgReview" : hospital.avgReview,
+									       		"review" : hospital.review,
+									       		"bookmarked" : hospital.bookmarked,
+									       		"businessNumber" : hospital.businessNumber,
+									       		"email" : hospital.email,
+									       		"introduction" : hospital.introduction,
+									       		"logo" : hospital.logo,
+									       		"representative" : hospital.representative,
+									       		"partnership" : hospital.partnership, 
+									       		"businessHours" : hospital.businessHours
+									       		};
+	       	})
+	       	keywordSearchResult.forEach(hos=>addHospitalToList(hos));
+    };
+    xhttp.open("POST", "http://localhost:9001/api/v1/keyword-vet-list", true); 
+    xhttp.setRequestHeader("MemberId", localStorage.getItem("MemberId"));
+    xhttp.setRequestHeader("token", localStorage.getItem("token"));
+    xhttp.setRequestHeader("role", localStorage.getItem("role"));
+    xhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    xhttp.send(JSON.stringify(keywordVetResult)); // vetInfo 배열을 전송
+});

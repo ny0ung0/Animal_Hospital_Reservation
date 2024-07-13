@@ -177,7 +177,6 @@ function getMemVetList(params, map, currentPos) {
 }
 
 function addHospitalToList(map, currentPos) {
-    console.log(memVet)
     
     nearVet.forEach((hospital,index) => {
         let x = parseFloat(hospital["좌표정보(x)"]);

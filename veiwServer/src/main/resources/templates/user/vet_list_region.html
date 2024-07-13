@@ -29,29 +29,48 @@
 	<div th:replace="~{user/header :: header}"></div>
 	<div class="container-xl">
 		<h1 class="mt-3 mt-md-5 mb-3 mb-md-3">지역별 동물병원 리스트</h1>
-		<input type="text" name="search_vet" placeholder="동물병원을 검색해보세요">
-		<input type="button" value="검색">
-		<div class="filter">
-			<div class="cityContainer"></div>
-		</div>
-		<div>
-			<div class="guContainer"></div>
-			<div id="searchBtn" class="btn btn-main">검색하기</div>
-			<div id="resetBtn" class="btn btn-main" onclick="resetFilter()">검색초기화하기</div>
-			<div class="dropdown">
-			  <button class="btn btn-secondary dropdown-toggle btn-main" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-			    정렬
-			  </button>
-			  <ul class="dropdown-menu">
-			    <li><button class="dropdown-item" type="button" onclick="sortingReserv(event)">예약가능 병원 순</button></li>
-			    <li><button class="dropdown-item" type="button" onclick="sortingPoint(event)">포인트제휴 병원 순</button></li>
-			  </ul>
+		<div class="search_container">
+			<div class="d-flex flex-row mt-3">
+				<input type="text" name="search_vet" placeholder="동물병원을 검색해보세요">
+				<input id="keywordSearchBtn" class="btn btn-main ms-2" type="button" value="검색">
+			</div>
+			<div class="result_container">
+				<div id="results" class="results"></div>
 			</div>
 		</div>
+			
+		<div class="filterContainer">
+			<div class="filter">
+				<div class="cityContainer"></div>
+			</div>
+			<div class="filter">
+				<div class="guContainer"></div>
+			</div>	
+		</div>
+		<div class="d-flex flex-column align-items-end">
+			<div class="d-flex flex-row mt-3" style="font-family:'Jua';">
+	           <button id="searchBtn" class="btn btn-main mb-2 ms-2">검색하기</button>
+	           <button id="resetBtn" class="btn btn-main mb-2 ms-2 me-2" onclick="resetFilter()">검색초기화하기</button>
+	        </div>
+           <div class="dropdown mt-5 me-2" style="font-family:'Jua';">
+               <button class="btn btn-secondary dropdown-toggle btn-main" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                   정렬
+               </button>
+               <ul class="dropdown-menu">
+                   <li><button class="dropdown-item" type="button" onclick="sortingReserv(event)">예약가능 병원 순</button></li>
+                   <li><button class="dropdown-item" type="button" onclick="sortingPoint(event)">포인트제휴 병원 순</button></li>
+               </ul>
+           </div>
+        </div>
+
+		
+		
 		<div class="vet_list">
         	<div class="inner"></div> 
     	</div>
-	</div>
+	
+	
+	
 	<!-- Modal -->
 	<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 	  <div class="modal-dialog modal-lg">
@@ -110,12 +129,8 @@
 		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
 		integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
 		crossorigin="anonymous"></script>
-<script type="text/javascript" src="/js/vet_list_region.js"></script>
-<script type="text/javascript" src="/js/modal.js"></script>
-
-
-
-
+	<script type="text/javascript" src="/js/vet_list_region.js"></script>
+	<script type="text/javascript" src="/js/modal.js"></script>
 
 </body>
 

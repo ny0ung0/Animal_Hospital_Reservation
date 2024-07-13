@@ -1,6 +1,29 @@
 @charset "UTF-8";
 
-.cityContainer, .guContainer {
+
+.filterContainer{
+	display:flex;
+	flex-direction:row;
+	justify-content: space-evenly;
+	font-family: "Jua", sans-serif;
+}
+.filter{
+	padding: 10px 15px;
+    border-radius: 20px;
+    border: 1px solid #ddd;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.cityContainer {
+	width:500px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 15px auto;
+}
+
+.guContainer {
+	width:700px;
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
@@ -25,22 +48,30 @@
     border-color: #4C5CB3 !important;
 }
 
+.vet_list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+
 .vet {
+	margin: 20px auto;
+	width:300px;
+	height:200px;
     display: flex;
     flex-direction: column;
-    margin-bottom: 10px;
     transition: box-shadow 0.3s ease;
     padding: 20px;
     border: 1px solid #ddd;
     border-radius: 5px;
     background-color: #f9f9f9;
-    margin-bottom: 15px;
     font-family: "Jua", sans-serif;
 }
 
 .vet-header {
     display: flex;
-    align-items: center;
     justify-content: space-between;
 }
 
@@ -53,8 +84,10 @@
 }
 
 .vet-body {
-    margin-top: 5px;
+    margin-top: 20px;
 }
+
+
 
 .vet:hover {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -210,30 +243,85 @@
 }
 
 /* 스크롤바 전체 */
-#reviewList::-webkit-scrollbar {
+#reviewList, .result_container::-webkit-scrollbar {
   width: 12px; /* 너비 조절 */
 }
 
 /* 스크롤바 트랙 */
-#reviewList::-webkit-scrollbar-track {
+#reviewList, .result_container::-webkit-scrollbar-track {
   background: #f1f1f1; /* 트랙 배경색 */
   border-radius: 10px; /* 둥근 모서리 */
 }
 
 /* 스크롤바 핸들 */
-#reviewList::-webkit-scrollbar-thumb {
+#reviewList, .result_container::-webkit-scrollbar-thumb {
   background: #888; /* 핸들 색상 */
   border-radius: 10px; /* 둥근 모서리 */
   border: 3px solid #f1f1f1; /* 핸들 주변 테두리 */
 }
 
 /* 스크롤바 핸들:hover */
-#reviewList::-webkit-scrollbar-thumb:hover {
+#reviewList, .result_container ::-webkit-scrollbar-thumb:hover {
   background: #555; /* 핸들 호버 색상 */
 }
 
 /* 스크롤바 핸들:active */
-#reviewList::-webkit-scrollbar-thumb:active {
+#reviewList, .result_container ::-webkit-scrollbar-thumb:active {
   background: #333; /* 핸들 활성 색상 */
 }
 
+.search_container {
+    position: relative;
+    width: 50%;
+    max-width: 600px;
+    justify-content: center;
+    align-items: center;
+    margin:0 auto;
+    margin-bottom:20px;
+}
+
+.search_container input[type="text"] {
+    width: 100%;
+    padding: 15px;
+    font-size: 1.3rem;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.search_container input[type="button"] {
+    padding: 15px;
+    font-size: 1.3rem;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.result_container {
+    position: absolute;
+    width: 86%;
+    border: 1px solid #ccc;
+    max-height: 200px;
+    overflow-y: auto;
+    background-color: white;
+    z-index: 1000;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    
+}
+
+.result-item {
+    padding: 10px;
+    cursor: pointer;
+}
+.result-item div{
+	font-family: "Jua", sans-serif;
+}
+.result-item:hover {
+    background-color: #E3C3FF;
+}
+
+.resultMsg{
+	font-family: "Jua", sans-serif;
+	padding:50px;
+	text-align:center;
+}
