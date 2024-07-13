@@ -40,6 +40,8 @@
 		</table>
 	</div>
 </div>
+
+
 <script>
 const memberId = localStorage.getItem("MemberId");
 const token = localStorage.getItem("token");
@@ -67,7 +69,7 @@ function allList(){
 					+ '<td>' + obj.title + '</td>'
 					+ '<td>' + obj.member.name + '</td>'
 					+ '<td>'
-						+ '<a class="btn btn-primary" href="/manager/userDetail?id='+ obj.id +'">상세보기</a>'
+						+ '<a class="btn btn-primary" href="/qnaDetail?id='+ obj.id +'">상세보기</a>'
 					+ '</td>'
 					+ '<td>'
 						+ btnarea
