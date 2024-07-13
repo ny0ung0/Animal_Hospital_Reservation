@@ -92,9 +92,13 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     
 }
+.dropdown{
+	position: relative;
+	margin: 5px;
+}
 .inner{
 	overflow:auto;
-	height:500px;
+	height:450px;
 }
 
 .map-header {

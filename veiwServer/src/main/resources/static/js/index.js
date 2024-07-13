@@ -178,6 +178,7 @@ function getMemVetList(params, map, currentPos) {
 
 function addHospitalToList(map, currentPos) {
     console.log(memVet)
+    
     nearVet.forEach((hospital,index) => {
         let x = parseFloat(hospital["좌표정보(x)"]);
         let y = parseFloat(hospital["좌표정보(y)"]);
@@ -223,7 +224,46 @@ function addHospitalToList(map, currentPos) {
         markers.push(markedVet);
         infoWindows.push(infoWindow);
 
-        let phone = hospital["소재지전화"] ? hospital["소재지전화"] : '';
+		loadList(hospital, index);
+       
+        
+        //리스트에 div클릭시 해당 마커로 지도 자동이동 + 해당 infowindow열어주기
+         document.querySelector(".inner").addEventListener("click", function(e) {
+        	if (e.target.closest(".vet")) { // Ensure that the clicked element is within the vet div
+	           	let markerIndex = e.target.closest(".vet").getAttribute("data-marker-index");
+	            let marker = markers[markerIndex];
+	            let infoWindow = infoWindows[markerIndex];
+	            if (marker && infoWindow) {
+	                map.panTo(marker.getPosition());
+	                infoWindow.open(map, marker);
+	            }
+	         }
+	     });
+    });
+    
+  
+
+    // 해당 마커의 인덱스를 seq라는 클로저 변수로 저장하는 이벤트 핸들러를 반환합니다.
+    function getClickHandler(seq) {
+        return function(e) {
+            var marker = markers[seq],
+                infoWindow = infoWindows[seq];
+
+            if (infoWindow.getMap()) {
+                infoWindow.close();
+            } else {
+                infoWindow.open(map, marker);
+            }
+        }
+    }
+
+    for (var i = 0, ii = markers.length; i < ii; i++) {
+        naver.maps.Event.addListener(markers[i], 'click', getClickHandler(i));
+    }
+}
+
+  function loadList(hospital, index){
+		let phone = hospital["소재지전화"] ? hospital["소재지전화"] : '';
         let listItem = document.createElement("div");
         listItem.classList = "vet"
         listItem.setAttribute("data-marker-index", index); 
@@ -250,38 +290,51 @@ function addHospitalToList(map, currentPos) {
                 listItem.querySelector("img").style.display="inline-block"
             }
         }
-        
-        //리스트에 div클릭시 해당 마커로 지도 자동이동 + 해당 infowindow열어주기
-         document.querySelector(".inner").addEventListener("click", function(e) {
-        	if (e.target.closest(".vet")) { // Ensure that the clicked element is within the vet div
-	           	let markerIndex = e.target.closest(".vet").getAttribute("data-marker-index");
-	            let marker = markers[markerIndex];
-	            let infoWindow = infoWindows[markerIndex];
-	            if (marker && infoWindow) {
-	                map.panTo(marker.getPosition());
-	                infoWindow.open(map, marker);
-	            }
-	         }
-	     });
-    });
+	}
 
-    // 해당 마커의 인덱스를 seq라는 클로저 변수로 저장하는 이벤트 핸들러를 반환합니다.
-    function getClickHandler(seq) {
-        return function(e) {
-            var marker = markers[seq],
-                infoWindow = infoWindows[seq];
+function sortingReserv(e){
+	 if(nearVet.length != 0){
+        nearVet.sort((a, b) => {
+            const aInMemVet = Object.keys(memVet).includes(a["사업장명"]);
+            const bInMemVet = Object.keys(memVet).includes(b["사업장명"]);
 
-            if (infoWindow.getMap()) {
-                infoWindow.close();
-            } else {
-                infoWindow.open(map, marker);
+            if (aInMemVet && !bInMemVet) {
+                return -1; // a를 b보다 앞으로
             }
-        }
-    }
+            if (!aInMemVet && bInMemVet) {
+                return 1; // b를 a보다 앞으로
+            }
+            return 0; // 변화 없음
+        });
 
-    for (var i = 0, ii = markers.length; i < ii; i++) {
-        naver.maps.Event.addListener(markers[i], 'click', getClickHandler(i));
+        // 정렬된 결과를 콘솔에 출력
+        document.querySelector(".inner").innerHTML="";
+        nearVet.forEach((vetItem, index) =>{
+			loadList(vetItem, index);
+		})
     }
 }
 
+function sortingPoint(e) {
+     if (nearVet.length != 0) {
+		sortingReserv(e);
+        nearVet.sort((a, b) => {
+            const aPartnership = memVet[a["사업장명"]] && memVet[a["사업장명"]].partnership === true;
+            const bPartnership = memVet[b["사업장명"]] && memVet[b["사업장명"]].partnership === true;
 
+            if (aPartnership && !bPartnership) {
+                return -1; // a를 b보다 앞으로
+            }
+            if (!aPartnership && bPartnership) {
+                return 1; // b를 a보다 앞으로
+            }
+            return 0; // 변화 없음
+        });
+
+        // 정렬된 결과를 콘솔에 출력
+        document.querySelector(".inner").innerHTML="";
+       	nearVet.forEach((vetItem, index) =>{
+			loadList(vetItem, index);
+		})
+    }
+}
