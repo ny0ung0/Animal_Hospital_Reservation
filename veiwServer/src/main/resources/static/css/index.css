@@ -313,25 +313,25 @@
 }
 
 /* 스크롤바 전체 */
-#reviewList, .inner ::-webkit-scrollbar {
+#reviewList::-webkit-scrollbar {
   width: 12px; /* 너비 조절 */
 }
 
 /* 스크롤바 트랙 */
-#reviewList, .inner ::-webkit-scrollbar-track {
+#reviewList::-webkit-scrollbar-track {
   background: #f1f1f1; /* 트랙 배경색 */
   border-radius: 10px; /* 둥근 모서리 */
 }
 
 /* 스크롤바 핸들 */
-#reviewList, .inner ::-webkit-scrollbar-thumb {
+#reviewList::-webkit-scrollbar-thumb {
   background: #888; /* 핸들 색상 */
   border-radius: 10px; /* 둥근 모서리 */
   border: 3px solid #f1f1f1; /* 핸들 주변 테두리 */
 }
 
 /* 스크롤바 핸들:hover */
-#reviewList, .inner ::-webkit-scrollbar-thumb:hover {
+#reviewList::-webkit-scrollbar-thumb:hover {
   background: #555; /* 핸들 호버 색상 */
 }
 
