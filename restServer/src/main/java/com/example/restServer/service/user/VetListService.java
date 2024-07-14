@@ -73,4 +73,39 @@ public class VetListService {
 		
 		return "";
 	}
+	
+	public List<MemVetDto> getMemberVet(String hospitalName, String address, Long userId) {
+		List<Member> result = memRepo.findMemberVet(address, hospitalName);
+		List<MemVetDto> MemVetList = new ArrayList<>();
+		for(int i = 0; i<result.size(); i++) {
+			Member hospital =  result.get(i);
+			Long hospitalId = result.get(i).getId();
+			MemVetDto mv = new MemVetDto();
+			mv.setId(hospitalId);
+			mv.setAddress(hospital.getAddress());
+			mv.setPhone(hospital.getPhone());
+			mv.setHospitalName(hospital.getHospitalName());
+			mv.setRepresentative(hospital.getRepresentative());
+			mv.setBusinessHours(hospital.getBusinessHours());
+			mv.setBusinessNumber(hospital.getBusinessNumber());
+			mv.setIntroduction(hospital.getIntroduction());
+			mv.setPartnership(hospital.getPartnership());
+			mv.setLogo(hospital.getLogo());
+			mv.setEmail(hospital.getEmail());
+			
+			reserveRepo.findAvgReview(hospitalId);
+			mv.setAvgReview(reserveRepo.findAvgReview(hospitalId));
+			mv.setReview(reserveRepo.findReservWithReview(hospitalId));
+			
+			if(userId != 0L) {
+				if(!bookmarkRepo.isBookmarked(hospitalId, userId).isEmpty()) {
+					mv.setBookmarked(true);
+				}else {
+					mv.setBookmarked(false);
+				}
+			}
+			MemVetList.add(mv);
+		}
+		return MemVetList;
+	}
 }
