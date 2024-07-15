@@ -16,17 +16,23 @@
 	<div class="row">
 		<div class="col-md-4 mb-5">
 			<h5 class="mb-2 fw-bold">총 회원 비율</h5>
-			<canvas id="memberTypeChart"></canvas>
+			<div class="p-4 border rounded">
+				<canvas id="memberTypeChart"></canvas>
+			</div>
 		</div>
 	
 		<div class="col-md-4 mb-5">
 			<h5 class="mb-2 fw-bold">개인회원 가입현황</h5>
-			<canvas id="userTypeChart"></canvas>
+			<div class="p-4 border rounded">
+				<canvas id="userTypeChart"></canvas>
+			</div>
 		</div>
 		
 		<div class="col-md-4 mb-5">
 			<h5 class="mb-2 fw-bold">동물병원 가입현황</h5>
-			<canvas id="hospitalTypeChart"></canvas>
+			<div class="p-4 border rounded">
+				<canvas id="hospitalTypeChart"></canvas>
+			</div>
 		</div>
 	<div class="col-12">
 		<h5 class="mb-2 fw-bold">미답변 문의 내역</h5>
@@ -295,7 +301,9 @@ function updateChart1(userCnt, hospitalCnt) {
 	    ]
 	  },
 	  options: {
-	    responsive: true
+		  responsive: true, // 반응형 설정
+          maintainAspectRatio: false, // 차트 비율 유지 여부 (기본값은 true)
+          aspectRatio: 1.5 // 가로/세로 비율 설정 (1 이상의 값으로 설정)
 	  }
 	});
 }
@@ -320,7 +328,9 @@ function updateChart2(weekJoinCount) {
 	    ]
 	  },
 	  options: {
-	    responsive: true
+		  responsive: true, // 반응형 설정
+          maintainAspectRatio: false, // 차트 비율 유지 여부 (기본값은 true)
+          aspectRatio: 1.5 // 가로/세로 비율 설정 (1 이상의 값으로 설정)
 	  }
 	});
 }
@@ -345,7 +355,9 @@ function updateChart3(weekJoinCount) {
 	    ]
 	  },
 	  options: {
-	    responsive: true
+		  responsive: true, // 반응형 설정
+          maintainAspectRatio: false, // 차트 비율 유지 여부 (기본값은 true)
+          aspectRatio: 1.5 // 가로/세로 비율 설정 (1 이상의 값으로 설정)
 	  }
 	});
 }
