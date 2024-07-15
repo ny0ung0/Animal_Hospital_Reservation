@@ -1,59 +1,47 @@
-<div class="d-flex flex-column flex-shrink-0 p-3 text-bg-dark h-100" style="width: 280px;"  th:fragment="sidemenu">
+<div class="d-flex flex-column flex-shrink-0 p-3 text-bg-dark h-100" style="width: 280px;" th:fragment="sidemenu">
     <a href="/manager/" class="text-center mb-3 mb-md-0 text-white text-decoration-none">
-     <div class="logo_size mx-auto">
-        <img src="/images/logo_user.png" class="w-100" alt="로고">       
-      </div>
-       관리자 센터
+        <div class="logo_size mx-auto">
+            <img src="/images/logo_user.png" class="w-100" alt="로고">
+        </div>
+        관리자 센터
     </a>
     <hr>
     <ul class="nav nav-pills flex-column mb-auto">
-      <li class="nav-item">
-        <a href="/manager/" class="nav-link" aria-current="page">
-          대시보드
-        </a>
-      </li>
-      <li>
-        <a href="/manager/userList" class="nav-link text-white">
-          회원 관리
-        </a>
-      </li>
-      <li>
-        <div class="dropdown">
-	      <a href="#" class="d-flex align-items-center nav-link text-white dropdown-toggle active" data-bs-toggle="dropdown" aria-expanded="false">
-	        동물병원 관리
-	      </a>
-	      <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
-	        <li><a class="dropdown-item" href="/manager/vetPetmit">병원 가입 승인</a></li>
-	        <li><a class="dropdown-item" href="/manager/vetList">동물병원 리스트</a></li>
-	      </ul>
-    	</div>
-      </li>
-      <li>
-        <div class="dropdown">
-	      <a href="#" class="d-flex align-items-center nav-link text-white dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-	        고객센터 관리
-	      </a>
-	      <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
-	        <li><a class="dropdown-item" href="/manager/qnaList">문의게시판</a></li>
-	        <li><a class="dropdown-item" href="#">펀딩/경매</a></li>
-	      </ul>
-    	</div>
-      </li>
-      <li>
-        <a href="#" class="nav-link text-white">
-          블랙리스트 관리
-        </a>
-      </li>
-      <li>
-        <a href="#" class="nav-link text-white">
-          광고 관리
-        </a>
-      </li>
+        <li class="nav-item">
+            <a href="/manager/" class="nav-link text-white" aria-current="page">대시보드</a>
+        </li>
+        <li>
+            <a href="/manager/userList" class="nav-link text-white">회원 관리</a>
+        </li>
+        <li>
+            <div class="dropdown">
+                <a href="#" class="d-flex align-items-center nav-link text-white dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">동물병원 관리</a>
+                <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
+                    <li><a class="dropdown-item" href="/manager/vetPetmit">병원 가입 승인</a></li>
+                    <li><a class="dropdown-item" href="/manager/vetList">동물병원 리스트</a></li>
+                </ul>
+            </div>
+        </li>
+        <li>
+            <div class="dropdown">
+                <a href="#" class="d-flex align-items-center nav-link text-white dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">고객센터 관리</a>
+                <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
+                    <li><a class="dropdown-item" href="/manager/qnaList">문의게시판</a></li>
+                    <li><a class="dropdown-item" href="#">펀딩/경매</a></li>
+                </ul>
+            </div>
+        </li>
+        <li>
+            <a href="#" class="nav-link text-white">블랙리스트 관리</a>
+        </li>
+        <li>
+            <a href="#" class="nav-link text-white">광고 관리</a>
+        </li>
     </ul>
     <hr>
     <div class="dropdown">
-      <a href="#" class="nav-link text-white">
-          로그아웃
-        </a>
+        <a href="#" class="nav-link text-white">로그아웃</a>
     </div>
-  </div>
+</div>
+
+  
