@@ -52,6 +52,7 @@
             <span class="partner-text">포인트 제휴 병원</span>
         </div>
         <img id="curBtn" src="/images/current.png"/>
+        <div id="searchAreaBtn" style="display:none;">이 지역 검색하기</div>
     </div>
     <div id="map" style="width:100%; height:700px; margin-bottom:50px;"></div>
     
@@ -61,8 +62,8 @@
 		    정렬
 		  </button>
 		  <ul class="dropdown-menu">
-		    <li><button class="dropdown-item" type="button" onclick="sortingReserv(event)">예약가능 병원 순</button></li>
-		    <li><button class="dropdown-item" type="button" onclick="sortingPoint(event)">포인트제휴 병원 순</button></li>
+		    <li><button id="sortReservBtn" class="dropdown-item" type="button" onclick="sortingReserv(event)">예약가능 병원 순</button></li>
+		    <li><button id="sortPointBtn" class="dropdown-item" type="button" onclick="sortingPoint(event)">포인트제휴 병원 순</button></li>
 		  </ul>
 		</div>
         <div class="inner"></div> 

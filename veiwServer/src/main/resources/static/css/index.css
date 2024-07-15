@@ -139,6 +139,31 @@
     z-index:99;
 }
 
+#searchAreaBtn{
+	background-color: #4C5CB3;
+	position: absolute;
+	z-index:99;
+	border:1px solid #4C5CB3;
+	color:white;
+	border-radius:50px;
+	top:60px;
+	right:600px;
+	font-family: "Jua", sans-serif;
+	padding:8px;
+}
+
+#searchAreaBtn:hover{
+	background-color: #E3C3FF;
+	position: absolute;
+	z-index:99;
+	color:black;
+	border:1px solid #E3C3FF;
+	border-radius:50px;
+	top:60px;
+	right:600px;
+	font-family: "Jua", sans-serif;
+	padding:8px;
+}
 /* 애니메이션 정의 */
 @keyframes spinY {
     from {
