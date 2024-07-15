@@ -2,6 +2,7 @@
 	<div class="d-flex bg-user-sub p-2 px-3">
 		<div class="ms-auto">
 		<a id="login-link" class="navbar-brand" href="/login_form">로그인</a>
+		<a id="mypage-link" class="navbar-brand" href="#" onclick="mypage()" style="display: none;">마이페이지</a>
 		 <a id="logout-link" class="navbar-brand" href="#" onclick="logout()" style="display: none;">로그아웃</a>
 		<span class="mx-3"id ="bar"> | </span>
 		<a id="register-link" class="navbar-brand" href="/register_form">회원가입</a>
@@ -32,21 +33,28 @@
                 window.location.href = "/";
             }
             
+            function mypage() {
+                window.location.href = "/user/myPetList";
+            }
+            
             document.addEventListener("DOMContentLoaded", function() {
                 const memberId = localStorage.getItem('MemberId');
                 const loginLink = document.getElementById('login-link');
                 const registerLink = document.getElementById('register-link');
+                const mypageLink = document.getElementById('mypage-link');
                 const logoutLink = document.getElementById('logout-link');
                 const bar = document.getElementById('bar');
                 if (memberId) {
                     loginLink.style.display = 'none';
                     registerLink.style.display = 'none';
                     logoutLink.style.display = '';
+                    mypageLink.style.display = '';
                     bar.style.display = 'none';
                 } else {
                     loginLink.style.display = '';
                     registerLink.style.display = '';
                     logoutLink.style.display = 'none';
+                    mypageLink.style.display = 'none';
                     bar.style.display = '';
                 }
             });
