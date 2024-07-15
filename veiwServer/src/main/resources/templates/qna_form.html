@@ -52,6 +52,7 @@
 <script>
 const token = localStorage.getItem("token");
 const MemberId = localStorage.getItem("MemberId");
+const role = localStorage.getItem("role");
 
 document.getElementById('regBtn').addEventListener('click', function() {
     const formData = new FormData();
@@ -74,13 +75,23 @@ document.getElementById('regBtn').addEventListener('click', function() {
         success: function(response) {
             console.log("문의 등록 성공!");
             alert("문의가 성공적으로 등록되었습니다.");
-            window.location.href = "/qnaList";
+            if(role === "ROLE_USER"){
+            	window.location.href = "/user/myQnaList";
+            }else if(role === "ROLE_HOSPITAL"){
+            	window.location.href = "/hospital/my_qna_list";
+            }
         },
         error: function(xhr, status, error) {
             if (xhr.status === 200) {
                 console.log("문의 등록 성공!");
                 alert("문의가 성공적으로 등록되었습니다.");
-                window.location.href = "/qnaList";
+                
+                if(role === "ROLE_USER"){
+                	window.location.href = "/user/myQnaList";
+                }else if(role === "ROLE_HOSPITAL"){
+                	window.location.href = "/hospital/my_qna_list";
+                }
+
             } else {
                 console.error("문의 등록 실패");
                 alert("문의 등록에 실패했습니다.");
