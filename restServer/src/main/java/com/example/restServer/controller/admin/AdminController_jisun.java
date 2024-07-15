@@ -204,4 +204,13 @@ public class AdminController_jisun {
 		return new ResponseEntity<>(list, HttpStatus.OK);
 	}
 	
+	@PutMapping("/support/qna/reply")
+	public ResponseEntity<String> updateReply(@RequestBody Support support){
+		Support support2 = supportRepo.findById(support.getId()).get();
+		support2.setReply(support.getReply());
+		support2.setDate(new Date());
+		support2.setIsConfirmed(true);
+		supportRepo.save(support2);
+		return new ResponseEntity<>("OK", HttpStatus.OK);
+	}
 }

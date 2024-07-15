@@ -105,7 +105,12 @@ $.ajax({
         	$('#reply').text(data.reply);
         	$('#editBtn').addClass('hidden');
         }else{
-        	$('#reply').text("아직 답변이 등록되지 않았습니다.");
+        	if(role==="ROLE_ADMIN"){
+        		document.querySelector("#replyContent").style.display="none";
+        		document.querySelector("#replyContentForm").style.display="block";
+        	}else{
+        		$('#reply').text("아직 답변이 등록되지 않았습니다.");
+        	}
         }
         
         // 수정 폼에도 초기 데이터 설정
@@ -223,40 +228,25 @@ $('#cancelBtn').on('click', function() {
 });
 
 
-if(role==="ROLE_ADMIN"){
-	document.querySelector("#replyContent").style.display="none";
-	document.querySelector("#replyContentForm").style.display="block";
-}
+
 function replySave(){
 	const replyInputValue = document.querySelector("textarea[name='replyInput']").value;
 	console.log(replyInputValue);
-//	const updateData  = {
-//			id = 
-//	}
+	const updateData  = {
+			id : id,
+			reply : replyInputValue
+	}
 	fetch("http://localhost:9001/api/v1/manager/support/qna/reply", {
 		method : "PUT",
 		headers: {
-	        'Authorization': `${token}`
-	    }
+	        'Authorization': `${token}`,
+	        'Content-Type': 'application/json'
+	    },
+		body: JSON.stringify(updateData) 
 	})
 	.then(response => response.text())
 	.then(data => {
-		
-		const objs = JSON.parse(data);
-		//console.log(objs);
-		let cnt = 1;
-		objs.forEach(obj =>{
-			let createdAtDate = obj.createdAt[0] + "-" + obj.createdAt[1] + "-" + obj.createdAt[2];
-			document.getElementById("tbody").innerHTML += 
-				'<tr>'
-					+ '<td>' + cnt + '</td>'
-					+ '<td>' + obj.category + '</td>'
-					+ '<td><a class="link-dark link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" href="/qnaDetail?id=' + obj.id + '">' + obj.title + '</a></td>'
-					+ '<td>' + createdAtDate + '</td>'
-				+ '</tr>';
-				cnt++;
-		});
-		
+		location.reload();
 	})
 	.catch(error => console.log(error));
 }
