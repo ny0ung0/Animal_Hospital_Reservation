@@ -7,7 +7,7 @@ public interface BookmarkDto  {
 
  
    Long getId();
-     Long getHospotal_id();
+     Long getHospital_id();
      Long getUser_id();
     
      String getHospital_name();
