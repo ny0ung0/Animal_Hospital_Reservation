@@ -29,4 +29,8 @@ public interface SupportRepository extends JpaRepository<Support, Long> {
 	
 	@Query(value="Select * from support where member_id=:userId ORDER BY created_at DESC;", nativeQuery = true)
 	public List<Support> findAllByMemberIdOrderByCreatedAt(@Param("userId") Long userId);
+	
+	@Query(value="Select * from support where (category = '불편신고' OR category = '기타문의') AND reply is null limit 5", nativeQuery = true)
+	public List<Support> findAllByCategoryQnaNoAnswer();
+	
 }
