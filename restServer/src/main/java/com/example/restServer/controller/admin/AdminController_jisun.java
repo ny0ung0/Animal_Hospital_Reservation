@@ -150,6 +150,12 @@ public class AdminController_jisun {
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
 	
+	@GetMapping("/support/qna/no-answer")
+    public ResponseEntity<List<Support>> getSupportQnaNoAnswer(){
+        List<Support> list = supportRepo.findAllByCategoryQnaNoAnswer();
+        return new ResponseEntity<>(list, HttpStatus.OK);
+    }
+	
 	@GetMapping("/support/qna/category/{category}/keyword/{keyword}")
     public ResponseEntity<List<Support>> getSupportQnaFindByKeyword(@PathVariable("category")String category, @PathVariable("keyword")String keyword){
         if(category.equals("all")) {
@@ -169,8 +175,7 @@ public class AdminController_jisun {
         }else {
         	 List<Support> list = supportRepo.findAllByCategoryQnaByCategory(category);
         	 return new ResponseEntity<>(list, HttpStatus.OK);
-        }
-       
+        } 
     }
 	
 }
