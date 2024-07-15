@@ -179,7 +179,7 @@
 		    }
 		  xhttp.open("GET", "http://localhost:9001/api/v1/user/vet-detail?id=" + id, true);
 		  xhttp.setRequestHeader("MemberId", localStorage.getItem("MemberId"));
-		  xhttp.setRequestHeader("token", localStorage.getItem("token"));
+		  xhttp.setRequestHeader("Authorization", localStorage.getItem("token"));
 		  xhttp.setRequestHeader("role", localStorage.getItem("role"));
 		  xhttp.send();
 		
