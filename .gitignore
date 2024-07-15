@@ -6,6 +6,7 @@ tmp/
 *.swp
 *~.nib
 *.index
+*.snap
 local.properties
 .settings/
 .loadpath
