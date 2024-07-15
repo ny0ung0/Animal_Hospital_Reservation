@@ -55,12 +55,12 @@ public class ChatHandler extends TextWebSocketHandler{
 	    //Long receiverId = chatMessage.getReceiver();   
 	    //Long senderId = chatMessage.getSender();
         
-        Member receiver = memberRepo.findById(receiverId).get();
-	    Member sender = memberRepo.findById(senderId).get();
+//        Member receiver = memberRepo.findById(receiverId).get();
+//	    Member sender = memberRepo.findById(senderId).get();
 	    
 	    
 	    // 2. ChatService를 사용하여 메시지를 데이터베이스에 저장하고 저장된 메시지를 반환합니다.
-	    Chat savedMessage = chatService.saveMessage(receiver, sender, chatMessage);
+	    Chat savedMessage = chatService.saveMessage(senderId, receiverId, chatMessage);
 
 	    // 3. 모든 연결된 세션에 저장된 메시지를 전송합니다.
 	    for (WebSocketSession webSocketSession : list) {

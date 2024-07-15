@@ -50,7 +50,10 @@ xhttp.onload = function() {
 	                // 오른쪽 위 항상 내위치 찾기 버튼
 	                document.querySelector("#curBtn").addEventListener('click', function (e) {
 	                    e.preventDefault();
+	                    map.setZoom(15);
 	                    map.panTo(currentPos);
+	                    
+	                    
 	                });
 	
 	                // 반경 2km 이내의 병원 필터링
@@ -172,7 +175,7 @@ function getMemVetList(params, map, currentPos) {
     xhttp.open("GET", url, true);
     xhttp.setRequestHeader("MemberId", localStorage.getItem("MemberId"));
     xhttp.setRequestHeader("Authorization", localStorage.getItem("token"));
-//    xhttp.setRequestHeader("role", localStorage.getItem("role"));
+    xhttp.setRequestHeader("role", localStorage.getItem("role"));
     xhttp.send();
 }
 

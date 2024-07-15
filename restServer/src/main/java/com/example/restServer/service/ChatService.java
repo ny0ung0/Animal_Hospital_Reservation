@@ -58,50 +58,41 @@ public class ChatService {
 	
 	
 	//메시지 전송
-	public Chat saveMessage(Member sender, Member receiver, String message) {
-		
-		
-		ChatRoom chatRoom = getOrCreateChatRoom(sender, receiver);
-		
-		//Member receiver = memberRepo.findById(receiverId).get();
-	    //Member sender = memberRepo.findById(senderId).get();
-		
-		
-        Chat chatMessage = new Chat();
-        chatMessage.setChatRoom(chatRoom);
-        chatMessage.setSender(sender);
-        chatMessage.setReceiver(receiver);
-        chatMessage.setIsRead(false);
-        chatMessage.setMessage(message);
-        chatMessage.setSendDate(LocalDateTime.now());
-        return chatRepo.save(chatMessage);
-    }
-	
-	
-	public ChatRoom getChatRoom(Member user, Member hospital) {
-        return chatroomRepo.findByUserAndHospital(user, hospital);
-    }
-	
-	
-	
-	private ChatRoom getOrCreateChatRoom(Member sender, Member receiver) {
-		
-		//Member receiver = memberRepo.findById(receiverId).get();
-	    //Member sender = memberRepo.findById(senderId).get();
-		
-		
-        ChatRoom chatRoom = chatroomRepo.findByUserAndHospital(sender, receiver);
-        if(chatRoom != null) {
-        	return chatRoom;
-        }else {
-        	// 채팅 방이 없으면 새로 생성
-        	ChatRoom newChatRoom = new ChatRoom();
-            newChatRoom.setUser(sender);
-            newChatRoom.setHospital(receiver);
-            return chatroomRepo.save(newChatRoom);
-        }
-        
+	public Chat saveMessage(Long senderId, Long receiverId, String message) {
+	    Member sender = memberRepo.findById(senderId).orElseThrow(() -> new IllegalArgumentException("Sender not found with id: " + senderId));
+	    Member receiver = memberRepo.findById(receiverId).orElseThrow(() -> new IllegalArgumentException("Receiver not found with id: " + receiverId));
 
-    }
+	    // 채팅방 데이터가 있는지 확인하고, 없으면 새로 생성
+	    ChatRoom chatRoom = getOrCreateChatRoom(sender, receiver);
+
+	    Chat chatMessage = new Chat();
+	    chatMessage.setChatRoom(chatRoom);
+	    chatMessage.setSender(sender);
+	    chatMessage.setReceiver(receiver);
+	    chatMessage.setIsRead(false);
+	    chatMessage.setMessage(message);
+	    chatMessage.setSendDate(LocalDateTime.now());
+
+	    return chatRepo.save(chatMessage);
+	}
+
+	public ChatRoom getChatRoom(Member sender, Member receiver) {
+	    return chatroomRepo.findByUserAndHospital(sender, receiver);
+	}
+
+	private ChatRoom getOrCreateChatRoom(Member sender, Member receiver) {
+	    ChatRoom chatRoom = chatroomRepo.findByUserAndHospital(sender, receiver);
+	    if (chatRoom != null) {
+	        return chatRoom;
+	    } else {
+	        // 채팅 방이 없으면 새로 생성
+	        ChatRoom newChatRoom = new ChatRoom();
+	        newChatRoom.setUser(sender);
+	        newChatRoom.setHospital(receiver);
+	        return chatroomRepo.save(newChatRoom);
+	    }
+	}
+	
+	
 	
 }
