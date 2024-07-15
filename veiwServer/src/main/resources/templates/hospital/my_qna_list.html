@@ -45,7 +45,7 @@ xhttp.onload = function() {
   for(let i = 0; i < data.length; i++){
 	  let listItem = document.createElement("tr");
 	  listItem.innerHTML = "<th>"+ (i+1) +"</th>" + "<th>"+ data[i].category +"</th>"
-	  						+ "<th>"+ data[i].title +"</th>" + "<th>"+ data[i].createdAt.slice(0,10) +"</th>"
+	  						+ "<th><a href='/qnaDetail?id=" + data[i].id + "'>" + data[i].title + "</a></th>" + "<th>"+ data[i].createdAt.slice(0,10) +"</th>"
 	  document.querySelector("#myList").appendChild(listItem);
   }
  }
