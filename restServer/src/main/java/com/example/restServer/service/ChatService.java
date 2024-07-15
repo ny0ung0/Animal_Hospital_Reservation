@@ -30,23 +30,24 @@ public class ChatService {
 
 	//채팅방 리스트 불러오기
 	//추후 유저에 따른 채팅방 분리
-	//@GetMapping("/chatList")
-	public List<ChatRoom> chatList(){
-		List<ChatRoom> chatRoomList = chatroomRepo.findAll();
+	public List<ChatRoom> chatList(Long memberId){
+		Member member = memberRepo.findById(memberId).get();
+		
+		List<ChatRoom> chatRoomList = chatroomRepo.findByUser(member);
 		
 		return chatRoomList;
 	}
 	
 	//채팅방 생성
 	//@PostMapping("/chatroom")
-	public ChatRoom createChatRoom(Member user, Member hospital){
-		ChatRoom chatRoom = new ChatRoom();
-		chatRoom.setUser(user);
-		chatRoom.setHospital(hospital);
-		chatroomRepo.save(chatRoom);
-		
-		return chatRoom;
-	}
+//	public ChatRoom createChatRoom(Member user, Member hospital){
+//		ChatRoom chatRoom = new ChatRoom();
+//		chatRoom.setUser(user);
+//		chatRoom.setHospital(hospital);
+//		chatroomRepo.save(chatRoom);
+//		
+//		return chatRoom;
+//	}
 	
 	
 	
