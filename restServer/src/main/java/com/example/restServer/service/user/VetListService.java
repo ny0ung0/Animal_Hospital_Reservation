@@ -2,7 +2,6 @@ package com.example.restServer.service.user;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,6 +25,9 @@ public class VetListService {
 	
 	
 	public List<MemVetDto> getMemberVetList(String address, Long userId) {
+		
+		System.out.println("서비스");
+		System.out.println(address);
 		List<Member> result = memRepo.findMemberVetList(address);
 		List<MemVetDto> MemVetList = new ArrayList<>();
 		for(int i = 0; i<result.size(); i++) {
@@ -107,5 +109,33 @@ public class VetListService {
 			MemVetList.add(mv);
 		}
 		return MemVetList;
+	}
+	
+	public MemVetDto getVetDetail(Long hosId, Long userId) {
+		Member hospital = memRepo.findById(hosId).get();
+		
+		MemVetDto mv = new MemVetDto();
+		mv.setId(hosId);
+		mv.setAddress(hospital.getAddress());
+		mv.setPhone(hospital.getPhone());
+		mv.setHospitalName(hospital.getHospitalName());
+		mv.setRepresentative(hospital.getRepresentative());
+		mv.setBusinessHours(hospital.getBusinessHours());
+		mv.setBusinessNumber(hospital.getBusinessNumber());
+		mv.setIntroduction(hospital.getIntroduction());
+		mv.setPartnership(hospital.getPartnership());
+		mv.setLogo(hospital.getLogo());
+		mv.setEmail(hospital.getEmail());
+		reserveRepo.findAvgReview(hosId);
+		mv.setAvgReview(reserveRepo.findAvgReview(hosId));
+		mv.setReview(reserveRepo.findReservWithReview(hosId));
+		
+		
+		if(!bookmarkRepo.isBookmarked(hosId, userId).isEmpty()) {
+			mv.setBookmarked(true);
+		}
+		
+		
+		return mv;
 	}
 }
