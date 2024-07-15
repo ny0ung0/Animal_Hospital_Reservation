@@ -10,7 +10,7 @@ public interface UserReservationDto  {
     Integer getPoints_used();
     Integer getRating();
     LocalDateTime getReservation_datetime();
-    String getReeview();
+    String getReview();
     String getStatus();
     String getType();
     String getCoupon_id();

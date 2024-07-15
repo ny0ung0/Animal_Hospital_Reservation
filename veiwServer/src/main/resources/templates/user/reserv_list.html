@@ -10,73 +10,355 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Jua&display=swap" rel="stylesheet">
-
+<style>
+  .stars {
+    display: flex;
+    cursor: pointer;
+  }
+  .star {
+    font-size: 2rem;
+    color: #ccc;
+  }
+  .star.selected {
+    color: gold;
+  }
+</style>
 </head>
 <body class="d-flex flex-column h-100">
 <div th:replace="~{user/header :: header}"></div>
 <div class="container-xl">
 
-
 <h1 class="mt-3 mt-md-5 mb-3 mb-md-3">병원예약 리스트</h1>
 <hr>
+<div class="btn-group btn-group-lg" role="group" aria-label="Basic example">
+  <button type="button" class="btn btn-main" id="waitBtn" onclick="wait()">대기중예약</button>
+  <button type="button" class="btn btn-outline-main" id="confirmBtn" onclick="confirm()">확정예약</button>
+  <button type="button" class="btn btn-main" id="completeBtn" onclick="complete()">완료된예약</button>
+</div>
+
 <table class="table table-hover manager-table align-middle">
-	<thead>
-		<tr>
-			<td>순번</td>
-			<td>병원명</td>
-			<td>예약 날짜</td>
-			<td>예약 시간</td>
-			<td>상태/리뷰</td>
-		</tr>
-	</thead>
-	<tbody id="tbody">
-		
-	</tbody>
+  <thead>
+    <tr>
+      <td>순번</td>
+      <td>병원명</td>
+      <td>예약 날짜</td>
+      <td>예약 시간</td>
+      <td>상태/리뷰</td>
+    </tr>
+  </thead>
+  <tbody id="tbody">
+    
+  </tbody>
 </table>
 
+</div>
+<!-- Modal -->
+<div class="modal fade" id="detailInfo" tabindex="-1" aria-labelledby="detailInfoModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="detailInfoModalLabel">반려동물 정보</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="detailInfoBody">
+        
+          <div class='modal-item'><span class="modal-sub-title"></span><span id="photo">사진</span></div>
+          <div class='modal-item'><span class="modal-sub-title">반려동물 </span><span id="pet_name">동물이름</span></div>
+          <div class='modal-item'><span class="modal-sub-title">진료유형 </span><span id="type">진료유형</span></div>
+          <div class='modal-item'><span class="modal-sub-title">수의사 </span><span id="doctor_name">수의사</span></div>
+          <div class='modal-item'><span class="modal-sub-title">메모 </span><span id="memo">메모</span></div>
+          <div class='modal-item'><span class="modal-sub-title">쿠폰 사용 </span><span id="coupon_name">쿠폰</span></div>
+          <div class='modal-item'><span class="modal-sub-title">포인트 사용 </span><span id="points_used">포인트</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="review" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="reviewModalLabel">리뷰 작성</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="reviewBody">
+         <form id="reviewForm">
+         <input type="text" name="id" id="reservation_id">
+          <div class="mb-3">
+            <label for="recipient-name" class="col-form-label">평점:</label>
+            <div id="starRating" class="stars">
+              <span class="star" data-value="1">&#9733;</span>
+              <span class="star" data-value="2">&#9733;</span>
+              <span class="star" data-value="3">&#9733;</span>
+              <span class="star" data-value="4">&#9733;</span>
+              <span class="star" data-value="5">&#9733;</span>
+            </div>
+          </div>
+          <input type="text" name="rating" id="rating">
+          <div class="mb-3">
+            <label for="message-text" class="col-form-label">리뷰:</label>
+            <textarea class="form-control" name="review"></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" onclick="review()">작성완료</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <div th:replace="~{user/footer :: footer}"></div>
 
-
 <script>
+var allList=[];
+var waitingList = [];
+var completedList = [];
+var confirmedList = [];
+
 ready();
-	function ready(){
-		var reservList = document.querySelector("#tbody");
-		reservList.innerHTML=` `;
+  function ready(){
+    var reservList = document.querySelector("#tbody");
+    reservList.innerHTML=` `;
 
-		const xhttp = new XMLHttpRequest();
+    const xhttp = new XMLHttpRequest();
+    xhttp.onload = function() {
+      var cnt = 1;
+      console.log(this.responseText);
+      const list = JSON.parse(this.responseText);
+      allList= list;
+      list.forEach(reservation =>{
+        switch (reservation.status) {
+            case '대기':
+                waitingList.push(reservation);
+                break;
+            case '완료':
+                completedList.push(reservation);
+                break;
+            case '확정':
+                confirmedList.push(reservation);
+                break;
+            default:
+                console.error('Unknown status:', item.status);
+        }
+      console.log(waitingList);
+      console.log(completedList);
+      console.log(confirmedList);
+      });
+      for(let i=0 ;i < confirmedList.length;i++ ){
+       let reservation = confirmedList[i];
+       var day =reservation.reservation_datetime[0]+'-'+ reservation.reservation_datetime[1]+'-' +reservation.reservation_datetime[2];
+        if(reservation.reservation_datetime[4]=='0'){
+          reservation.reservation_datetime[4] ='00';
+        }
+        var time = reservation.reservation_datetime[3]+':'+ reservation.reservation_datetime[4];
+        reservList.innerHTML +=`
+        <tr>
+          <td>${cnt++}</td>
+          <td><button type="button" class="btn btn-user-sub" data-bs-toggle="modal" data-bs-target="#detailInfo" onclick="detailInfo('confirm',${i})"  >
+          ${reservation.hospital_name}
+          </button></td>
+          <td>${day}</td>
+          <td>${time}</td>
+          <td><button class="btn btn-outline-user-sub" >취소</button>   <button class="btn btn-outline-hospital-sub">변경</button></td>
+        </tr>`
+      
+      }
+      
+        
+      
+    }
+    xhttp.open("get", "http://localhost:9001/api/v1/user/reservationList/"+localStorage.getItem("MemberId"));
+    //xhttp.setRequestHeader("Content-type", "application/json");
+    var token = localStorage.getItem('token');
+    if (token) {
+      xhttp.setRequestHeader("Authorization",token);
+    }
+    xhttp.send();
+  }
+  
+  function wait(){
+    var cnt = 1;
+    var reservList = document.querySelector("#tbody");
+    reservList.innerHTML=` `;
+    
+    for(let i=0 ;i < waitingList.length;i++ ){
+       let waiting = waitingList[i];
+      var day =waiting.reservation_datetime[0]+'-'+ waiting.reservation_datetime[1]+'-' +waiting.reservation_datetime[2];
+      if(waiting.reservation_datetime[4]=='0'){
+        waiting.reservation_datetime[4] ='00';
+      }
+      var time = waiting.reservation_datetime[3]+':'+ waiting.reservation_datetime[4];
+      reservList.innerHTML +=`
+      <tr>
+        <td>${cnt++}</td>
+        <td><button type="button" class="btn btn-user-sub" data-bs-toggle="modal" data-bs-target="#detailInfo" onclick="detailInfo('wait',${i})">
+        ${waiting.hospital_name}
+        </button></td>
+        <td>${day}</td>
+        <td>${time}</td>
+        <td><button class="btn btn-outline-user-sub" >취소</button>   <button class="btn btn-outline-hospital-sub">변경</button></td>
+      </tr>`
+    }
+  }
+  function confirm(){
+    var cnt = 1;
+    var reservList = document.querySelector("#tbody");
+    reservList.innerHTML=` `;
+    
+    for(let i=0 ;i < confirmedList.length;i++ ){
+       let reservation = confirmedList[i];
+      var day =reservation.reservation_datetime[0]+'-'+ reservation.reservation_datetime[1]+'-' +reservation.reservation_datetime[2];
+      if(reservation.reservation_datetime[4]=='0'){
+        reservation.reservation_datetime[4] ='00';
+      }
+      var time = reservation.reservation_datetime[3]+':'+ reservation.reservation_datetime[4];
+      reservList.innerHTML +=`
+      <tr>
+        <td>${cnt++}</td>
+        <td><button type="button" class="btn btn-user-sub" data-bs-toggle="modal" data-bs-target="#detailInfo" onclick="detailInfo('confirm',${i})">
+        ${reservation.hospital_name}
+        </button></td>
+        <td>${day}</td>
+        <td>${time}</td>
+        <td><button class="btn btn-outline-user-sub" >취소</button>   <button class="btn btn-outline-hospital-sub">변경</button></td>
+      </tr>`
+    }
+  }
+  
+  function complete(){
+    var cnt = 1;
+    var reservList = document.querySelector("#tbody");
+    reservList.innerHTML=` `;
+    for(let i=0 ;i < completedList.length;i++ ){
+       let reservation = completedList[i];
+      var day =reservation.reservation_datetime[0]+'-'+ reservation.reservation_datetime[1]+'-' +reservation.reservation_datetime[2];
+      if(reservation.reservation_datetime[4]=='0'){
+        reservation.reservation_datetime[4] ='00';
+      }
+      var time = reservation.reservation_datetime[3]+':'+ reservation.reservation_datetime[4];
+      var btn = `<button class="btn btn-user-sub" data-bs-toggle="modal" data-bs-target="#review" onclick="openReviewModal(0,${reservation.id})">리뷰작성</button>`;
+      if(reservation.review !=null){
+    	  alert("리뷰있음에 들어옴");
+        btn = `<button class="btn btn-user-sub" data-bs-toggle="modal" data-bs-target="#review" onclick="openReviewModal(1,${reservation.id})">리뷰확인</button>`;
+      }
+      reservList.innerHTML +=`
+      <tr>
+        <td>${cnt++}</td>
+        <td><button type="button" class="btn btn-user-sub" data-bs-toggle="modal" data-bs-target="#detailInfo" onclick="detailInfo('complete',${i})">
+        ${reservation.hospital_name}
+        </button></td>
+        <td>${day}</td>
+        <td>${time}</td>
+        <td>${btn}</td>
+      </tr>`
+    }
+  }
+  
+  function detailInfo(status,i){
+    //alert("디테일 함수 들어옴");
+    let photo =document.querySelector("#photo");
+    let pet_name =document.querySelector("#pet_name");
+    let type =document.querySelector("#type");
+    let doctor_name = document.querySelector("#doctor_name");
+    let memo =document.querySelector("#memo");
+    let coupon_name =document.querySelector("#coupon_name");
+    let point_used =document.querySelector("#points_used");
+      
+    let dto = null;
+    if(status =="confirm"){
+      dto=confirmedList[i];
+      //alert(dto.photo);
+    }else if(status =="complete"){
+      dto=completedList[i];
+    }else{
+      dto=waitingList[i];
+    }
+    photo.innerHTML=`<img src="/images/user/${dto.photo}" width="200px" height="200px">`;
+    pet_name.innerHTML=`${dto.pet_name}`;
+    type.innerHTML=`${dto.type}`;
+    doctor_name.innerHTML=`${dto.doctor_name}`;
+    if(dto.memo==""){
+      memo.innerHTML=`메모 없음`;
+    }else{
+      memo.innerHTML=`${dto.memo}`;
+    }
+    
+    if(dto.coupon_name==null){
+      coupon_name.innerHTML=`쿠폰 사용 안함`;
+    }else{
+      coupon_name.innerHTML=`${dto.coupon_name}`;
+    }
+    
+    if(dto.points_used ==null || dto.points_used=="0"){
+      points_used.innerHTML=`포인트 사용 안함`;
+    }else{
+    points_used.innerHTML=`${dto.points_used}`;
+      
+    }
+    
+  }
+
+  function openReviewModal(num,reservationId) {
+    // 리뷰 모달에 예약 정보를 설정하는 로직을 추가
+    alert(reservationId);
+    document.getElementById('reservation_id').value = reservationId;
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    const stars = document.querySelectorAll('.star');
+    let selectedRating = 0;
+
+    stars.forEach(star => {
+      star.addEventListener('click', function() {
+        selectedRating = this.getAttribute('data-value');
+        updateStars(selectedRating);
+      });
+
+      star.addEventListener('mouseover', function() {
+        updateStars(this.getAttribute('data-value'));
+      });
+
+      star.addEventListener('mouseout', function() {
+        updateStars(selectedRating);
+      });
+    });
+
+    function updateStars(rating) {
+    	document.querySelector("#rating").value=rating;
+      stars.forEach(star => {
+        if (star.getAttribute('data-value') <= rating) {
+          star.classList.add('selected');
+        } else {
+          star.classList.remove('selected');
+        }
+      });
+    }
+  });
+  
+  
+  function review(){
+	  var frm = document.getElementById("reviewForm");
+	  const formData = new FormData(frm);
+	  const xhttp = new XMLHttpRequest();
 		xhttp.onload = function() {
-			var cnt = 1;
-			alert(this.responseText);
-			const list = JSON.parse(this.responseText);
+			//alert(this.responseText);
+			if(this.status==200){
+				alert("리뷰등록이 완료되었습니다.");
+				window.location.href="/user/reserv_list";
+			}
+			var result = this.responseText;
+			alert(result);
 			
-			list.forEach(reservation => {
-				reservList.innerHTML +=`
-				<tr>
-					<td>${cnt++}</td>
-					<td>${reservation.hospital_name}</td>
-					<td>${reservation.hospital_name}</td>
-					<td>${reservation.hospital_name}</td>
-					<td>기타</td>
-
-				</tr>`
-				
-
-
-			});
-				
-				
 		}
-		xhttp.open("get", "http://localhost:9001/api/v1/user/reservationList/"+localStorage.getItem("MemberId"));
-		//xhttp.setRequestHeader("Content-type", "application/json");
-		var token = localStorage.getItem('token');
-		if (token) {
-			xhttp.setRequestHeader("Authorization",token);
-		}
-		xhttp.send();
-	}
-	
+		xhttp.open("post", "http://localhost:9001/api/v1/user/review");
+		//xhttp.setRequestHeader("Content-type", "multipart/form-data");	
+
+		xhttp.send(formData);
+  		
+  }
+  
+  
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
