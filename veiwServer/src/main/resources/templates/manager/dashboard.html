@@ -35,7 +35,7 @@
 <script>
 const token = localStorage.getItem("token");
 function allList(){
-	fetch("http://localhost:9001/api/v1/manager/user", {
+	fetch("http://localhost:9001/api/v1/manager/support/qna/no-answer", {
 		method : "GET",
 		headers: {
 	        'Authorization': `${token}`
@@ -43,26 +43,18 @@ function allList(){
 	})
 	.then(response => response.text())
 	.then(data => {
+		
 		const objs = JSON.parse(data);
 		//console.log(objs);
 		let cnt = 1;
 		objs.forEach(obj =>{
-			let partnership = obj.partnership ? "Y" : "N"; 
-			
-			let address = obj.address.replace(/\/\//g, " ");
+			let createdAtDate = obj.createdAt[0] + "-" + obj.createdAt[1] + "-" + obj.createdAt[2];
 			document.getElementById("tbody").innerHTML += 
 				'<tr>'
 					+ '<td>' + cnt + '</td>'
-					+ '<td>' + obj.username + '</td>'
-					+ '<td>' + obj.name + '</td>'
-					+ '<td>' + address + '</td>'
-					+ '<td>' + obj.phone + '</td>'
-					+ '<td>'
-						+ '<a class="btn btn-primary" href="/manager/userDetail?id='+ obj.id +'">상세보기</a>'
-					+ '</td>'
-					+ '<td>'
-						+ '<button class="btn btn-outline-danger" onclick="blackListAdd(event, ' + obj.id + ')">블랙리스트 추가</button>'
-					+ '</td>'
+					+ '<td>' + obj.category + '</td>'
+					+ '<td><a class="link-dark link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" href="/qnaDetail?id=' + obj.id + '">' + obj.title + '</a></td>'
+					+ '<td>' + createdAtDate + '</td>'
 				+ '</tr>';
 				cnt++;
 		});
@@ -72,75 +64,7 @@ function allList(){
 }
 allList();
 
-function blackListAdd(event, id){
-	alert("준비중입니다!");
-// 	if(confirm("해당 고객을 블랙리스트에 추가하시겠습니까?")){
-// 		fetch("http://localhost:9001/api/v1/manager/blackList/" + id,{
-// 			method : "PUT"
-// 		})
-// 		.then(response => response.text())
-// 		.then(data =>{
-// 			console.log(data);
-// 			alert("추가되었습니다.");
-// 			location.reload();
-// 		})
-// 		.catch(error => console.log(error));
-// 	}else{
-// 		alert("취소되었습니다.");
-// 	}
-	
-}
 
-const keyword = document.querySelector("#keywordInput");
-
-
-document.querySelector("#searchBtn").addEventListener("click", function(){
-	
-	if(keyword.value==""){
-		document.getElementById("tbody").innerHTML = ""; // 이전 검색 결과를 초기화
-		allList();
-	}else{
-		console.log(keyword.value);
-		fetch("http://localhost:9001/api/v1/manager/user/keyword/" + keyword.value, {
-			method : "GET",
-			headers: {
-		        'Authorization': `${token}`
-		    }
-		})
-		.then(response => response.text())
-		.then(data => {
-			const objs = JSON.parse(data);
-			document.getElementById("tbody").innerHTML = ""; // 이전 검색 결과를 초기화
-			//console.log(objs);
-			if(objs.length === 0){
-				document.getElementById("tbody").innerHTML = "<tr><td colspan='7'>검색 결과 없습니다.</td><tr>";
-			}else{
-				let cnt = 1;
-				objs.forEach(obj =>{
-					let partnership = obj.partnership ? "Y" : "N"; 
-					
-					let address = obj.address.replace(/\/\//g, " ");
-					document.getElementById("tbody").innerHTML += 
-						'<tr>'
-							+ '<td>' + cnt + '</td>'
-							+ '<td>' + obj.username + '</td>'
-							+ '<td>' + obj.name + '</td>'
-							+ '<td>' + address + '</td>'
-							+ '<td>' + obj.phone + '</td>'
-							+ '<td>'
-								+ '<a class="btn btn-primary" href="/manager/userDetail?id='+ obj.id +'">상세보기</a>'
-							+ '</td>'
-							+ '<td>'
-								+ '<button class="btn btn-outline-danger" onclick="blackListAdd(event, ' + obj.id + ')">블랙리스트 추가</button>'
-							+ '</td>'
-						+ '</tr>';
-						cnt++;
-				});
-			}
-		})
-	}
-	
-})
 
 
 </script>
