@@ -10,4 +10,9 @@ public class EtcController_jun {
 	public void fav_vet_list() {
 		
 	}
+	
+	@RequestMapping("/user/reserv_list")
+	public void reserv_list() {
+		
+	}
 }
