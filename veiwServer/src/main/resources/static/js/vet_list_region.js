@@ -88,6 +88,7 @@ function loadRegionList() {
 }
 
 searchBtn.addEventListener("click", function() {
+	document.querySelector("input[name=search_vet]").value="";
 	vetContainer.innerHTML="";
 	searchResult=[];
     //예약되는 병원 + 포인트 제휴병원 여부 보여주기
@@ -268,11 +269,20 @@ function sortingPoint(e) {
 
 // 디바운스를 위한 타이머 변수
 let debounceTimer;
+let isResultContainerOpen;
 
+document.addEventListener("click", function(e){
+	if(e.target != document.querySelector(".result_container")&& isResultContainerOpen == true){
+		resultsContainer.style.display = "none";
+		isResultContainerOpen = false;
+	}
+})
 document.querySelector("input[name=search_vet]").addEventListener("keydown", function(e){
     clearTimeout(debounceTimer);
+    resultsContainer.style.display = "block";
     resultsContainer.innerHTML = '';
 	keywordSearchResult=[];
+	isResultContainerOpen = true;
 	
     debounceTimer = setTimeout(() => {
         const xhttp = new XMLHttpRequest();
@@ -289,7 +299,7 @@ document.querySelector("input[name=search_vet]").addEventListener("keydown", fun
                     keywordSearchResult.push(hos);
                 }
             });
-            if(keywordSearchResult.length ==0){
+            if(keywordSearchResult.length == 0){
 				resultsContainer.innerHTML="<div class='resultMsg'>검색결과가 없습니다🥲</div>";
 			}
         };
@@ -313,21 +323,23 @@ function displayResults(hospital) {
 
 document.querySelector("#keywordSearchBtn").addEventListener("click", function() {
     document.querySelector(".vet_list").innerHTML = "";
-    let keywordVetResult = [];
+//    let keywordVetResult = [];
+    searchResult = [];
+    let params = new URLSearchParams();
 
     keywordSearchResult.forEach(hos => {
-        let vet = {};
-        vet.vetName = hos["사업장명"];
-        vet.vetAddr = hos["도로명전체주소"].split(" ")[0] + "//" + hos["도로명전체주소"].split(" ")[1];
-        keywordVetResult.push(vet);
+//        let vet = {};
+//        vet.vetName = hos["사업장명"];
+//        vet.vetAddr = hos["도로명전체주소"].split(" ")[0] + "//" + hos["도로명전체주소"].split(" ")[1];
+//        keywordVetResult.push(vet);
+        
+         params.append(hos["사업장명"], hos["도로명전체주소"].split(" ")[0] + "//" + hos["도로명전체주소"].split(" ")[1]);
     });
 
     const xhttp = new XMLHttpRequest();
     xhttp.onload = function() {
            	let data = JSON.parse(this.responseText);
-           	
 	       	data.forEach(hospital =>{
-				console.log(hospital.hospitalName)
        		let addr = hospital.address.replaceAll("//", " ")
        		memVet[hospital.hospitalName] = {
 												"id":hospital.id,
@@ -345,12 +357,15 @@ document.querySelector("#keywordSearchBtn").addEventListener("click", function()
 									       		"businessHours" : hospital.businessHours
 									       		};
 	       	})
-	       	keywordSearchResult.forEach(hos=>addHospitalToList(hos));
+	       	keywordSearchResult.forEach(hos=>{
+				addHospitalToList(hos);
+	       		searchResult.push(hos)
+	       		});
     };
-    xhttp.open("POST", "http://localhost:9001/api/v1/keyword-vet-list", true); 
+    xhttp.open("GET", "http://localhost:9001/api/v1/keyword-vet-list?"+ params.toString(), true); 
     xhttp.setRequestHeader("MemberId", localStorage.getItem("MemberId"));
     xhttp.setRequestHeader("token", localStorage.getItem("token"));
     xhttp.setRequestHeader("role", localStorage.getItem("role"));
     xhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-    xhttp.send(JSON.stringify(keywordVetResult)); // vetInfo 배열을 전송
+    xhttp.send(); // vetInfo 배열을 전송
 });

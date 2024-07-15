@@ -14,14 +14,16 @@ public class VetListController_jia {
 	@RequestMapping("/vet_list_region")
 	public void vetListRegion() {
 	}
+	@RequestMapping("/vet_detail")
+	public void vetDetail(@RequestParam("id") Long id, Model model) {
+		model.addAttribute("id", id);
+	}
 	@RequestMapping("/reserv_form")
 	public void reserv_form(@RequestParam("id") Long id, Model model) {
 		model.addAttribute("id", id);
-		System.out.println(id);
 	}
 	@RequestMapping("/reserv_edit")
 	public void reserv_edit(@RequestParam("id") Long id, Model model) {
 		model.addAttribute("id", id);
-		System.out.println(id);
 	}
 }
