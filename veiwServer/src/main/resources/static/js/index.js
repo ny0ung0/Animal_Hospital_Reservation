@@ -7,7 +7,7 @@ if (!window.markers) window.markers = [];
 if (!window.infoWindows) window.infoWindows = [];
 let memVet = {};
 let nearVet = [];
-
+const searchAreaBtn = document.querySelector("#searchAreaBtn");
 
 const xhttp = new XMLHttpRequest();
 xhttp.onload = function() {
@@ -17,7 +17,8 @@ xhttp.onload = function() {
     // 네이버 지도 객체 생성
     var map = new naver.maps.Map('map', {
         center: new naver.maps.LatLng(37.3595704, 127.105399),
-        zoom: 15
+        zoom: 15,
+        padding: { top: 100 },
     });
     
 
@@ -52,9 +53,9 @@ xhttp.onload = function() {
 	                    e.preventDefault();
 	                    map.setZoom(15);
 	                    map.panTo(currentPos);
-	                    
-	                    
 	                });
+	                
+	                
 	
 	                // 반경 2km 이내의 병원 필터링
 	                var nearbyHospitals = hospitals.filter(function (hospital) {
@@ -139,7 +140,7 @@ xhttp.onload = function() {
 xhttp.open("GET", "/json/vet_list.json", true);
 xhttp.setRequestHeader("MemberId", localStorage.getItem("MemberId"));
 xhttp.setRequestHeader("Authorization", localStorage.getItem("token"));
-//xhttp.setRequestHeader("role", localStorage.getItem("role"));
+xhttp.setRequestHeader("role", localStorage.getItem("role"));
 xhttp.send();
 
 function getMemVetList(params, map, currentPos) {
@@ -340,3 +341,21 @@ function sortingPoint(e) {
 		})
     }
 }
+
+
+ naver.maps.Event.addListener(map, 'zoom_changed', function(zoom) {
+    searchAreaBtn.style.display="block"
+    searchAreaBtn.addEventListener("click", function(){
+	})
+});
+
+naver.maps.Event.addListener(map, 'bounds_changed', function(bounds) {
+    searchAreaBtn.style.display="block"
+    searchAreaBtn.addEventListener("click", function(){
+		console.log("이지역검색해조요");
+		console.log(map.getCenter())
+		currentPos = new naver.maps.LatLng(map.getCenter());
+		map.setCenter(currentPos);
+	})
+    
+});
