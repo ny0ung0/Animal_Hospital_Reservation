@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html class="h-100" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"
+	charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+<title>견강할고양</title>
+<script type="text/javascript"
+	src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=v02baxm8gp"></script>
+
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+	rel="stylesheet"
+	integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+	crossorigin="anonymous">
+<link href="/css/style.css" rel="stylesheet">
+<link href="/css/vet_detail.css" rel="stylesheet">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link
+	href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Jua&display=swap"
+	rel="stylesheet">
+</head>
+<body class="d-flex flex-column h-100">
+	<img style="display: none" id="mainGif" src="/images/loading.gif">
+	<div th:replace="~{user/header :: header}"></div>
+	<div class="container-xl">
+		<h1 class="mt-3 mt-md-5 mb-3 mb-md-3">동물병원 상세페이지</h1>
+		
+		<div class="detail_container">
+			<div class="vet_header">
+			<h1 id="vet_name" style="display:inline-block;"></h1>
+			<img onclick="checkBookmark(event)" id="bookmarkImg" style="width:50px; display:inline-block; margin:0;" src="/images/bookmark.png">
+			</div>
+			<div class="item img_container"><img id="logo" src=""  alt="로고"/></div>
+			<div id="hospital_id" style="display:none;">번호</div>
+	        <div class='item'><span class="modal-sub-title">번호</span><span id="phone">번호</span></div>
+	        <div class='item'><span class="modal-sub-title">주소</span><span id="address">주소</span></div>
+	        <div class='modal-memVetInfo'>
+	          <div class='item'><span class="modal-sub-title">영업시간</span><span id="working_hour" >영업시간</span></div>
+	          
+	          <div class='item'><img style="width:35px; transform: rotate(-20deg);" src="/images/pin_p.svg"><span class="modal-sub-title">포인트제휴여부</span><span id="point" >포인트제휴여부</span></div>
+	          <div class='item'><span class="modal-sub-title">병원소개</span><span id="introduction" >병원소개</span></div>
+	          <div class='item'>
+	            <span class="modal-sub-title">평균별점</span>
+	            <div class="reviewContainer">
+	              <div id='review_overview'>
+		              <span id="avgReview">평균별점</span>
+		              <span id="reviewStars"></span>
+		              <span id="reviewCount">리뷰 개수</span>
+		              <div id="reviewDistribution">
+		                <!-- 리뷰 분포 그래프 -->
+		              </div>
+	              <a id="toggleReviews" >리뷰 보기</a>
+	              </div>
+	              <div id="reviewList">
+	                <div id="review"></div>
+	              </div>
+	            </div>
+	          </div>
+	          <div class='item'><span class="modal-sub-title">대표자이름</span><span id="representative" >대표자이름</span></div>
+	          <div class='item'><span class="modal-sub-title">이메일</span><span id="email">이메일</span></div>
+	          <div class='item'><span class="modal-sub-title">사업자번호</span><span id="businessNumber">사업자번호</span></div>
+	          <div class="row">
+	            <div class="col-6 p-1">
+	              <button style="width: 100%;" class="btn btn-user-sub reservationBtn" onclick="makeReservation(event)">예약하기</button>
+	            </div>
+	            <div class="col-6 p-1">
+	              <button style="width: 100%;" class="btn btn-hospital-sub chatBtn" onclick="chat(event)">문의채팅</button>
+	            </div>
+	          </div>
+	        </div>
+		
+		</div>
+	
+	
+	
+	<div th:replace="~{user/footer :: footer}"></div>
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+		crossorigin="anonymous"></script>
+	<script type="text/javascript" src="/js/modal.js"></script>
+	<script>
+		const id = "[[${id}]]";
+		console.log(id)
+		
+		const xhttp = new XMLHttpRequest();
+		  xhttp.onload = function() {
+			  let data = JSON.parse(this.responseText)
+		      console.log(data);
+			  document.querySelector("#vet_name").innerText = data.hospitalName;
+		 	  document.querySelector("#phone").innerHTML = data.phone;
+		 	  document.querySelector("#address").innerHTML = data.address;
+ 			  let basicHours = JSON.parse(data.businessHours);
+ 			  let hoursArr = getBasicBusinessHours(basicHours);
+
+	 			// 영업시간 설정
+	 			showBusinessHour(hoursArr);
+	 			// 포인트제휴여부 설정
+	 			document.querySelector("#point").innerHTML = data.partnership ? "포인트제휴병원 ⭕" : "포인트제휴병원 ❌";
+	 			// 북마크 설정
+	 			document.querySelector("#bookmarkImg").src = data.bookmarked ? "/images/bookmark_fill.png" : "/images/bookmark.png"; 
+	 			// 사업자번호 설정
+	 			document.querySelector("#businessNumber").innerHTML = data.businessNumber;
+	 			// 이메일 설정
+	 			document.querySelector("#email").innerHTML= data.email;
+	 			// 소개글 설정
+	 			document.querySelector("#introduction").innerHTML = data.introduction;
+	 			if(data.logo != null){
+	 				// 로고 설정
+	 				document.querySelector("#logo").src = "/images/user/" + data.logo;
+	 			}
+	 			// 대표자 설정
+	 			document.querySelector("#representative").innerHTML = data.representative;
+				
+	 			// 리뷰 설정
+	 			// 1. 평균별점 설정
+	 			document.querySelector("#avgReview").innerHTML = data.avgReview ? 
+	 					data.avgReview + "/5" + repeatCharacters("⭐", data.avgReview) :
+	 			    "<span style=\"font-size: 18px; font-family: 'Jua', sans-serif; font-weight: normal;\">아직 별점이 없어요😅 <br> 예약 후, 첫 별점을 남겨보세요 :)</span>";
+
+	 		    const hasReviews = data.review.length > 0;
+			
+	 		    if (hasReviews) {
+	 		      document.querySelector("#reviewCount").innerText = "리뷰 " + data.review.length + "개";
+	 		      document.querySelector("#toggleReviews").style.display = "block";
+	 		      document.querySelector("#reviewList").style.display = "none"; // 초기 상태는 숨김
+			
+	 		      // 3. 리뷰 분포 그래프 설정
+	 		      let reviewDistributionHTML = '';
+	 		      const reviewCounts = [0, 0, 0, 0, 0]; // 5점부터 1점까지의 리뷰 개수
+	 		      const maxReviewCount = data.review.length || 1; // 최대 리뷰 개수
+			
+	 		     data.review.forEach(function(review) {
+	 		        reviewCounts[review.rating - 1]++;
+	 		      });
+			
+	 		      for (let i = 4; i >= 0; i--) {
+	 		        const barWidth = (reviewCounts[i] / maxReviewCount) * 100 + "%";
+	 		        reviewDistributionHTML += 
+	 		          "<div class='review-bar'><span>" + (i + 1) + "점:</span>" + 
+	 		          "<div style='width:" + barWidth + ";'></div>" + 
+	 		          "</div>";
+	 		      }
+			
+	 		      document.querySelector("#reviewDistribution").innerHTML = reviewDistributionHTML;
+			
+	 		      // 4. 리뷰 뿌려주기
+	 		      data.review.forEach(function(review) {
+	 		        let listItem = document.createElement("div");
+	 		        listItem.classList = "review-item";
+	 		        listItem.innerHTML = 
+	 		          "<span>" + review.review + "</span>" +
+	 		          "<span><div>" + review.type + "</div> || <div>" + review.doctor.name + " 수의사</div> || " +
+	 		         review.updatedAt[0] + "-" + review.updatedAt[1] + "-" + review.updatedAt[2] + "</span>";
+	 		        document.querySelector("#review").appendChild(listItem);
+	 		      });
+			
+	 		      // 리뷰 보기 버튼 이벤트 설정
+	 		      document.querySelector("#toggleReviews").onclick = function() {
+	 		        const reviewList = document.querySelector("#reviewList");
+	 		        if (reviewList.style.display === "none") {
+	 		          reviewList.style.display = "block";
+	 		          this.innerText = "리뷰 숨기기";
+	 		        } else {
+	 		          reviewList.style.display = "none";
+	 		          this.innerText = "리뷰 보기";
+	 		        }
+	 		      };
+	 		    } else {
+	 		      document.querySelector("#reviewCount").innerText = "";
+	 		      document.querySelector("#reviewDistribution").style.display = "none";
+	 		      document.querySelector("#toggleReviews").style.display = "none";
+	 		    }
+		    }
+		  xhttp.open("GET", "http://localhost:9001/api/v1/user/vet-detail?id=" + id, true);
+		  xhttp.setRequestHeader("MemberId", localStorage.getItem("MemberId"));
+		  xhttp.setRequestHeader("token", localStorage.getItem("token"));
+		  xhttp.setRequestHeader("role", localStorage.getItem("role"));
+		  xhttp.send();
+		
+		
+
+	</script>
+
+</body>
+
+</html>
