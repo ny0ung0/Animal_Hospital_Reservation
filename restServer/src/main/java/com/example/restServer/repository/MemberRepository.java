@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import com.example.restServer.dto.IJoinCountDto;
 import com.example.restServer.dto.IMemberLoginDto;
 import com.example.restServer.entity.Member;
 
@@ -50,5 +51,26 @@ public interface MemberRepository extends JpaRepository<Member,Long>{
 	
 	@Query(value = "select exists( select 1 from member where nickname= :nickname and id <> :member_id)", nativeQuery = true)
 	public int existsByNicknameEdit(@Param("nickname")String nickname,@Param("member_id")String member_id);
+	
+	
+	@Query(value = "SELECT COUNT(*) from member WHERE role=:type", nativeQuery = true)
+	public Long findAllCountMemberType(@Param("type")String type);
+	
+	
+	
+	@Query(value = "SELECT DATE(created_at) AS join_date, COUNT(*) AS member_count"
+			+ "	FROM member"
+			+ "	WHERE created_at >= CURDATE() - INTERVAL 1 WEEK and role='ROLE_USER'"
+			+ "	GROUP BY DATE(created_at)"
+			+ "	ORDER BY join_date", nativeQuery = true)
+	public List<IJoinCountDto> userCountJoinWeek();
+	
+	
+	@Query(value = "SELECT DATE(created_at) AS join_date, COUNT(*) AS member_count"
+			+ "	FROM member"
+			+ "	WHERE created_at >= CURDATE() - INTERVAL 1 WEEK and role='ROLE_HOSPITAL'"
+			+ "	GROUP BY DATE(created_at)"
+			+ "	ORDER BY join_date", nativeQuery = true)
+	public List<IJoinCountDto> hospitalCountJoinWeek();
 	 
 }
