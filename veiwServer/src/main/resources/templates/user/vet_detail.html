@@ -32,8 +32,8 @@
 		
 		<div class="detail_container">
 			<div class="vet_header">
-			<h1 id="vet_name" style="display:inline-block;"></h1>
-			<img onclick="checkBookmark(event)" id="bookmarkImg" style="width:50px; display:inline-block; margin:0;" src="/images/bookmark.png">
+			<div id="vet_name"></div>
+			<img onclick="checkBookmark(event)" id="bookmarkImg" src="/images/bookmark.png">
 			</div>
 			<div class="item img_container"><img id="logo" src=""  alt="로고"/></div>
 			<div id="hospital_id" style="display:none;">번호</div>
@@ -179,7 +179,7 @@
 		    }
 		  xhttp.open("GET", "http://localhost:9001/api/v1/user/vet-detail?id=" + id, true);
 		  xhttp.setRequestHeader("MemberId", localStorage.getItem("MemberId"));
-		  xhttp.setRequestHeader("token", localStorage.getItem("token"));
+		  xhttp.setRequestHeader("Authorization", localStorage.getItem("token"));
 		  xhttp.setRequestHeader("role", localStorage.getItem("role"));
 		  xhttp.send();
 		

@@ -36,10 +36,7 @@ public class UnavailableTime extends BaseEntity {
     private Member hospital;
 
     @Temporal(TemporalType.DATE)
-
     private Date date;
     private LocalTime time;
     private String comment;
-
-    // Getters and Setters
 }

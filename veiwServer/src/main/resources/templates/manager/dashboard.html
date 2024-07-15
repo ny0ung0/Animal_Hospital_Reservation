@@ -5,6 +5,7 @@
 <title>견강할고양 관리자센터</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 <link href="/css/manager_style.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="d-flex flex-nowrap h-100">
 <div th:replace="~{manager/sidemenu :: sidemenu}"></div>
@@ -13,9 +14,28 @@
 	<hr class="w-100"/>
 	
 	<div class="row">
-		<div class="col-md-4"></div>
+		<div class="col-md-4 mb-5">
+			<h5 class="mb-2 fw-bold">총 회원 비율</h5>
+			<div class="p-4 border rounded">
+				<canvas id="memberTypeChart"></canvas>
+			</div>
+		</div>
 	
+		<div class="col-md-4 mb-5">
+			<h5 class="mb-2 fw-bold">개인회원 가입현황</h5>
+			<div class="p-4 border rounded">
+				<canvas id="userTypeChart"></canvas>
+			</div>
+		</div>
+		
+		<div class="col-md-4 mb-5">
+			<h5 class="mb-2 fw-bold">동물병원 가입현황</h5>
+			<div class="p-4 border rounded">
+				<canvas id="hospitalTypeChart"></canvas>
+			</div>
+		</div>
 	<div class="col-12">
+		<h5 class="mb-2 fw-bold">미답변 문의 내역</h5>
 		<table class="table table-hover manager-table align-middle">
 			<thead>
 				<tr>
@@ -34,6 +54,13 @@
 </div>
 <script>
 const token = localStorage.getItem("token");
+
+document.addEventListener('DOMContentLoaded', function() {
+    allList(); // 미답변 질문 목록 가져오기
+    fetchMemberCounts(); // 회원 수 가져오기
+    fetchUserJoinDays();
+    fetchHospitalJoinDays();
+});
 function allList(){
 	fetch("http://localhost:9001/api/v1/manager/support/qna/no-answer", {
 		method : "GET",
@@ -62,10 +89,278 @@ function allList(){
 	})
 	.catch(error => console.log(error));
 }
-allList();
 
 
 
+function fetchMemberCounts() {
+    const token = localStorage.getItem("token");
+    let userCnt = 0;
+    let hospitalCnt = 0;
+
+    fetch("http://localhost:9001/api/v1/manager/member/count", {
+        method: "GET",
+        headers: {
+            'Authorization': `${token}`
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        const list = data;
+        userCnt = list[0];
+        hospitalCnt = list[1];
+        
+        updateChart1(userCnt, hospitalCnt); // 차트 업데이트
+    })
+    .catch(error => console.log(error));
+}
+
+
+function fetchUserJoinDays() {
+    const token = localStorage.getItem("token");
+
+    // 현재 날짜 객체 생성
+    const date = new Date();
+    const date_1 = new Date(date);
+    date_1.setDate(date.getDate() - 1);
+    const date_2 = new Date(date);
+    date_2.setDate(date.getDate() - 2);
+    const date_3 = new Date(date);
+    date_3.setDate(date.getDate() - 3);
+    const date_4 = new Date(date);
+    date_4.setDate(date.getDate() - 4);
+    const date_5 = new Date(date);
+    date_5.setDate(date.getDate() - 5);
+    const date_6 = new Date(date);
+    date_6.setDate(date.getDate() - 6);
+
+    // 원하는 포맷으로 날짜 포맷팅 함수
+    function formatDate(date) {
+        const day = date.getDate().toString().padStart(2, '0'); // 일
+        const month = (date.getMonth() + 1).toString().padStart(2, '0'); // 월 (0부터 시작하므로 +1)
+        const year = date.getFullYear(); // 연도
+
+        return `${year}-${month}-${day}`;
+    }
+
+    // 포맷팅된 날짜 문자열 얻기
+    const dateFormat1 = formatDate(date);
+    const dateFormat2 = formatDate(date_1);
+    const dateFormat3 = formatDate(date_2);
+    const dateFormat4 = formatDate(date_3);
+    const dateFormat5 = formatDate(date_4);
+    const dateFormat6 = formatDate(date_5);
+    const dateFormat7 = formatDate(date_6);
+
+   // console.log(date); // 현재 날짜와 시간
+   // console.log(dateFormat7); // 포맷팅된 날짜 문자열
+
+    // 초기 weekJoinCount 객체 설정
+    const weekJoinCount = {
+        [dateFormat1]: 0,
+        [dateFormat2]: 0,
+        [dateFormat3]: 0,
+        [dateFormat4]: 0,
+        [dateFormat5]: 0,
+        [dateFormat6]: 0,
+        [dateFormat7]: 0
+    };
+
+    console.log(weekJoinCount);
+
+    // API 호출하여 데이터 가져오기
+    fetch("http://localhost:9001/api/v1/manager/member/user/join-count", {
+        method: "GET",
+        headers: {
+            'Authorization': `${token}`
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        // 데이터 순회하면서 weekJoinCount 업데이트
+        data.forEach(entry => {
+            const date = new Date(entry.joinDate);
+            // Date 객체에서 원하는 형식의 날짜 문자열 생성 (YYYY-MM-DD)
+            const formattedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+            //console.log(formattedDate); // 예: "2024-07-15"
+
+            const joinDate = formattedDate; // API에서 가져온 날짜 (YYYY-MM-DD 형식)
+            const count = entry.memberCount; // 가입자 수
+
+            // 해당 날짜에 맞는 weekJoinCount의 속성에 count 값 할당
+            if (weekJoinCount[joinDate] !== undefined) {
+                weekJoinCount[joinDate] = count;
+            }
+        });
+
+        console.log(weekJoinCount); // 업데이트된 weekJoinCount 출력
+
+        // 차트 업데이트 함수 호출 (실제로 필요한 변수와 함께)
+        updateChart3(weekJoinCount);
+    })
+    .catch(error => console.log(error));
+}
+
+
+function fetchHospitalJoinDays() {
+    const token = localStorage.getItem("token");
+
+    // 현재 날짜 객체 생성
+    const date = new Date();
+    const date_1 = new Date(date);
+    date_1.setDate(date.getDate() - 1);
+    const date_2 = new Date(date);
+    date_2.setDate(date.getDate() - 2);
+    const date_3 = new Date(date);
+    date_3.setDate(date.getDate() - 3);
+    const date_4 = new Date(date);
+    date_4.setDate(date.getDate() - 4);
+    const date_5 = new Date(date);
+    date_5.setDate(date.getDate() - 5);
+    const date_6 = new Date(date);
+    date_6.setDate(date.getDate() - 6);
+
+    // 원하는 포맷으로 날짜 포맷팅 함수
+    function formatDate(date) {
+        const day = date.getDate().toString().padStart(2, '0'); // 일
+        const month = (date.getMonth() + 1).toString().padStart(2, '0'); // 월 (0부터 시작하므로 +1)
+        const year = date.getFullYear(); // 연도
+
+        return `${year}-${month}-${day}`;
+    }
+
+    // 포맷팅된 날짜 문자열 얻기
+    const dateFormat1 = formatDate(date);
+    const dateFormat2 = formatDate(date_1);
+    const dateFormat3 = formatDate(date_2);
+    const dateFormat4 = formatDate(date_3);
+    const dateFormat5 = formatDate(date_4);
+    const dateFormat6 = formatDate(date_5);
+    const dateFormat7 = formatDate(date_6);
+
+   // console.log(date); // 현재 날짜와 시간
+   // console.log(dateFormat7); // 포맷팅된 날짜 문자열
+
+    // 초기 weekJoinCount 객체 설정
+    const weekJoinCount = {
+        [dateFormat1]: 0,
+        [dateFormat2]: 0,
+        [dateFormat3]: 0,
+        [dateFormat4]: 0,
+        [dateFormat5]: 0,
+        [dateFormat6]: 0,
+        [dateFormat7]: 0
+    };
+
+    console.log(weekJoinCount);
+
+    // API 호출하여 데이터 가져오기
+    fetch("http://localhost:9001/api/v1/manager/member/hospital/join-count", {
+        method: "GET",
+        headers: {
+            'Authorization': `${token}`
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        // 데이터 순회하면서 weekJoinCount 업데이트
+        data.forEach(entry => {
+            const date = new Date(entry.joinDate);
+            // Date 객체에서 원하는 형식의 날짜 문자열 생성 (YYYY-MM-DD)
+            const formattedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+            //console.log(formattedDate); // 예: "2024-07-15"
+
+            const joinDate = formattedDate; // API에서 가져온 날짜 (YYYY-MM-DD 형식)
+            const count = entry.memberCount; // 가입자 수
+
+            // 해당 날짜에 맞는 weekJoinCount의 속성에 count 값 할당
+            if (weekJoinCount[joinDate] !== undefined) {
+                weekJoinCount[joinDate] = count;
+            }
+        });
+
+        console.log(weekJoinCount); // 업데이트된 weekJoinCount 출력
+
+        // 차트 업데이트 함수 호출 (실제로 필요한 변수와 함께)
+        updateChart2(weekJoinCount);
+    })
+    .catch(error => console.log(error));
+}
+
+function updateChart1(userCnt, hospitalCnt) {
+	let memberCt = document.getElementById('memberTypeChart');
+	let memberChart = new Chart(memberCt, {
+	  type: 'doughnut',
+	  data: {
+	    labels: ['개인회원', '동물병원'],
+	    datasets: [
+	      {
+	        label: 'Dataset',
+	        data: [userCnt, hospitalCnt],
+	        backgroundColor: ['#E3C3FF', '#84e3d0'] // 색상 추가
+	      }
+	    ]
+	  },
+	  options: {
+		  responsive: true, // 반응형 설정
+          maintainAspectRatio: false, // 차트 비율 유지 여부 (기본값은 true)
+          aspectRatio: 1.5 // 가로/세로 비율 설정 (1 이상의 값으로 설정)
+	  }
+	});
+}
+
+function updateChart2(weekJoinCount) {
+	//console.log("weekJoinCount", weekJoinCount.key());
+	let userCt = document.getElementById('userTypeChart');
+    let labels = Object.keys(weekJoinCount).reverse(); // Reverse to show in descending order
+    let dataCounts = Object.values(weekJoinCount).reverse(); // Reverse to match the order of labels
+
+	let userChart = new Chart(userCt, {
+	  type: 'line',
+	  data: {
+	    labels: labels,
+	    datasets: [
+	      {
+	        label: '개인회원',
+	        data: dataCounts,
+	        borderColor: '#E3C3FF',
+	        tension: 0.1
+	      }
+	    ]
+	  },
+	  options: {
+		  responsive: true, // 반응형 설정
+          maintainAspectRatio: false, // 차트 비율 유지 여부 (기본값은 true)
+          aspectRatio: 1.5 // 가로/세로 비율 설정 (1 이상의 값으로 설정)
+	  }
+	});
+}
+
+function updateChart3(weekJoinCount) {
+	//console.log("weekJoinCount", weekJoinCount.key());
+	let userCt = document.getElementById('hospitalTypeChart');
+    let labels = Object.keys(weekJoinCount).reverse(); // Reverse to show in descending order
+    let dataCounts = Object.values(weekJoinCount).reverse(); // Reverse to match the order of labels
+
+	let userChart = new Chart(userCt, {
+	  type: 'line',
+	  data: {
+	    labels: labels,
+	    datasets: [
+	      {
+	        label: '동물병원',
+	        data: dataCounts,
+	        borderColor: '#84e3d0',
+	        tension: 0.1
+	      }
+	    ]
+	  },
+	  options: {
+		  responsive: true, // 반응형 설정
+          maintainAspectRatio: false, // 차트 비율 유지 여부 (기본값은 true)
+          aspectRatio: 1.5 // 가로/세로 비율 설정 (1 이상의 값으로 설정)
+	  }
+	});
+}
 
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
