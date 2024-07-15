@@ -1,6 +1,7 @@
 package com.example.restServer.controller.admin;
 
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -8,7 +9,6 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.restServer.dto.IJoinCountDto;
 import com.example.restServer.dto.IMemberLoginDto;
 import com.example.restServer.dto.PointAddDto;
 import com.example.restServer.entity.Member;
@@ -178,4 +179,38 @@ public class AdminController_jisun {
         } 
     }
 	
+	@GetMapping("/member/count")
+	public ResponseEntity<List<Long>> getMemberCount(){
+		List<Long> list = new ArrayList<>();
+		Long userCnt = memberRepo.findAllCountMemberType("ROLE_USER");
+		Long hospitalCnt = memberRepo.findAllCountMemberType("ROLE_HOSPITAL");
+		list.add(userCnt);
+		list.add(hospitalCnt);
+		//System.out.println(list);
+		return new ResponseEntity<>(list, HttpStatus.OK);
+	}
+	
+	@GetMapping("/member/user/join-count")
+	public ResponseEntity<List<IJoinCountDto>> getUserCount(){
+		List<IJoinCountDto> list= memberRepo.userCountJoinWeek();
+		System.out.println(list);
+		return new ResponseEntity<>(list, HttpStatus.OK);
+	}
+	
+	@GetMapping("/member/hospital/join-count")
+	public ResponseEntity<List<IJoinCountDto>> gethospitalCount(){
+		List<IJoinCountDto> list= memberRepo.hospitalCountJoinWeek();
+		System.out.println(list);
+		return new ResponseEntity<>(list, HttpStatus.OK);
+	}
+	
+	@PutMapping("/support/qna/reply")
+	public ResponseEntity<String> updateReply(@RequestBody Support support){
+		Support support2 = supportRepo.findById(support.getId()).get();
+		support2.setReply(support.getReply());
+		support2.setDate(new Date());
+		support2.setIsConfirmed(true);
+		supportRepo.save(support2);
+		return new ResponseEntity<>("OK", HttpStatus.OK);
+	}
 }

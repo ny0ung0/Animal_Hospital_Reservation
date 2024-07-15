@@ -3,6 +3,18 @@
 
 .vet_header {
  	margin:20px;
+ 	display:flex;
+ 	justify-items:center;
+ 	align-items:center;
+}
+
+#bookmarkImg{
+	width:50px;
+}
+
+#vet_name{
+	font-family: "Jua", sans-serif;
+	font-size:xx-large;
 }
 
 
@@ -200,3 +212,5 @@
 .result_container::-webkit-scrollbar-thumb:active {
   background: #333; /* 핸들 활성 색상 */
 }
+
+

@@ -29,8 +29,9 @@ function loadBasicInfo(data){
 	let basicHours = JSON.parse(vetInfo[Object.keys(vetInfo)[0]].businessHours);
 	let basicHoursArr = getBasicBusinessHours(basicHours);
 	
-console.log(data)
-console.log(userInfo)
+	console.log(data)
+	console.log(userInfo)
+	
 	  //병원 이름 넣기
 	  document.querySelector("#vetName").setAttribute("value", Object.keys(vetInfo)[0]);
 	  //로그인한 사용자 이름 넣어주기
@@ -221,7 +222,6 @@ function showDates(startTime, endTime, lunchStart, lunchEnd){
 }
 
 function loadTimeslot(basicHoursArr,vetAvailInfo){
-	console.log("로딩타임슬롯")
 	//해당날짜 기본 타임슬롯보여주기
 	if(basicHoursArr[selectedDay] !=null){
 		let selectedBasicTime = basicHoursArr[selectedDay]["day"]

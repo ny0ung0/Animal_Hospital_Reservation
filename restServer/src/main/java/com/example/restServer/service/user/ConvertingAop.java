@@ -1,39 +1,40 @@
 package com.example.restServer.service.user;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
-import com.example.restServer.dto.MemVetDto;
-
-import jakarta.servlet.http.HttpServletRequest;
+import com.example.restServer.entity.Doctor;
+import com.example.restServer.entity.UnavailableTime;
 
 @Component
 public class ConvertingAop {
-
-	public Long getUserId (HttpServletRequest request) {
-		Long userId = 0L;
-		if(!request.getHeader("MemberId").equals("null")) {
-			userId = Long.parseLong(request.getHeader("MemberId"));
-		}
-		return userId;
-	}
 	
-	public static List<MemVetDto> convertingAddrs (Map<String, String> hosList, Long userId, VetListService vetListService, boolean isNearVet) {
-        List<MemVetDto> memList = new ArrayList<>();
+   public Map<String, String> convertUnavailToString(Date date, LocalTime time) {
+       Map<String, String> timeMap = new HashMap<>();
+       
+       timeMap.put("date", new SimpleDateFormat("yyyy-MM-dd").format(date));
+       timeMap.put("time", time.toString());
 
-        hosList.forEach((key, value) -> {
-            if (isNearVet) {
-                List<MemVetDto> list = vetListService.getMemberVetList(value + "%", userId);
-                memList.addAll(list);
-            } else {
-                List<MemVetDto> list = vetListService.getMemberVet(key, value.split("//")[0] + "//" + value.split("//")[1] + "%", userId);
-                memList.addAll(list);
-            }
-        });
-
-        return memList;
+       return timeMap;
     }
+   
+   public Map<Doctor, List<Map<String, String>>> convertUnavailListToString (List<UnavailableTime> unavailList) {
+	   List<Map<String, String>> timeList = new ArrayList<>();
+	   Map<Doctor, List<Map<String, String>>> unavailMap = new HashMap<>();
+	   unavailList.forEach(ua ->{
+			timeList.add(this.convertUnavailToString(ua.getDate(),ua.getTime()));
+			unavailMap.put(ua.getDoctor(), timeList);
+		});
+	   
+	   
+	   return unavailMap;
+	   
+   }
 }
