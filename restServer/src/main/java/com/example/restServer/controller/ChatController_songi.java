@@ -1,16 +1,21 @@
 package com.example.restServer.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
-import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.restServer.entity.Chat;
 import com.example.restServer.entity.ChatRoom;
 import com.example.restServer.service.ChatService;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
 public class ChatController_songi {
@@ -35,6 +40,28 @@ public class ChatController_songi {
         headerAccessor.getSessionAttributes().put("username", chatMessage.getSender().getName());
         return chatMessage;
     }
+    
+    
+    
+    @GetMapping("/user/chatList")
+    public ResponseEntity<?> chatList(HttpServletRequest request){
+       String memberIdHeader = request.getHeader("MemberId");
+ 	   String authHeader = request.getHeader("Authorization");
+
+ 	   if (memberIdHeader == null || authHeader == null) {
+     	   String errorMessage = "MemberId 또는 Authorization 헤더가 없습니다.";
+     	    return ResponseEntity.badRequest().body(errorMessage);
+        }
+ 	   Long memberId = Long.parseLong(memberIdHeader);
+ 	   
+ 	   List<ChatRoom> chatRoomList = chatService.chatList(memberId);
+    	
+ 	   System.out.println("채팅방목록 출력 : " + chatRoomList);
+ 	   
+ 	   return ResponseEntity.ok(chatRoomList);
+ 	   
+    }
+    
 	
 
 }
