@@ -229,6 +229,35 @@ if(role==="ROLE_ADMIN"){
 function replySave(){
 	const replyInputValue = document.querySelector("textarea[name='replyInput']").value;
 	console.log(replyInputValue);
+//	const updateData  = {
+//			id = 
+//	}
+	fetch("http://localhost:9001/api/v1/manager/support/qna/reply", {
+		method : "PUT",
+		headers: {
+	        'Authorization': `${token}`
+	    }
+	})
+	.then(response => response.text())
+	.then(data => {
+		
+		const objs = JSON.parse(data);
+		//console.log(objs);
+		let cnt = 1;
+		objs.forEach(obj =>{
+			let createdAtDate = obj.createdAt[0] + "-" + obj.createdAt[1] + "-" + obj.createdAt[2];
+			document.getElementById("tbody").innerHTML += 
+				'<tr>'
+					+ '<td>' + cnt + '</td>'
+					+ '<td>' + obj.category + '</td>'
+					+ '<td><a class="link-dark link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" href="/qnaDetail?id=' + obj.id + '">' + obj.title + '</a></td>'
+					+ '<td>' + createdAtDate + '</td>'
+				+ '</tr>';
+				cnt++;
+		});
+		
+	})
+	.catch(error => console.log(error));
 }
 
 
