@@ -1,5 +1,6 @@
 package com.example.restServer.entity;
 
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -38,6 +39,10 @@ public class Member extends BaseEntity {
     
     private String status;
     private String email;
+    
+	public void setToken(String token) {
+		this.token = token;
+	}
 
     // Getters and Setters
 }

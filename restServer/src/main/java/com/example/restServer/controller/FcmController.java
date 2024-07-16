@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.restServer.dto.FcmSendDto;
 import com.example.restServer.service.FcmService;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -27,9 +28,11 @@ public class FcmController {
     }
 
     @PostMapping("/send")
-    public ResponseEntity<Object> pushMessage(@RequestBody @Validated FcmSendDto fcmSendDto) throws IOException {
+    public ResponseEntity<Object> pushMessage(@RequestBody @Validated FcmSendDto fcmSendDto, HttpServletRequest request) throws IOException {
         log.debug("[+] 푸시 메시지를 전송합니다. ");
-        int result = fcmService.sendMessageTo(fcmSendDto);
+        String memberIdHeader = request.getHeader("MemberId");
+        System.out.println(memberIdHeader);
+        int result = fcmService.sendMessageTo(fcmSendDto, memberIdHeader);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }
