@@ -17,7 +17,7 @@
 <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>	
 </head>
 <body class="d-flex flex-column h-100">
-	<div th:replace="~{hospital/header :: header}"></div>
+	<div th:replace="~{user/header :: header}"></div>
 	<div class="container-xl">
 		<h2 class="mt-5 mb-3">회원 정보 수정</h2>
 
@@ -28,7 +28,7 @@
 			</div>
 			<div class="mb-3">
 				<input type="checkbox" id="passwordCheckBox" onchange="togglePasswordCheckBox()">
- 				<label class="form-label">비밀번호</label> 
+ 				<label class="form-label">비밀번호 변경</label> 
 				<input type="password" name="passwordNew" class="form-control" disabled>
 				<input type="hidden" name="passwordOrigin">
 				<div>비밀번호는 5자 이상, 15자 이하, 영어, 숫자, 특수문자를 포함해야 합니다.</div>
