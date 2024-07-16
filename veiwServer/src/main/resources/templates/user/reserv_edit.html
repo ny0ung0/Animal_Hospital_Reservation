@@ -92,7 +92,7 @@ xhttp.onload = function() {
 	loadBasicInfo(data)
 	loadReservationInfo(data)
 }
-xhttp.open("GET", "http://localhost:9001/api/v1/user/reservation/"+reservId, true);
+xhttp.open("GET", "https://localhost:9001/api/v1/user/reservation/"+reservId, true);
 xhttp.setRequestHeader("MemberId", localStorage.getItem("MemberId"));
 xhttp.setRequestHeader("Authorization", localStorage.getItem("token"));
 xhttp.setRequestHeader("role", localStorage.getItem("role"));
@@ -178,7 +178,7 @@ function submitForm(e){
 	    //마이페이지로 이동
 // 	    location.href="/"
 	    }
-	  xhttp.open("PUT", "http://localhost:9001/api/v1/user/reservation", true);
+	  xhttp.open("PUT", "https://localhost:9001/api/v1/user/reservation", true);
 	  xhttp.setRequestHeader("MemberId", localStorage.getItem("MemberId"));
 	  xhttp.setRequestHeader("Authorization", localStorage.getItem("token"));
 	  xhttp.setRequestHeader("role", localStorage.getItem("role"));
