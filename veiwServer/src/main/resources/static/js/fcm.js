@@ -31,7 +31,7 @@ function getToken() {
 	messaging.getToken({ vapidKey: 'BO1Cyk9-JXkGE3i0z64FeRt9yzJuDobohGmvfimiBqJyKa1ERE1a3b_-Lc0fzfrzQU2agLAnIXpYD19a5JJ7-6Q' }).then((currentToken) => {
 		if (currentToken) {
 			console.log('FCM 토큰:', currentToken);
-			sendTokenToServer(currentToken);
+			sendTokenToServer(currentToken, 'Your Title', 'Your Message Body');
 		} else {
 			console.log('FCM 토큰을 얻을 수 없습니다.');
 		}
@@ -41,14 +41,14 @@ function getToken() {
 }
 
 // FCM 토큰을 서버로 전송
-function sendTokenToServer(token) {
+function sendTokenToServer(token, title, body) {
 	fetch('http://localhost:9001/api/v1/fcm/send', {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
 			'MemberId':localStorage.getItem('MemberId')
 		},
-		body: JSON.stringify({ token: token })
+		body: JSON.stringify({ token: token, title: title, body: body })
 	}).then(response => response.json()).then(data => {
 		console.log('서버 응답:', data);
 	}).catch(error => {

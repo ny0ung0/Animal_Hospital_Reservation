@@ -21,7 +21,7 @@ messaging.onBackgroundMessage((payload) => {
 	const notificationTitle = '백그라운드 메시지 제목';
 	const notificationOptions = {
 		body: '백그라운드 메시지 본문.',
-		icon: '/firebase-logo.png'
+		icon: '/images/logo_user.png'
 	};
 
 	self.registration.showNotification(notificationTitle, notificationOptions);
