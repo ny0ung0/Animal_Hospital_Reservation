@@ -45,7 +45,8 @@ function sendTokenToServer(token) {
 	fetch('http://localhost:9001/api/v1/fcm/send', {
 		method: 'POST',
 		headers: {
-			'Content-Type': 'application/json'
+			'Content-Type': 'application/json',
+			'MemberId':localStorage.getItem('MemberId')
 		},
 		body: JSON.stringify({ token: token })
 	}).then(response => response.json()).then(data => {

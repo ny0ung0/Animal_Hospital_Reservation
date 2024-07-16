@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -18,18 +19,25 @@ import org.springframework.web.client.RestTemplate;
 
 import com.example.restServer.dto.FcmMessageDto;
 import com.example.restServer.dto.FcmSendDto;
+import com.example.restServer.entity.Member;
+import com.example.restServer.repository.MemberRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.auth.oauth2.GoogleCredentials;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
 public class FcmServiceImpl implements FcmService {
 
+	@Autowired
+	MemberRepository memberRepository;
+	
+	
 	@Override
-    public int sendMessageTo(FcmSendDto fcmSendDto) throws IOException {
+    public int sendMessageTo(FcmSendDto fcmSendDto, String headermember) throws IOException {
         System.out.println("fcmSendDto :: " + fcmSendDto.toString());
         String message = makeMessage(fcmSendDto);
         RestTemplate restTemplate = new RestTemplate();
@@ -43,7 +51,7 @@ public class FcmServiceImpl implements FcmService {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("Authorization", "Bearer " + getAccessToken());
+        headers.set("Authorization", "Bearer " + getAccessToken(headermember));
 
         HttpEntity<String> entity = new HttpEntity<>(message, headers);
 
@@ -67,7 +75,7 @@ public class FcmServiceImpl implements FcmService {
      *
      * @return Bearer token
      */
-	private String getAccessToken() throws IOException {
+	private String getAccessToken(String headermember) throws IOException {
 	    String firebaseConfigPath = "firebase/animalfirebase.json";
 
 	    try (InputStream inputStream = new ClassPathResource(firebaseConfigPath).getInputStream()) {
@@ -80,6 +88,12 @@ public class FcmServiceImpl implements FcmService {
 	            throw new IOException("Error fetching access token. Access token is null.");
 	        }
 	        String token = googleCredentials.getAccessToken().getTokenValue();
+
+	         Long memberId = Long.parseLong(headermember);
+	         System.out.println(memberId);
+			 Member member = memberRepository.findById(memberId).get();
+			 member.setToken(token);
+			 memberRepository.save(member);
 	        System.out.println("Access Token: " + token); // 로깅 추가
 	        return token;
 	    } catch (IOException e) {
