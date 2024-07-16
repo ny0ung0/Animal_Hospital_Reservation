@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -18,16 +19,23 @@ import org.springframework.web.client.RestTemplate;
 
 import com.example.restServer.dto.FcmMessageDto;
 import com.example.restServer.dto.FcmSendDto;
+import com.example.restServer.entity.Member;
+import com.example.restServer.repository.MemberRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.auth.oauth2.GoogleCredentials;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
 public class FcmServiceImpl implements FcmService {
 
+	@Autowired
+	MemberRepository memberRepository;
+	
+	
 	@Override
     public int sendMessageTo(FcmSendDto fcmSendDto) throws IOException {
         System.out.println("fcmSendDto :: " + fcmSendDto.toString());
@@ -80,6 +88,7 @@ public class FcmServiceImpl implements FcmService {
 	            throw new IOException("Error fetching access token. Access token is null.");
 	        }
 	        String token = googleCredentials.getAccessToken().getTokenValue();
+
 	        System.out.println("Access Token: " + token); // 로깅 추가
 	        return token;
 	    } catch (IOException e) {
@@ -104,7 +113,7 @@ public class FcmServiceImpl implements FcmService {
                         .notification(FcmMessageDto.Notification.builder()
                                 .title(fcmSendDto.getTitle())
                                 .body(fcmSendDto.getBody())
-                                .image(null)
+                                .image("/images/logo_user.png")
                                 .build()
                         ).build()).validateOnly(false).build();
 

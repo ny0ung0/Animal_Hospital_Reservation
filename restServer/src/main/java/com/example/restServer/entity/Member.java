@@ -1,10 +1,12 @@
 package com.example.restServer.entity;
 
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -34,10 +36,17 @@ public class Member extends BaseEntity {
     private String introduction;
     private String role;
     private String logo;
+    
+    @Lob
+    @Column(columnDefinition = "TEXT")
     private String token;
     
     private String status;
     private String email;
+    
+	public void setToken(String token) {
+		this.token = token;
+	}
 
     // Getters and Setters
 }

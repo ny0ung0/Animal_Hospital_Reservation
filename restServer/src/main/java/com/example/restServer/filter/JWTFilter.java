@@ -2,6 +2,8 @@
 package com.example.restServer.filter;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -26,6 +28,12 @@ public class JWTFilter extends OncePerRequestFilter {
 
         this.jwtUtil = jwtUtil;
     }
+    
+    private static final List<String> EXCLUDE_URLS = Arrays.asList(
+            "/api/v1/near-vet-list",
+            "/api/v1/vet-list",
+            "/api/v1/common/**"
+        );
 
 
     @Override
@@ -43,6 +51,8 @@ public class JWTFilter extends OncePerRequestFilter {
 						//조건이 해당되면 메소드 종료 (필수)
             return;
         }
+        // 공용 엔드포인트에 대해 토큰 검사를 생략합니다.
+       
 			
         //System.out.println("authorization now");
 				//Bearer 부분 제거 후 순수 토큰만 획득
