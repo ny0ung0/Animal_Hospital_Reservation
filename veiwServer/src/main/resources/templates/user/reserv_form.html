@@ -89,7 +89,7 @@ xhttp.onload = function() {
 	let data = JSON.parse(this.responseText);
 	loadBasicInfo(data);
 }
-xhttp.open("GET", "http://localhost:9001/api/v1/user/reservation?id="+hosId, true);
+xhttp.open("GET", "https://localhost:9001/api/v1/user/reservation?id="+hosId, true);
 xhttp.setRequestHeader("MemberId", localStorage.getItem("MemberId"));
 xhttp.setRequestHeader("Authorization", localStorage.getItem("token"));
 xhttp.setRequestHeader("role", localStorage.getItem("role"));
@@ -115,13 +115,18 @@ function submitForm(e){
 		alert("필수 입력값이 비어있습니다. 다시 확인해주세요");
 		return false;
 	}
-	console.log(formData)
+	
+	if(Number(document.querySelector("input[name=points_used]").value) > Number(document.querySelector("#point").innerText)){
+		alert("사용을 원하는 포인트가 보유하고 계신 포인트보다 많을 수 없습니다. 다시 입력해주세요. 최대 사용가능한 포인트 : " + document.querySelector("#point").innerText);
+		return false;
+	}
 	
 	 const xhttp = new XMLHttpRequest();
 	  xhttp.onload = function() {
 	     alert("예약이 성공적으로 완료되었습니다");
+	     location.href="/user/reserv_list"
 	  }
-	  xhttp.open("POST", "http://localhost:9001/api/v1/user/reservation", true);
+	  xhttp.open("POST", "https://localhost:9001/api/v1/user/reservation", true);
 	  xhttp.setRequestHeader("MemberId", localStorage.getItem("MemberId"));
 	  xhttp.setRequestHeader("Authorization", localStorage.getItem("token"));
 	  xhttp.setRequestHeader("role", localStorage.getItem("role"));
