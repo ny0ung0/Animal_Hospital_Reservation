@@ -37,7 +37,7 @@ public class FcmServiceImpl implements FcmService {
 	
 	
 	@Override
-    public int sendMessageTo(FcmSendDto fcmSendDto, String headermember) throws IOException {
+    public int sendMessageTo(FcmSendDto fcmSendDto) throws IOException {
         System.out.println("fcmSendDto :: " + fcmSendDto.toString());
         String message = makeMessage(fcmSendDto);
         RestTemplate restTemplate = new RestTemplate();
@@ -51,7 +51,7 @@ public class FcmServiceImpl implements FcmService {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("Authorization", "Bearer " + getAccessToken(headermember));
+        headers.set("Authorization", "Bearer " + getAccessToken());
 
         HttpEntity<String> entity = new HttpEntity<>(message, headers);
 
@@ -75,7 +75,7 @@ public class FcmServiceImpl implements FcmService {
      *
      * @return Bearer token
      */
-	private String getAccessToken(String headermember) throws IOException {
+	private String getAccessToken() throws IOException {
 	    String firebaseConfigPath = "firebase/animalfirebase.json";
 
 	    try (InputStream inputStream = new ClassPathResource(firebaseConfigPath).getInputStream()) {
@@ -89,11 +89,6 @@ public class FcmServiceImpl implements FcmService {
 	        }
 	        String token = googleCredentials.getAccessToken().getTokenValue();
 
-	         Long memberId = Long.parseLong(headermember);
-	         System.out.println(memberId);
-			 Member member = memberRepository.findById(memberId).get();
-			 member.setToken(token);
-			 memberRepository.save(member);
 	        System.out.println("Access Token: " + token); // 로깅 추가
 	        return token;
 	    } catch (IOException e) {
@@ -118,7 +113,7 @@ public class FcmServiceImpl implements FcmService {
                         .notification(FcmMessageDto.Notification.builder()
                                 .title(fcmSendDto.getTitle())
                                 .body(fcmSendDto.getBody())
-                                .image(null)
+                                .image("/images/logo_user.png")
                                 .build()
                         ).build()).validateOnly(false).build();
 

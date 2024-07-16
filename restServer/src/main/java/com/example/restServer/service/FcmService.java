@@ -11,7 +11,6 @@ import jakarta.servlet.http.HttpServletRequest;
 @Service
 public interface FcmService {
 
-	//int sendMessageTo(FcmSendDto fcmSendDto) throws IOException;
 
-	int sendMessageTo(FcmSendDto fcmSendDto, String memberIdHeader) throws IOException;
+	int sendMessageTo(FcmSendDto fcmSendDto) throws IOException;
 }
