@@ -15,11 +15,19 @@
     display: flex;
     cursor: pointer;
   }
+  .stars2 {
+    display: flex;
+    cursor: pointer;
+  }
   .star {
     font-size: 2rem;
     color: #ccc;
   }
-  .star.selected {
+  .star2 {
+    font-size: 2rem;
+    color: #ccc;
+  }
+  .star2.selected {
     color: gold;
   }
 </style>
@@ -86,7 +94,7 @@
          <input type="text" name="id" id="reservation_id">
           <div class="mb-3">
             <label for="recipient-name" class="col-form-label">평점:</label>
-            <div id="starRating" class="stars">
+            <div id="starRating2" class="stars">
               <span class="star" data-value="1">&#9733;</span>
               <span class="star" data-value="2">&#9733;</span>
               <span class="star" data-value="3">&#9733;</span>
@@ -107,6 +115,39 @@
     </div>
   </div>
 </div>
+
+<div class="modal fade" id="reviewComplete" tabindex="-1" aria-labelledby="reviewCompleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="reviewCompleteModalLabel">리뷰 작성</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="reviewCompleteBody">
+         
+         <div class="mb-3">
+          <label for="recipient-name" class="col-form-label">리뷰내용:</label>
+          <div id= "reviewCompleteContent">
+          </div>
+         
+         </div>
+          <div class="mb-3">
+            <label for="recipient-name" class="col-form-label">평점:</label>
+            <div id="starRating" class="stars2">
+              <span class="star2" data-value="1">&#9733;</span>
+              <span class="star2" data-value="2">&#9733;</span>
+              <span class="star2" data-value="3">&#9733;</span>
+              <span class="star2" data-value="4">&#9733;</span>
+              <span class="star2" data-value="5">&#9733;</span>
+            </div>
+          </div>
+          
+      </div>
+      
+    </div>
+  </div>
+</div>
+     
 
 <div th:replace="~{user/footer :: footer}"></div>
 
@@ -237,10 +278,10 @@ ready();
         reservation.reservation_datetime[4] ='00';
       }
       var time = reservation.reservation_datetime[3]+':'+ reservation.reservation_datetime[4];
-      var btn = `<button class="btn btn-user-sub" data-bs-toggle="modal" data-bs-target="#review" onclick="openReviewModal(0,${reservation.id})">리뷰작성</button>`;
+      var btn = `<button class="btn btn-user-sub" data-bs-toggle="modal" data-bs-target="#review" onclick="openReviewModal(${reservation.id})">리뷰작성</button>`;
       if(reservation.review !=null){
-    	  alert("리뷰있음에 들어옴");
-        btn = `<button class="btn btn-user-sub" data-bs-toggle="modal" data-bs-target="#review" onclick="openReviewModal(1,${reservation.id})">리뷰확인</button>`;
+    	  
+        btn = `<button class="btn btn-user-sub" data-bs-toggle="modal" data-bs-target="#reviewComplete" onclick="openReviewCompleteModal(${i})">리뷰확인</button>`;
       }
       reservList.innerHTML +=`
       <tr>
@@ -299,10 +340,27 @@ ready();
     
   }
 
-  function openReviewModal(num,reservationId) {
+  function openReviewModal(reservationId) {
     // 리뷰 모달에 예약 정보를 설정하는 로직을 추가
-    alert(reservationId);
-    document.getElementById('reservation_id').value = reservationId;
+   document.getElementById('reservation_id').value = reservationId;
+   
+ 
+    
+  }
+  function openReviewCompleteModal(i){
+	  document.getElementById('reviewCompleteContent').innerHTML =completedList[i].review;
+	 
+	  const stars = document.querySelectorAll('.star2');
+	    let selectedRating = 0;
+	  
+	  let rating = completedList[i].rating;
+      stars.forEach(star => {
+        if (star.getAttribute('data-value') <= rating) {
+          star.classList.add('selected');
+        } else {
+          star.classList.remove('selected');
+        }
+      });
   }
 
   document.addEventListener('DOMContentLoaded', function() {
