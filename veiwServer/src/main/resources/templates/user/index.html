@@ -16,8 +16,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Jua&display=swap" rel="stylesheet">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 </head>
-<body class="d-flex flex-column h-100">
-<img style="display:none" id="mainGif" src="/images/loading.gif" > 
+<body class="d-flex flex-column h-100 overflow-hidden">
+<img id="mainGif" src="/images/loading.gif" > 
 
 
 <div th:replace="~{user/header :: header}"></div>
@@ -141,15 +141,20 @@ function chat(e){
 	window.location.href = "/user/chat/" + hosId;
 }
 
-/*
-function loading(){
-	setTimeout(() => {
- 	  mainGif.style.opacity = 0;
-	 
- 	}, "500");
-}
 
-*/
+document.addEventListener('DOMContentLoaded', (event) => {
+     function loading() {
+         setTimeout(() => {
+             document.querySelector("body").classList.remove("overflow-hidden");
+             const mainGif = document.querySelector('#mainGif'); // mainGif 요소를 선택합니다.
+             if (mainGif) { // mainGif 요소가 존재할 경우에만 스타일 변경
+                 mainGif.style.opacity = 0;
+                 mainGif.style.display = "none";
+             }
+         }, 900);
+     }
+     loading();
+});
 
 
 </script>

@@ -38,6 +38,11 @@ function loadBasicInfo(data){
 	  document.querySelector("input[name=user_name]").value = userInfo.user.name;
 	  //포인트정보넣기
 	  document.querySelector("#point").innerHTML = userInfo.pointList[0] ? userInfo.pointList[0] : "0";
+	  
+	  if(!userInfo.pointList[0]){
+		document.querySelector("input[name=points_used]").disabled="true";
+	  }
+	  
 	  if(!vetInfo[Object.keys(vetInfo)[0]].partnership == true){
 		  document.querySelector(".point_container").style.display="none";
 	  }
