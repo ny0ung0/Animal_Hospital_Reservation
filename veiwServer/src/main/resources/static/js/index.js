@@ -215,7 +215,7 @@ function getMemVetList(params, map, currentPos) {
         }
         addHospitalToList(map, currentPos);
     };
-    const url = "http://localhost:9001/api/v1/near-vet-list?" + params.toString();
+    const url = "https://192.168.0.229:8093/api/v1/near-vet-list?" + params.toString();
     xhttp.open("GET", url, true);
     xhttp.setRequestHeader("MemberId", localStorage.getItem("MemberId"));
     xhttp.setRequestHeader("Authorization", localStorage.getItem("token"));
