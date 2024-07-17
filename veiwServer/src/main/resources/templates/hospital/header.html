@@ -8,7 +8,7 @@
 		</div>
 	</div>
 	<div class="d-flex flex-wrap justify-content-center align-items-center py-3">
-      <a href="/" class="d-flex align-items-center mb-md-0 me-md-auto ps-md-3 link-body-emphasis text-decoration-none">
+      <a href="/hospital" class="d-flex align-items-center mb-md-0 me-md-auto ps-md-3 link-body-emphasis text-decoration-none">
       <div class="logo_size">
         <img src="/images/logo_hospital.png" class="w-100" alt="로고">
         </div>
@@ -33,7 +33,18 @@
         <li class="nav-item"><a href="#" class="nav-link fs-5">알림설정</a></li>
         <li class="nav-item"><a href="/hospital/chatList" class="nav-link fs-5">문의채팅</a></li>
         <li class="nav-item"><a href="#" class="nav-link fs-5">광고계약</a></li>
-        <li class="nav-item"><a href="/hospital/my_qna_list" class="nav-link fs-5">고객센터</a></li>
+        <li class="nav-item">
+	        <div class="dropdown">
+			  <a class="btn btn-none dropdown-toggle nav-link fs-5" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+			   고객센터
+			  </a>
+			
+			  <ul class="dropdown-menu">
+			    <li><a class="dropdown-item" href="/noticeList">공지사항</a></li>
+			    <li><a class="dropdown-item" href="/qnaForm">문의작성</a></li>
+			  </ul>
+			</div>
+		</li>
       </ul>
 	</div>
 	
