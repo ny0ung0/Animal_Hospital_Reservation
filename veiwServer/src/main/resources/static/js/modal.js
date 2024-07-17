@@ -1,73 +1,35 @@
-function convertingDate(basicHours, day){
-	let startTime;
-	let endingTime;
-	let lunchStart;
-	let lunchEnd;
-	//영업하는 날 시간 구하기
-	if(basicHours[day][0].slice(7) !="영업 안함"){
-		startTime = basicHours[day][0].slice(7).split("//")[0];
-		endingTime = basicHours[day][0].slice(7).split("//")[1];
-		//영업하면서&점심시간있음
-		if(basicHours[day][1].slice(7) !="점심시간 없음"){
-			lunchStart = basicHours[day][1].slice(7).split("//")[0];
-			lunchEnd = basicHours["mon"][1].slice(7).split("//")[1];
-		}else{
-			//영업하지만&점심시간없음
-			lunchStart = 0;
-			lunchEnd = 0;
-		}
-	}else{
-		//영업 안 하는 날
-		startTime = 0;
-		endingTime = 0;
-		lunchStart = 0;
-		lunchEnd = 0;
-	}
-	return {day : [startTime, endingTime, lunchStart, lunchEnd]};
-}
-
-function getBasicBusinessHours(basicHours){
-	let sun = convertingDate(basicHours, "sun");
-	let mon = convertingDate(basicHours, "mon");
-	let tue = convertingDate(basicHours, "tue");
-	let wed = convertingDate(basicHours, "wed");
-	let thu = convertingDate(basicHours, "thu");
-	let fri = convertingDate(basicHours, "fri");
-	let sat = convertingDate(basicHours, "sat");
-	let hol = convertingDate(basicHours, "hol");
-	return [sun, mon, tue, wed, thu, fri, sat, hol];
-}
-
-function showBusinessHour(hoursArr){
+function showBusinessHour(basicHours) {
     let week = ["일", "월", "화", "수", "목", "금", "토", "공휴일"];
-    //0:일, 1:월, 2:화 .... 6:토
-    for(let i = 0; i < hoursArr.length; i++){
-        let day = hoursArr[i];
-        let startTime = day.day[0];
-        let endTime = day.day[1];
-        let lunchStart = day.day[2];
-        let lunchEnd = day.day[3];
-        
-        let listItem = document.createElement("div");
-        listItem.innerHTML = "<span class='modal-sub-title'>"+ week[i] + "</span> <span class='workHour'>" + startTime + " ~ " + endTime
-                             +"</span> <span class='modal-sub-title del'>|| 점심시간 </span> <span class='lunchHour'>" + lunchStart + " ~ " + lunchEnd +"</span>";
+    let days = ["sun", "mon", "tue", "wed", "thu", "fri", "sat", "hol"]; // JSON의 키 순서에 맞춰 요일 배열을 정의합니다.
 
-        if(startTime === 0){
+    for (let i = 0; i < days.length; i++) {
+        let day = basicHours[days[i]];
+        let startTime = day[0];
+        let endTime = day[1];
+        let lunchStart = day[2];
+        let lunchEnd = day[3];
+
+        let listItem = document.createElement("div");
+        listItem.innerHTML = "<span class='modal-sub-title'>" + week[i] + "</span> <span class='workHour'>" + startTime + " ~ " + endTime
+            + "</span> <span class='modal-sub-title del'>|| 점심시간 </span> <span class='lunchHour'>" + lunchStart + " ~ " + lunchEnd + "</span>";
+
+        if (startTime === "0") {
             listItem.querySelector(".workHour").innerHTML = "휴무";
             listItem.querySelector(".workHour").classList = 'workHour modal-sub-title';
             listItem.querySelector(".del").innerHTML = "";
             listItem.querySelector(".lunchHour").innerHTML = "";
-            listItem.querySelector(".workHour").style.color="#cd362f";
-		 	if(lunchStart === 0){
-		       listItem.querySelector(".lunchHour").innerHTML = "";
-		     }
-        }else if(lunchStart === 0){
+            listItem.querySelector(".workHour").style.color = "#cd362f";
+            if (lunchStart === "0") {
+                listItem.querySelector(".lunchHour").innerHTML = "";
+            }
+        } else if (lunchStart === "0") {
             listItem.querySelector(".lunchHour").innerHTML = "-";
         }
-        
+
         document.querySelector("#working_hour").appendChild(listItem);
     }
 }
+
 
 // 모달에 해당 병원 상세정보 보여주기
 function showModal(e) {
@@ -104,8 +66,10 @@ function showModal(e) {
 		document.querySelector("#exampleModalLabel").setAttribute("data-id", memVet[hospitalName]["id"]);
 		document.querySelector("#working_hour").innerHTML = "";
 		document.querySelector("#review").innerHTML ="";
+		
+		
 		let basicHours = JSON.parse(memVet[hospitalName]["businessHours"]);
-		let hoursArr = getBasicBusinessHours(basicHours);
+
 
 		//회원만 있는 병원 정보칸 보이게하기
 		document.querySelector(".modal-memVetInfo").style.display = "block";
@@ -114,7 +78,7 @@ function showModal(e) {
 		document.querySelector("#hospital_id").innerHTML = memVet[hospitalName]["id"];
 		// 영업시간 설정
 		document.querySelector("#working_hour").style.display = "block";
-		showBusinessHour(hoursArr);
+		showBusinessHour(basicHours);
 		// 예약하기 버튼 설정
 		document.querySelector(".reservationBtn").style.display = "block";
 		// 채팅 버튼 설정

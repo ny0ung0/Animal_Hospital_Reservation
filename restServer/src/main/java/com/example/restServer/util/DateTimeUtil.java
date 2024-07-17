@@ -1,5 +1,6 @@
 package com.example.restServer.util;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -7,7 +8,11 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class DateTimeUtil {
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
@@ -50,6 +55,67 @@ public class DateTimeUtil {
         return dateTime.format(DATE_FORMATTER);
     }
     
+    // JSON 문자열을 Map으로 변환하는 메서드
+    public static Map<String, List<String>> jsonToMap(String jsonString) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        return objectMapper.readValue(jsonString, HashMap.class);
+    }
+
+    // Map을 배열로 변환하는 메서드
+    public static Map<String, String[]> mapToArray(Map<String, List<String>> businessHoursMap) {
+        Map<String, String[]> businessHoursArray = new HashMap<>();
+        String[] days = {"mon", "tue", "wed", "thu", "fri", "sat", "sun", "hol"};
+
+        for (String day : days) {
+            List<String> hours = businessHoursMap.get(day);
+            String[] times = new String[4];
+
+            if (hours != null && !hours.isEmpty()) {
+                String openCloseTime = hours.get(0).substring(6).trim();
+                if (!openCloseTime.equals("영업 안함")) {
+                    String[] openClose = openCloseTime.split("//");
+                    times[0] = openClose[0].trim();
+                    times[1] = openClose[1].trim();
+                    if (hours.size() > 1 && !hours.get(1).substring(6).trim().equals("점심시간 없음")) {
+                        String lunchTime = hours.get(1).substring(6).trim();
+                        String[] lunch = lunchTime.split("//");
+                        times[2] = lunch[0].trim();
+                        times[3] = lunch[1].trim();
+                    } else {
+                        times[2] = "0";
+                        times[3] = "0";
+                    }
+                } else {
+                    times[0] = "0";
+                    times[1] = "0";
+                    times[2] = "0";
+                    times[3] = "0";
+                }
+            } else {
+                times[0] = "0";
+                times[1] = "0";
+                times[2] = "0";
+                times[3] = "0";
+            }
+            businessHoursArray.put(day, times);
+        }
+        return businessHoursArray;
+    
+    }
+    
+    public static String getBusinessHours(String jsonString){
+    	  try {
+              Map<String, List<String>> businessHoursMap = jsonToMap(jsonString);
+              Map<String, String[]> businessHoursArray = mapToArray(businessHoursMap);
+              ObjectMapper objectMapper = new ObjectMapper();
+              return objectMapper.writeValueAsString(businessHoursArray);
+          } catch (IOException e) {
+              e.printStackTrace();
+          }
+    	  return null;
+    }
+    
+   
    
 }
 
