@@ -4,6 +4,7 @@ const searchBtn = document.querySelector("#searchBtn");
 const resetBtn = document.querySelector("#resetBtn");
 const vetContainer = document.querySelector(".vet_list");
 const resultsContainer = document.querySelector(".result_container");
+const loadingOverlay = document.getElementById("loading");
 
 let citiesWithNoGu = new Set();
 let guMap = new Map();
@@ -219,10 +220,11 @@ function resetFilter(){
 }
 
 function sortingReserv(e){
+	console.log(memVet)
 	 if(searchResult.length != 0){
         searchResult.sort((a, b) => {
-            const aInMemVet = Object.keys(memVet).includes(a["사업장명"]);
-            const bInMemVet = Object.keys(memVet).includes(b["사업장명"]);
+            const aInMemVet = memVet[a["사업장명"]] && memVet[a["사업장명"]].address == a["소재지전체주소"]
+            const bInMemVet = memVet[b["사업장명"]] && memVet[b["사업장명"]].address == b["소재지전체주소"]
 
             if (aInMemVet && !bInMemVet) {
                 return -1; // a를 b보다 앞으로
@@ -300,7 +302,7 @@ document.querySelector("input[name=search_vet]").addEventListener("keydown", fun
                 }
             });
             if(keywordSearchResult.length == 0){
-				resultsContainer.innerHTML="<div class='resultMsg'>검색결과가 없습니다🥲</div>";
+				resultsContainer.innerHTML="<div class='resultMsg'>검색결과가 없습니다😥</div>";
 			}
         };
 
@@ -322,17 +324,15 @@ function displayResults(hospital) {
 }
 
 document.querySelector("#keywordSearchBtn").addEventListener("click", function() {
+     if(document.querySelector("input[name=search_vet]").value.trim() == ""){
+		return false;
+	}
+    
     document.querySelector(".vet_list").innerHTML = "";
-//    let keywordVetResult = [];
     searchResult = [];
     let params = new URLSearchParams();
 
     keywordSearchResult.forEach(hos => {
-//        let vet = {};
-//        vet.vetName = hos["사업장명"];
-//        vet.vetAddr = hos["도로명전체주소"].split(" ")[0] + "//" + hos["도로명전체주소"].split(" ")[1];
-//        keywordVetResult.push(vet);
-        
          params.append(hos["사업장명"], hos["도로명전체주소"].split(" ")[0] + "//" + hos["도로명전체주소"].split(" ")[1]);
     });
 
@@ -364,8 +364,40 @@ document.querySelector("#keywordSearchBtn").addEventListener("click", function()
     };
     xhttp.open("GET", "http://localhost:9001/api/v1/keyword-vet-list?"+ params.toString(), true); 
     xhttp.setRequestHeader("MemberId", localStorage.getItem("MemberId"));
-    xhttp.setRequestHeader("token", localStorage.getItem("token"));
+    xhttp.setRequestHeader("Authorization", localStorage.getItem("token"));
     xhttp.setRequestHeader("role", localStorage.getItem("role"));
     xhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     xhttp.send(); // vetInfo 배열을 전송
+});
+
+
+
+
+function showLoading() {
+    loadingOverlay.style.display = "flex";
+}
+
+function hideLoading() {
+    loadingOverlay.style.display = "none";
+}
+
+document.getElementById("keywordSearchBtn").addEventListener("click", function () {
+    if(document.querySelector("input[name=search_vet]").value.trim() == ""){
+		return false;
+	}
+    showLoading();
+    setTimeout(() => {
+        hideLoading(); 
+    }, 1000);
+});
+
+document.getElementById("searchBtn").addEventListener("click", function () {
+	
+	 if (guMap.size == 0 && citiesWithNoGu.size == 0) {
+		return false;
+	  }
+    showLoading();
+    setTimeout(() => {
+        hideLoading(); 
+    }, 1000);
 });

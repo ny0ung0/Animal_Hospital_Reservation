@@ -196,26 +196,29 @@ function checkBookmark(e){
 	}else{
 		hosId = e.target.parentElement.parentElement.querySelector("button").getAttribute("data-id");
 	}
-	let filled = "http://localhost:8093/images/bookmark_fill.png"
-	let empty = "http://localhost:8093/images/bookmark.png"
+	let filled = "/images/bookmark_fill.png"
+	let empty = "/images/bookmark.png"
 	let isBookmarked;
 	
 	if(e.target.src == filled){
 		e.target.src = empty;
-		alert("이 병원을 즐겨찾기 목록에서 삭제하시겠습니까?")
-		//북마크 취소 db에 업데이트해주기
-		isBookmarked=false;
+		if(confirm("이 병원을 즐겨찾기 목록에서 삭제하시겠습니까?")){
+			//북마크 취소 db에 업데이트해주기
+			isBookmarked=false;
+		};
+		
 	}else{
 		e.target.src = filled;
-		alert("이 병원을 즐겨찾기 목록에 추가하시겠습니까?")
-		//북마크 구독 db에 업데이트해주기
-		isBookmarked=true;
+		if(confirm("이 병원을 즐겨찾기 목록에 추가하시겠습니까?")){
+			//북마크 구독 db에 업데이트해주기
+			isBookmarked=true;
+		}
 	}
 	 const xhttp = new XMLHttpRequest();
 	  xhttp.onload = function() {
 	     alert("성공적으로 즐겨찾기목록이 업데이트 되었습니다.")
 	  }
-	  xhttp.open("POST", "https://localhost:9001/api/v1/user/bookmark/"+isBookmarked+"/"+hosId, true);
+	  xhttp.open("POST", "http://localhost:9001/api/v1/user/bookmark/"+isBookmarked+"/"+hosId, true);
 	  xhttp.setRequestHeader("MemberId", localStorage.getItem("MemberId"));
 	  xhttp.setRequestHeader("Authorization", localStorage.getItem("token"));
 	  xhttp.setRequestHeader("role", localStorage.getItem("role"));
