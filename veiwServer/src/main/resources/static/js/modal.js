@@ -196,8 +196,8 @@ function checkBookmark(e){
 	}else{
 		hosId = e.target.parentElement.parentElement.querySelector("button").getAttribute("data-id");
 	}
-	let filled = "http://localhost:8093/images/bookmark_fill.png"
-	let empty = "http://localhost:8093/images/bookmark.png"
+	let filled = "/images/bookmark_fill.png"
+	let empty = "/images/bookmark.png"
 	let isBookmarked;
 	
 	if(e.target.src == filled){
