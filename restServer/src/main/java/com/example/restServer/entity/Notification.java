@@ -30,7 +30,10 @@ public class Notification extends BaseEntity {
     @JoinColumn(name = "sender_id")
     private Member sender;
 
+    
+    private String title;
     private String content;
+    
     private Boolean isRead;
 
     // Getters and Setters
