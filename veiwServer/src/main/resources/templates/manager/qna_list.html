@@ -78,28 +78,42 @@ $(document).ready(function() {
         })
         .then(response => response.json())
         .then(data => {
-            console.log(data);
+            console.log(data.content.length == 0);
             $('#tbody').empty();
-            let cnt = page * size + 1;
-            data.content.forEach(obj => {
-                let btnarea = obj.reply == null 
-                    ? '<button class="btn btn-outline-danger" onclick="addReply(event, ' + obj.id + ')">답변 대기</button>' 
-                    : '<button class="btn btn-outline-primary" onclick="reply(event, ' + obj.id + ')">답변 완료</button>';
-                let innerHtml = 
+            if(data.content.length == 0){
+            	let innerHtml = 
                     '<tr>' +
-                        '<td>' + cnt + '</td>' +
-                        '<td>' + obj.category + '</td>' +
-                        '<td>' + obj.title + '</td>' +
-                        '<td>' + obj.member.name + '</td>' +
-                        '<td><a class="btn btn-primary" href="/qnaDetail?id=' + obj.id + '">상세보기</a></td>' +
-                        '<td>' + btnarea + '</td>' +
+                        '<td colspan="7">데이터가 없습니다.</td>' +
                     '</tr>';
-                cnt++;
                 $('#tbody').append(innerHtml);
-            });
-            currentPage = page;
-            totalPages = data.totalPages;
-            updatePagination();
+                currentPage = page;
+                totalPages = data.totalPages;
+                updatePagination();
+            }else{
+            	let cnt = page * size + 1;
+                data.content.forEach(obj => {
+                    let btnarea = obj.reply == null 
+                        ? '<button class="btn btn-outline-danger" onclick="addReply(event, ' + obj.id + ')">답변 대기</button>' 
+                        : '<button class="btn btn-outline-primary" onclick="reply(event, ' + obj.id + ')">답변 완료</button>';
+                        
+                    let memberName = obj.member.name == null ? obj.member.hospitalName : obj.member.name;
+                    let innerHtml = 
+                        '<tr>' +
+                            '<td>' + cnt + '</td>' +
+                            '<td>' + obj.category + '</td>' +
+                            '<td>' + obj.title + '</td>' +
+                            '<td>' + memberName + '</td>' +
+                            '<td><a class="btn btn-primary" href="/qnaDetail?id=' + obj.id + '">상세보기</a></td>' +
+                            '<td>' + btnarea + '</td>' +
+                        '</tr>';
+                    cnt++;
+                    $('#tbody').append(innerHtml);
+                });
+                currentPage = page;
+                totalPages = data.totalPages;
+                updatePagination();
+            }
+            
         })
         .catch(error => console.log(error));
     }

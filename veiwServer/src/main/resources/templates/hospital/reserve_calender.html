@@ -13,74 +13,92 @@
 <script>
 const memberId = localStorage.getItem("MemberId");
 const token = localStorage.getItem("token");
-        document.addEventListener('DOMContentLoaded', function() {
-            fetch("http://localhost:9001/api/v1/hospital/business-hours", {
-                method: "GET",
-                headers: {
-                    'Authorization': `${token}`,
-                    'memberId' : memberId
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log(data);
-                if (data == "") {
-                    alert("등록된 영업시간이 없습니다.");
-                } else {
-                    const businessHoursData = data;
-                    const dayMap = {
-                        "sun": 0,
-                        "mon": 1,
-                        "tue": 2,
-                        "wed": 3,
-                        "thu": 4,
-                        "fri": 5,
-                        "sat": 6
-                    };
+const doctorId = [[${doctorId}]];
 
-                    function parseBusinessHours(data) {
-                        const events = [];
-                        for (const [day, times] of Object.entries(data)) {
-                            if (times[0] === "영업시간 : 영업 안함") {
-                                events.push({
-                                    title: '영업 안함',
-                                    daysOfWeek: [dayMap[day]],
-                                    allDay: true,
-                                    display: 'background',
-                                    backgroundColor: '#cccccc', // Red color for non-working days
-                                    textColor: '#ffffff' // White text color
-                                });
-                                continue;
-                            }
+document.addEventListener('DOMContentLoaded', function() {
+    fetchBusinessHoursAndReservations(); // 초기 데이터 가져오기
 
-                            const businessHours = times[0].split(" : ")[1].split("//");
-                            const lunchHours = times.length > 1 ? times[1].split(" : ")[1].split("//") : null;
+    function fetchBusinessHoursAndReservations() {
+        fetch("http://localhost:9001/api/v1/hospital/business-hours", {
+            method: "GET",
+            headers: {
+                'Authorization': `${token}`,
+                'memberId': memberId
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            if (data == "") {
+                alert("등록된 영업시간이 없습니다.");
+            } else {
+                const businessHoursData = data;
+                const dayMap = {
+                    "sun": 0,
+                    "mon": 1,
+                    "tue": 2,
+                    "wed": 3,
+                    "thu": 4,
+                    "fri": 5,
+                    "sat": 6
+                };
 
-//                             events.push({
-//                                 title: '영업시간',
-//                                 daysOfWeek: [dayMap[day]],
-//                                 startTime: businessHours[0],
-//                                 endTime: businessHours[1],
-//                             });
-
-//                             if (lunchHours && lunchHours[0] !== "점심시간 없음") {
-//                                 events.push({
-//                                     title: '점심시간',
-//                                     daysOfWeek: [dayMap[day]],
-//                                     startTime: lunchHours[0],
-//                                     endTime: lunchHours[1],
-//                                     display: 'background',
-//                                     backgroundColor: '#ffff00', // Yellow color for lunch time
-//                                     textColor: '#000000' // Black text color
-//                                 });
-//                             }
+                function parseBusinessHours(data) {
+                    const events = [];
+                    for (const [day, times] of Object.entries(data)) {
+                        if (times[0] === "영업시간 : 영업 안함") {
+                            events.push({
+                                title: '영업 안함',
+                                daysOfWeek: [dayMap[day]],
+                                allDay: true,
+                                display: 'background',
+                                backgroundColor: '#cccccc', // Gray color for non-working days
+                                textColor: '#ffffff' // White text color
+                            });
+                            continue;
                         }
-                        return events;
+
+                        const businessHours = times[0].split(" : ")[1].split("//");
+                        const lunchHours = times.length > 1 ? times[1].split(" : ")[1].split("//") : null;
                     }
+                    return events;
+                }
 
-                    const events = parseBusinessHours(businessHoursData);
+                function fetchReservationsAndRenderCalendar(events) {
+                    fetch("http://localhost:9001/api/v1/hospital/reservation/doctor/" + doctorId, {
+                        method: "GET",
+                        headers: {
+                            'Authorization': `${token}`
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(reservations => {
+                        reservations.forEach(reservation => {
+                            console.log(reservation.reservationDatetime);
+                            let reservationMonth = "";
+                            reservation.reservationDatetime[1].toString().length == 1 ? reservationMonth = "0" + reservation.reservationDatetime[1] : reservationMonth = reservation.reservationDatetime[1];
+                            let reservationDay = "";
+                            reservation.reservationDatetime[2].toString().length == 1 ? reservationDay = "0" + reservation.reservationDatetime[2] : reservationDay = reservation.reservationDatetime[2];
+                            let reservationHour = "";
+                            reservation.reservationDatetime[3].toString().length == 1 ? reservationHour = "0" + reservation.reservationDatetime[3] : reservationHour = reservation.reservationDatetime[3];
+                            let reservationMinute = "";
+                            reservation.reservationDatetime[4].toString().length == 1 ? reservationMinute = "0" + reservation.reservationDatetime[4] : reservationMinute = reservation.reservationDatetime[4];
+                            let reservationDate = reservation.reservationDatetime[0] + "-" + reservationMonth + "-" + reservationDay;
+                            let reservationTime = reservationHour + ":" + reservationMinute;
+                            console.log(reservationTime);
+                            events.push({
+                                title: '예약 ' + reservationTime,
+                                start: reservationDate, // 예약된 날짜 및 시간
+                                backgroundColor: '#337ab7', // Blue color for reservations
+                                textColor: '#ffffff' // White text color
+                            });
+                        });
+                        renderCalendar(events);
+                    })
+                    .catch(error => console.log(error));
+                }
 
-                    const doctorId = document.querySelector("#doctorId").value;
+                function renderCalendar(events) {
                     const doctorName = document.querySelector("#doctorName").value;
                     var calendarEl = document.getElementById('calendar');
                     var calendar = new FullCalendar.Calendar(calendarEl, {
@@ -90,6 +108,7 @@ const token = localStorage.getItem("token");
                             center: 'title',
                             right: 'dayGridMonth,dayGridWeek,dayGridDay'
                         },
+                        locale: "ko",
                         events: events,
                         //selectable: true,
                         //selectMirror: true,
@@ -118,10 +137,17 @@ const token = localStorage.getItem("token");
 
                     calendar.render();
                 }
-            })
-            .catch(error => console.log(error));
-        });
-    </script>
+
+                const events = parseBusinessHours(businessHoursData); // 영업시간 파싱 및 이벤트 설정
+                fetchReservationsAndRenderCalendar(events); // 예약된 시간 가져오기 및 캘린더 렌더링
+            }
+        })
+        .catch(error => console.log(error));
+    }
+});
+</script>
+
+
 </head>
 <body class="d-flex flex-column h-100">
 <div th:replace="~{hospital/header :: header}"></div>

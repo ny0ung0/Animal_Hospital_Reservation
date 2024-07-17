@@ -260,6 +260,13 @@
             		dateIndex1 = reserve.reservationDatetime[1];
             	}
             	
+            	let dateIndex3 = "";
+            	if(reserve.reservationDatetime[3].toString().length === 1){
+            		dateIndex3 = "0" + reserve.reservationDatetime[3];
+            	}else{
+            		dateIndex3 = reserve.reservationDatetime[3];
+            	}
+            	
             	let dateIndex4 = "";
             	if(reserve.reservationDatetime[4].toString().length === 1){
             		dateIndex4 = reserve.reservationDatetime[4] + "0";
@@ -268,16 +275,16 @@
             	}
             	
             	let newDate = reserve.reservationDatetime[0] + "-" + dateIndex1 + "-" + reserve.reservationDatetime[2];
-            	let newTime = reserve.reservationDatetime[3] + ":" + dateIndex4;
-            	console.log(newDate);
-            	console.log(newTime);
+            	let newTime = dateIndex3 + ":" + dateIndex4;
+            	//console.log(newDate);
+            	//console.log("newTime",newTime);
                 if (newDate.startsWith(selectedDate)) {
                 	
                     reservationTime.push(newTime.slice(0, 5));
                     
                 }
             });
-            console.log(reservationTime);
+            console.log("reservationTime", reservationTime);
             updateCheckboxesSelectNone();
         })
         .catch(error => console.log(error));
@@ -397,6 +404,7 @@
             const checkboxes = document.querySelectorAll('.btn-check');
             checkboxes.forEach(checkbox => {
                 const time = checkbox.dataset.time;
+                console.log("reservationTime222 ",reservationTime);
                 if (!isTimeSelectableReservation(time)) {
                     checkbox.disabled = true;
                     const labelId = checkbox.id.replace('btn-check-', '');
