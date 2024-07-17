@@ -29,7 +29,7 @@
 				</div>
 				<div class="mb-3">
 					<label class="form-label">비밀번호</label> 
-					<input type="password" name="password" class="form-control">
+					<input type="password" name="password" class="form-control" onkeydown="if (event.key === 'Enter') loginUser()">
 				</div>
 				
 				
@@ -39,7 +39,7 @@
 		</div>
 	</div>
 	<div id="result"></div>
-	<button onclick="tokenTest()">토큰테스트</button>
+	<button onclick="tokenTest()" style="display : none;">토큰테스트</button>
 	
 	
 	
@@ -82,7 +82,7 @@
 	                    }else if(role == "ROLE_HOSPITAL"){
 	                    	window.location.href="/hospital";
 	                    }else if(role == "ROLE_ADMIN"){
-	                    	window.location.href="/manager";
+	                    	window.location.href="/manager/";
 	                    }
 	                    
 	                    
