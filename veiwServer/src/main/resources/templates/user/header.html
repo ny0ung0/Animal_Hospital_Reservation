@@ -1,10 +1,14 @@
-<header class="border-bottom" th:fragment="header">
+<div class="header_wrap" th:fragment="header">
+<header class="border-bottom">
 	<div class="d-flex bg-user-sub p-2 px-3">
+		<div class="d-lg-none">
+			<a href="#" onclick="openMobileMenu()" class="navbar-brand">메뉴</a>
+		</div>
 		<div class="ms-auto">
 		<a id="login-link" class="navbar-brand" href="/login_form">로그인</a>
 		<a id="mypage-link" class="navbar-brand" href="#" onclick="mypage()" style="display: none;">마이페이지</a>
-		 <a id="logout-link" class="navbar-brand" href="#" onclick="logout()" style="display: none;">로그아웃</a>
-		<span class="mx-3"id ="bar"> | </span>
+		<span class="mx-3" id ="bar"> | </span>
+		<a id="logout-link" class="navbar-brand" href="#" onclick="logout()" style="display: none;">로그아웃</a>
 		<a id="register-link" class="navbar-brand" href="/register_form">회원가입</a>
 		</div>
 	</div>
@@ -16,7 +20,7 @@
         
       </a>
 
-      <ul class="nav nav-pills user-nav">
+      <ul class="nav nav-pills user-nav d-none d-lg-flex">
         <li class="nav-item"><a href="/" class="nav-link fs-5" aria-current="page">내주변 동물병원</a></li>
         <li class="nav-item"><a href="/user/vet_list_region" class="nav-link fs-5">지역별 동물병원</a></li>
         <li class="nav-item"><a href="/user/reserv_list" class="nav-link fs-5">병원 예약 내역</a></li>
@@ -24,39 +28,129 @@
         <li class="nav-item"><a href="#" class="nav-link fs-5">펀딩</a></li>
         <li class="nav-item"><a href="/webGame/" class="nav-link fs-5">펫키우기</a></li>
         <li class="nav-item"><a href="#" class="nav-link fs-5">집수다</a></li>
-        <li class="nav-item"><a href="/user/myQnaList" class="nav-link fs-5">고객센터</a></li>
+        <li class="nav-item">
+	        <div class="dropdown">
+			  <a class="btn btn-none dropdown-toggle nav-link fs-5" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+			   고객센터
+			  </a>
+			
+			  <ul class="dropdown-menu">
+			    <li><a class="dropdown-item" href="/noticeList">공지사항</a></li>
+			    <li><a class="dropdown-item" href="/qnaForm">문의작성</a></li>
+			  </ul>
+			</div>
+		</li>
       </ul>
 	</div>
-	<script>
-            function logout() {
-                localStorage.clear();
-                window.location.href = "/";
-            }
-            
-            function mypage() {
-                window.location.href = "/user/my_info_edit";
-            }
-            
-            document.addEventListener("DOMContentLoaded", function() {
-                const memberId = localStorage.getItem('MemberId');
-                const loginLink = document.getElementById('login-link');
-                const registerLink = document.getElementById('register-link');
-                const mypageLink = document.getElementById('mypage-link');
-                const logoutLink = document.getElementById('logout-link');
-                const bar = document.getElementById('bar');
-                if (memberId) {
-                    loginLink.style.display = 'none';
-                    registerLink.style.display = 'none';
-                    logoutLink.style.display = '';
-                    mypageLink.style.display = '';
-                    bar.style.display = 'none';
-                } else {
-                    loginLink.style.display = '';
-                    registerLink.style.display = '';
-                    logoutLink.style.display = 'none';
-                    mypageLink.style.display = 'none';
-                    bar.style.display = '';
-                }
-            });
-        </script>
+	
+
+<div id="mobileMenu" class="bg-user-sub">
+	<div class="d-flex border-bottom border-white border-opacity-50 justify-content-center align-items-center pe-4">
+		 <a href="/" class="d-block text-decoration-none">
+			<div class="logo_size">
+	        	<img src="/images/logo_user.png" class="w-100" alt="로고">
+	        </div>
+        </a>
+		<a id="mobileMenuCloseBtn" class="d-block ms-auto nav-link">X</a>
+	</div>
+	<div class="px-4">
+		<ul class="list-group list-group-flush bg-user-sub">
+		    <li class="list-group-item bg-user-sub border-white border-opacity-50"><a href="/" class="nav-link fs-5">내주변 동물병원</a></li>
+		    <li class="list-group-item bg-user-sub border-white border-opacity-50"><a href="/user/vet_list_region" class="nav-link fs-5">지역별 동물병원</a></li>
+		    <li class="list-group-item bg-user-sub border-white border-opacity-50"><a href="/user/reserv_list" class="nav-link fs-5">병원 예약 내역</a></li>
+		    <li class="list-group-item bg-user-sub border-white border-opacity-50"><a href="#" class="nav-link fs-5">이벤트 경매</a></li>
+		    <li class="list-group-item bg-user-sub border-white border-opacity-50"><a href="#" class="nav-link fs-5">펀딩</a></li>
+		    <li class="list-group-item bg-user-sub border-white border-opacity-50"><a href="/webGame/" class="nav-link fs-5">펫키우기</a></li>
+		    <li class="list-group-item bg-user-sub border-white border-opacity-50 fs-5">고객센터</li>
+		    <li class="list-group-item bg-user-sub border-white border-opacity-50"><a href="/noticeList" class="nav-link fs-6 ps-3">공지사항</a></li>
+		    <li class="list-group-item bg-user-sub border-white border-opacity-50"><a href="/qnaForm" class="nav-link fs-6 ps-3">문의작성</a></li>
+		</ul>
+	</div>
+</div>
 </header>
+<script>
+    function logout() {
+        localStorage.clear();
+        window.location.href = "/";
+    }
+    
+    function mypage() {
+        window.location.href = "/user/my_info_edit";
+    }
+    
+    document.addEventListener("DOMContentLoaded", function() {
+        const memberId = localStorage.getItem('MemberId');
+        const role = localStorage.getItem('role');
+        const loginLink = document.getElementById('login-link');
+        const registerLink = document.getElementById('register-link');
+        const mypageLink = document.getElementById('mypage-link');
+        const logoutLink = document.getElementById('logout-link');
+        const bar = document.getElementById('bar');
+        if (memberId) {
+            loginLink.style.display = 'none';
+            registerLink.style.display = 'none';
+            logoutLink.style.display = '';
+            mypageLink.style.display = '';
+            //bar.style.display = 'none';
+        } else {
+            loginLink.style.display = '';
+            registerLink.style.display = '';
+            logoutLink.style.display = 'none';
+            mypageLink.style.display = 'none';
+            bar.style.display = '';
+        }
+        
+        if (role === null) {
+            document.querySelector("a[href='/user/reserv_list']").addEventListener("click", function(event) {
+                event.preventDefault();
+                alert("로그인 후 이용할 수 있습니다.");
+            });
+
+            document.querySelector("a[href='/webGame/']").addEventListener("click", function(event) {
+                event.preventDefault();
+                alert("로그인 후 이용할 수 있습니다.");
+            });
+
+            document.querySelector("a[href='/qnaForm']").addEventListener("click", function(event) {
+                event.preventDefault();
+                alert("로그인 후 이용할 수 있습니다.");
+            });
+        }else if(role === "ROLE_HOSPITAL"){
+        	document.querySelector("a[href='/user/reserv_list']").addEventListener("click", function(event) {
+                event.preventDefault();
+                alert("일반 회원만 이용할 수 있습니다.");
+            });
+
+            document.querySelector("a[href='/webGame/']").addEventListener("click", function(event) {
+                event.preventDefault();
+                alert("일반 회원만 이용할 수 있습니다.");
+            });
+
+           // document.querySelector("a[href='/qnaForm']").addEventListener("click", function(event) {
+           //     event.preventDefault();
+           //     alert("일반 회원만 이용할 수 있습니다.");
+           //});
+        }
+
+    });
+    
+    const mobileMenu = document.querySelector("#mobileMenu");
+	const mobileMenuCloseBtn = document.querySelector("#mobileMenuCloseBtn");
+	
+	// 모바일 메뉴를 열기 위한 함수
+	function openMobileMenu() {
+		mobileMenu.classList.add("open"); // open 클래스를 추가하여 메뉴가 나타나도록 함
+	}
+
+	// 모바일 메뉴를 닫기 위한 함수
+	function closeMobileMenu() {
+		mobileMenu.classList.remove("open"); // open 클래스를 제거하여 메뉴가 사라지도록 함
+	}
+
+	// 모바일 메뉴 닫기 버튼에 클릭 이벤트 리스너 추가
+	mobileMenuCloseBtn.addEventListener("click", function() {
+	    closeMobileMenu(); // 클릭 시 모바일 메뉴 닫기
+	});
+</script>
+</div>
+
