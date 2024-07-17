@@ -50,7 +50,10 @@ xhttp.onload = function() {
   }
  }
 xhttp.open("GET", "http://localhost:9001/api/v1/hospital/qna", true);
-xhttp.setRequestHeader("username", 28);
+xhttp.setRequestHeader("MemberId", localStorage.getItem("MemberId"));
+xhttp.setRequestHeader("Authorization", localStorage.getItem("token"));
+xhttp.setRequestHeader("role", localStorage.getItem("role"));
+
 xhttp.send();
 
 </script>

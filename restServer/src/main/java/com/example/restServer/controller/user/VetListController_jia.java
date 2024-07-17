@@ -66,7 +66,7 @@ public class VetListController_jia {
 	@PostMapping("/user/bookmark/{isBookmarked}/{hosId}")
 	public ResponseEntity<String> isBookmarekd(@PathVariable("isBookmarked") Boolean isBookmarked, @PathVariable("hosId") Long hosId, HttpServletRequest request){
 		Long userId = Long.parseLong(request.getHeader("MemberId"));
-        vetListService.isBookmarked(hosId, userId, isBookmarked);
+		vetListService.isBookmarked(hosId, userId, isBookmarked);
        
 		return ResponseEntity.ok("");
 		

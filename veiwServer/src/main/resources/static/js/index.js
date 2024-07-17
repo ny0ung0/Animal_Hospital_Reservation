@@ -336,15 +336,16 @@ function loadList(hospital, index){
 }
 
 function sortingReserv(e){
-	 if(nearVet.length != 0){
-        nearVet.sort((a, b) => {
-            const aInMemVet = Object.keys(memVet).includes(a["사업장명"]);
-            const bInMemVet = Object.keys(memVet).includes(b["사업장명"]);
+	if (searchResult.length != 0) {
+		sortingReserv(e);
+        searchResult.sort((a, b) => {
+            const aPartnership = memVet[a["사업장명"]] && memVet[a["사업장명"]].partnership === true;
+            const bPartnership = memVet[b["사업장명"]] && memVet[b["사업장명"]].partnership === true;
 
-            if (aInMemVet && !bInMemVet) {
+            if (aPartnership && !bPartnership) {
                 return -1; // a를 b보다 앞으로
             }
-            if (!aInMemVet && bInMemVet) {
+            if (!aPartnership && bPartnership) {
                 return 1; // b를 a보다 앞으로
             }
             return 0; // 변화 없음
@@ -352,8 +353,8 @@ function sortingReserv(e){
 
         // 정렬된 결과를 콘솔에 출력
         document.querySelector(".inner").innerHTML="";
-        nearVet.forEach((vetItem, index) =>{
-			loadList(vetItem, index);
+        searchResult.forEach(vetItem=>{
+			addHospitalToList(vetItem);
 		})
     }
 }
