@@ -100,7 +100,7 @@
             &nbsp;~&nbsp;&nbsp;
           </div>
           
-          <div><input type="checkbox" name="commonLunch" value="no">점심시간 없음<br>
+          <div><input type="checkbox" name="commonLunch" value="no"onchange="toggleLunchTimeSelectors('com')">점심시간 없음<br>
             <select name="commonLunchEndHour">
               <option th:each="hour : ${#numbers.sequence(0, 23)}" th:value="${hour}" th:text="${hour < 10 ? '0' + hour : hour}"></option>
             </select>
@@ -164,7 +164,7 @@
             &nbsp;~&nbsp;&nbsp;
           </div>
           
-          <div><input type="checkbox" name="lunch_mon" value="no">점심시간 없음<br>
+          <div><input type="checkbox" name="lunch_mon" value="no"onchange="toggleLunchTimeSelectors('mon')" disabled>점심시간 없음<br>
             <select name="lunchEndHour_mon" disabled>
               <option th:each="hour : ${#numbers.sequence(0, 23)}" th:value="${hour}" th:text="${hour < 10 ? '0' + hour : hour}"></option>
             </select>
@@ -226,7 +226,7 @@
 					            &nbsp;~&nbsp;&nbsp;
 					          </div>
 					          
-					          <div><input type="checkbox" name="lunch_tue" value="no">점심시간 없음<br>
+					          <div><input type="checkbox" name="lunch_tue" value="no"onchange="toggleLunchTimeSelectors('tue')" disabled>점심시간 없음<br>
 					            <select name="lunchEndHour_tue" disabled>
 					              <option th:each="hour : ${#numbers.sequence(0, 23)}" th:value="${hour}" th:text="${hour < 10 ? '0' + hour : hour}"></option>
 					            </select>
@@ -289,7 +289,7 @@
 					            &nbsp;~&nbsp;&nbsp;
 					          </div>
 					          
-					          <div><input type="checkbox" name="lunch_wed" value="no">점심시간 없음<br>
+					          <div><input type="checkbox" name="lunch_wed" value="no"onchange="toggleLunchTimeSelectors('wed')" disabled>점심시간 없음<br>
 					            <select name="lunchEndHour_wed" disabled>
 					              <option th:each="hour : ${#numbers.sequence(0, 23)}" th:value="${hour}" th:text="${hour < 10 ? '0' + hour : hour}"></option>
 					            </select>
@@ -352,7 +352,7 @@
 					            &nbsp;~&nbsp;&nbsp;
 					          </div>
 					          
-					          <div><input type="checkbox" name="lunch_thu" value="no">점심시간 없음<br>
+					          <div><input type="checkbox" name="lunch_thu" value="no"onchange="toggleLunchTimeSelectors('thu')" disabled>점심시간 없음<br>
 					            <select name="lunchEndHour_thu" disabled>
 					              <option th:each="hour : ${#numbers.sequence(0, 23)}" th:value="${hour}" th:text="${hour < 10 ? '0' + hour : hour}"></option>
 					            </select>
@@ -414,7 +414,7 @@
 					            &nbsp;~&nbsp;&nbsp;
 					          </div>
 					         
-					          <div><input type="checkbox" name="lunch_fri" value="no">점심시간 없음<br>
+					          <div><input type="checkbox" name="lunch_fri" value="no" onchange="toggleLunchTimeSelectors('fri')" disabled>점심시간 없음<br>
 					            <select name="lunchEndHour_fri" disabled>
 					              <option th:each="hour : ${#numbers.sequence(0, 23)}" th:value="${hour}" th:text="${hour < 10 ? '0' + hour : hour}"></option>
 					            </select>
@@ -476,7 +476,7 @@
 					            &nbsp;~&nbsp;&nbsp;
 					          </div>
 					          
-					          <div><input type="checkbox" name="lunch_sat" value="no">점심시간 없음<br>
+					          <div><input type="checkbox" name="lunch_sat" value="no" onchange="toggleLunchTimeSelectors('sat')" disabled>점심시간 없음<br>
 					            <select name="lunchEndHour_sat" disabled>
 					              <option th:each="hour : ${#numbers.sequence(0, 23)}" th:value="${hour}" th:text="${hour < 10 ? '0' + hour : hour}"></option>
 					            </select>
@@ -538,7 +538,7 @@
 					            &nbsp;~&nbsp;&nbsp;
 					          </div>
 					          
-					          <div><input type="checkbox" name="lunch_sun" value="no">점심시간 없음<br>
+					          <div><input type="checkbox" name="lunch_sun" value="no" onchange="toggleLunchTimeSelectors('sun')" disabled>점심시간 없음<br>
 					            <select name="lunchEndHour_sun" disabled>
 					              <option th:each="hour : ${#numbers.sequence(0, 23)}" th:value="${hour}" th:text="${hour < 10 ? '0' + hour : hour}"></option>
 					            </select>
@@ -600,7 +600,7 @@
 					            &nbsp;~&nbsp;&nbsp;
 					          </div>
 					          
-					          <div><input type="checkbox" name="lunch_hol" value="no">점심시간 없음<br>
+					          <div><input type="checkbox" name="lunch_hol" value="no" onchange="toggleLunchTimeSelectors('hol')" disabled>점심시간 없음<br>
 					            <select name="lunchEndHour_hol" disabled>
 					              <option th:each="hour : ${#numbers.sequence(0, 23)}" th:value="${hour}" th:text="${hour < 10 ? '0' + hour : hour}"></option>
 					            </select>
@@ -742,6 +742,10 @@
                     }
 
                     document.querySelector(`input[name="lunch_${day}"]`).checked = dayData[1].includes('점심시간 없음');
+                    console.log('!!!')
+                    console.log(dayData[1].includes('점심시간 없음'))
+                    console.log('!!!')
+					abc(day);
                     toggleTimeSelectors(day);
                 } else {
                     // 영업 안할 경우 시간 선택기 비활성화 및 체크박스 해제
@@ -754,6 +758,22 @@
                 toggleTimeSelectors(day);
             }
         });
+    }
+    
+    function abc(day){
+        if(document.querySelector(`input[name="lunch_${day}"]`).checked) {
+        	console.log('???')
+        	//disabled가 안먹힘!!!!!!
+            document.querySelector(`select[name="lunchStartHour_${day}"]`).disabled = false;
+            document.querySelector(`select[name="lunchStartMinute_${day}"]`).disabled = false;
+            document.querySelector(`select[name="lunchEndHour_${day}"]`).disabled = false;
+            document.querySelector(`select[name="lunchEndMinute_${day}"]`).disabled = false;
+        } else {
+            document.querySelector(`select[name="lunchStartHour_${day}"]`).disabled = true;
+            document.querySelector(`select[name="lunchStartMinute_${day}"]`).disabled = true;
+            document.querySelector(`select[name="lunchEndHour_${day}"]`).disabled = true;
+            document.querySelector(`select[name="lunchEndMinute_${day}"]`).disabled = true;
+        }
     }
 
 
@@ -997,7 +1017,7 @@
 	        endHourSelect.innerHTML = '';
 	        
 
-	        for (let hour = startHour; hour < 24; hour++) {
+	        for (let hour = startHour; hour <= 24; hour++) {
 	            const hourOption = document.createElement('option');
 	            hourOption.value = hour;
 	            hourOption.textContent = hour < 10 ? '0' + hour : hour;
@@ -1017,7 +1037,7 @@
 	  	    lunchEndHourSelect.innerHTML = '';
 	  	    
 
-	  	    for (let hour = lunchStartHour; hour < 24; hour++) {
+	  	    for (let hour = lunchStartHour; hour <= 24; hour++) {
 	  	        const hourOption = document.createElement('option');
 	  	        hourOption.value = hour;
 	  	        hourOption.textContent = hour < 10 ? '0' + hour : hour;
@@ -1039,7 +1059,7 @@
 	  	    commonEndHourSelect.innerHTML = '';
 	  	    
 
-	  	    for (let hour = commonStartHour; hour < 24; hour++) {
+	  	    for (let hour = commonStartHour; hour <= 24; hour++) {
 	  	        const hourOption = document.createElement('option');
 	  	        hourOption.value = hour;
 	  	        hourOption.textContent = hour < 10 ? '0' + hour : hour;
@@ -1062,7 +1082,7 @@
 	  	    commonLunchEndHourSelect.innerHTML = '';
 	  	    
 
-	  	    for (let hour = commonLunchStartHour; hour < 24; hour++) {
+	  	    for (let hour = commonLunchStartHour; hour <= 24; hour++) {
 	  	        const hourOption = document.createElement('option');
 	  	        hourOption.value = hour;
 	  	        hourOption.textContent = hour < 10 ? '0' + hour : hour;
@@ -1070,6 +1090,41 @@
 	  	    }
 
 	  	   
+	  	}
+	  	
+	  //점심시간없음 체크시 셀렉트 사용금지
+	  	function toggleLunchTimeSelectors(day) {
+	  		if(day =="com"){
+	  			
+		  		
+		  	    const isChecked = document.querySelector(`input[name="commonLunch"][value="no"]`).checked;
+		  	    const lunchStartHourSelect = document.querySelector(`select[name="commonLunchStartHour"]`);
+		  	    const lunchStartMinuteSelect = document.querySelector(`select[name="commonLunchStartMinute"]`);
+		  	    const lunchEndHourSelect = document.querySelector(`select[name="commonLunchEndHour"]`);
+		  	    const lunchEndMinuteSelect = document.querySelector(`select[name="commonLunchEndMinute"]`);
+
+		  	    lunchStartHourSelect.disabled = isChecked;
+		  	    lunchStartMinuteSelect.disabled = isChecked;
+		  	    lunchEndHourSelect.disabled = isChecked;
+		  	    lunchEndMinuteSelect.disabled = isChecked;
+	  			
+	  		}else{
+	  			const weekIsChecked = document.querySelector(`input[name="week"][value="${day}"]`).checked;
+		  		if(weekIsChecked){
+		  	    const isChecked = document.querySelector(`input[name="lunch_${day}"][value="no"]`).checked;
+		  	    const lunchStartHourSelect = document.querySelector(`select[name="lunchStartHour_${day}"]`);
+		  	    const lunchStartMinuteSelect = document.querySelector(`select[name="lunchStartMinute_${day}"]`);
+		  	    const lunchEndHourSelect = document.querySelector(`select[name="lunchEndHour_${day}"]`);
+		  	    const lunchEndMinuteSelect = document.querySelector(`select[name="lunchEndMinute_${day}"]`);
+
+		  	    lunchStartHourSelect.disabled = isChecked;
+		  	    lunchStartMinuteSelect.disabled = isChecked;
+		  	    lunchEndHourSelect.disabled = isChecked;
+		  	    lunchEndMinuteSelect.disabled = isChecked;
+		  		}
+	  		}
+	  		
+	  		
 	  	}
     </script>
 </body>

@@ -84,6 +84,32 @@
 <div th:replace="~{user/footer :: footer}"></div>
 
 <script th:inline="javascript">
+
+const id = "[[${id}]]";
+const token = localStorage.getItem("token");
+const MemberId = localStorage.getItem("MemberId");
+
+$(document).ready(function() {
+    $.ajax({
+        url: 'http://localhost:9001/chat/'+ id,
+        type: 'GET',
+        dataType: 'json',
+        headers: {
+            'Authorization': token,
+            'MemberId': MemberId
+        },
+        success: function(response) {
+            console.log(response);
+            
+        },
+        error: function(xhr, status, error) {
+            console.error('채팅내역 불러오기 에러발생', error);
+        }
+    });
+});
+
+
+
     const sender = localStorage.getItem('MemberId'); // 사용자 username 불러오기
     const receiver = "[[${id}]]"; // 병원 username 불러오기
 
