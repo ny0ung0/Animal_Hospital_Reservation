@@ -1,5 +1,6 @@
 package com.example.restServer.controller.user;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -57,7 +58,7 @@ public class ReservationController_jia {
 	}
 	
 	@PostMapping("/reservation")
-	public ResponseEntity<String> makingReservation(@RequestBody Map<String, String> formData, HttpServletRequest request){
+	public ResponseEntity<String> makingReservation(@RequestBody Map<String, String> formData, HttpServletRequest request) throws ParseException{
 		Long userId = Long.parseLong(request.getHeader("MemberId"));
 		System.out.println(formData);
 		reservationService.makeReservation(formData, userId);
@@ -79,7 +80,7 @@ public class ReservationController_jia {
 	}
 	
 	@PutMapping("/reservation")
-	public ResponseEntity<String> editReservation(@RequestBody Map<String, String> formData, HttpServletRequest request){
+	public ResponseEntity<String> editReservation(@RequestBody Map<String, String> formData, HttpServletRequest request) throws ParseException{
 		Long userId = Long.parseLong(request.getHeader("MemberId"));
 		reservationService.editReservation(formData, userId);
 		return ResponseEntity.ok("");

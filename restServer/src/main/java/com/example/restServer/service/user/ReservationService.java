@@ -1,8 +1,6 @@
 package com.example.restServer.service.user;
-
+import java.text.ParseException;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -80,57 +78,14 @@ public class ReservationService {
         return map;
     }
 
-    public String makeReservation(Map<String, String> formData, Long userId) {
+    public String makeReservation(Map<String, String> formData, Long userId) throws ParseException {
         Date now = new Date();
-        System.out.println(formData);
-        Reservation reservation = new Reservation();
-        reservation.setUser(memRepo.findById(userId).get());
-        reservation.setHospital(memRepo.findById(Long.parseLong(formData.get("hospitalId"))).get());
-        reservation.setMemo(formData.get("memo"));
-        reservation.setDoctor(doctorRepo.findById(Long.parseLong(formData.get("doctorId"))).get());
-        reservation.setStatus("대기");
-        reservation.setType(formData.get("type"));
-        reservation.setPet(petRepo.findById(Long.parseLong(formData.get("pet"))).get());
+        LocalDateTime dateTime = DateTimeUtil.parseDateTime(formData);
 
-        String dateTimeStr = formData.get("date") + " " + formData.get("time");
-        LocalDateTime dateTime = null;
-
-        try {
-            dateTime = DateTimeUtil.parseDateTime(dateTimeStr);
-            reservation.setReservationDatetime(dateTime);
-        } catch (DateTimeParseException e) {
-            e.printStackTrace();
-        }
-
-        String point = formData.get("point");
-
-        if (point != null && !point.equals("") && !point.equals("0")) {
-            reservation.setPointsUsed(Integer.parseInt(point));
-            Point usedPoint = new Point();
-            usedPoint.setUser(memRepo.findById(userId).get());
-            usedPoint.setUseDate(now);
-            usedPoint.setPointsUsed(Integer.parseInt(point));
-            usedPoint.setComment("예약포인트사용");
-            pointRepo.save(usedPoint);
-        }
-
-        if (!formData.get("coupon").equals("쿠폰사용 안함")) {
-            Coupon coupon = couponRepo.findById(Long.parseLong(formData.get("coupon"))).get();
-            coupon.setIsUsed(true);
-            coupon.setUseDate(now);
-            reservation.setCoupon(coupon);
-            couponRepo.save(coupon);
-        }
+        Reservation reservation = createReservation(formData, userId, dateTime);
         reservRepo.save(reservation);
-        UnavailableTime unavailTime = new UnavailableTime();
-        unavailTime.setDoctor(doctorRepo.findById(Long.parseLong(formData.get("doctorId"))).get());
-        unavailTime.setHospital(memRepo.findById(Long.parseLong(formData.get("hospitalId"))).get());
-        unavailTime.setComment("진료예약");
 
-        Date date = java.sql.Timestamp.valueOf(dateTime);
-        LocalTime localTime = dateTime.toLocalTime();
-        unavailTime.setDate(date);
-        unavailTime.setTime(localTime);
+        UnavailableTime unavailTime = createUnavailableTime(formData, reservation, dateTime);
         unavailableTimeRepo.save(unavailTime);
 
         return "";
@@ -141,40 +96,103 @@ public class ReservationService {
         return reservRepo.findById(reservId).get();
     }
 
-    public String editReservation(Map<String, String> formData, Long userId) {
+    public String editReservation(Map<String, String> formData, Long userId) throws ParseException {
         Date now = new Date();
         Long reservId = Long.parseLong(formData.get("reservId"));
+        LocalDateTime dateTime = DateTimeUtil.parseDateTime(formData);
 
         Reservation reservation = reservRepo.findById(reservId).get();
+        deleteOriginalUnavailableTime(reservation);
 
+        updateReservation(formData, reservation, dateTime, now);
+        reservRepo.save(reservation);
+
+        UnavailableTime unavailTime = createUnavailableTime(formData, reservation, dateTime);
+        unavailableTimeRepo.save(unavailTime);
+
+        return "";
+    }
+
+  
+    private void deleteOriginalUnavailableTime(Reservation reservation) {
         LocalDateTime oriDateTime = reservation.getReservationDatetime();
         UnavailableTime oriUnavailTime = unavailableTimeRepo.findTimeByDoctorIdNDatetime(
-                reservation.getDoctor().getId(),
-                DateTimeUtil.formatDate(oriDateTime),
-                DateTimeUtil.formatTime(oriDateTime.toLocalTime()));
+            reservation.getDoctor().getId(),
+            DateTimeUtil.formatDate(oriDateTime),
+            DateTimeUtil.formatTime(oriDateTime.toLocalTime())
+        );
         unavailableTimeRepo.delete(oriUnavailTime);
+    }
 
+    private Reservation createReservation(Map<String, String> formData, Long userId, LocalDateTime dateTime) {
+        Date now = new Date();
+        Reservation reservation = new Reservation();
+        reservation.setUser(memRepo.findById(userId).get());
+        reservation.setHospital(memRepo.findById(Long.parseLong(formData.get("hospitalId"))).get());
+        reservation.setMemo(formData.get("memo"));
+        reservation.setDoctor(doctorRepo.findById(Long.parseLong(formData.get("doctorId"))).get());
+        reservation.setStatus("대기");
+        reservation.setType(formData.get("type"));
+        reservation.setPet(petRepo.findById(Long.parseLong(formData.get("pet"))).get());
+        reservation.setReservationDatetime(dateTime);
+
+        setReservationPoints(formData, reservation, userId, now);
+        setReservationCoupon(formData, reservation, now);
+
+        return reservation;
+    }
+
+    private void setReservationPoints(Map<String, String> formData, Reservation reservation, Long userId, Date now) {
+        String point = formData.get("point");
+        if (point != null && !point.equals("") && !point.equals("0")) {
+            reservation.setPointsUsed(Integer.parseInt(point));
+            Point usedPoint = new Point();
+            usedPoint.setUser(memRepo.findById(userId).get());
+            usedPoint.setUseDate(now);
+            usedPoint.setPointsUsed(Integer.parseInt(point));
+            usedPoint.setComment("예약포인트사용");
+            pointRepo.save(usedPoint);
+        }
+    }
+
+    private void setReservationCoupon(Map<String, String> formData, Reservation reservation, Date now) {
+        if (!formData.get("coupon").equals("쿠폰사용 안함")) {
+            Coupon coupon = couponRepo.findById(Long.parseLong(formData.get("coupon"))).get();
+            coupon.setIsUsed(true);
+            coupon.setUseDate(now);
+            reservation.setCoupon(coupon);
+            couponRepo.save(coupon);
+        }
+    }
+
+    private UnavailableTime createUnavailableTime(Map<String, String> formData, Reservation reservation, LocalDateTime dateTime) throws ParseException {
+        UnavailableTime unavailTime = new UnavailableTime();
+        unavailTime.setDoctor(doctorRepo.findById(Long.parseLong(formData.get("doctorId"))).get());
+        unavailTime.setHospital(memRepo.findById(Long.parseLong(formData.get("hospitalId"))).get());
+        unavailTime.setComment("진료예약");
+        unavailTime.setDate(DateTimeUtil.parseDate(formData.get("date")));
+        unavailTime.setTime(DateTimeUtil.parseTimeHourMins(formData.get("time")));
+        return unavailTime;
+    }
+
+    private void updateReservation(Map<String, String> formData, Reservation reservation, LocalDateTime dateTime, Date now) {
         reservation.setUser(reservation.getUser());
         reservation.setHospital(reservation.getHospital());
         reservation.setDoctor(doctorRepo.findById(Long.parseLong(formData.get("doctorId"))).get());
         reservation.setStatus("대기");
         reservation.setType(formData.get("type"));
         reservation.setPet(petRepo.findById(Long.parseLong(formData.get("pet"))).get());
+        reservation.setReservationDatetime(dateTime);
 
         if (!formData.get("memo").equals("")) {
             reservation.setMemo(formData.get("memo"));
         }
 
-        String dateTimeStr = formData.get("date") + " " + formData.get("time");
-        LocalDateTime dateTime = null;
+        updateReservationPoints(formData, reservation, now);
+        updateReservationCoupon(formData, reservation, now);
+    }
 
-        try {
-            dateTime = DateTimeUtil.parseDateTime(dateTimeStr);
-            reservation.setReservationDatetime(dateTime);
-        } catch (DateTimeParseException e) {
-            e.printStackTrace();
-        }
-
+    private void updateReservationPoints(Map<String, String> formData, Reservation reservation, Date now) {
         if (formData.get("point").equals("") || formData.get("point").equals("0")) {
             if (reservation.getPointsUsed() != null) {
                 Point newPoint = new Point();
@@ -203,7 +221,9 @@ public class ReservationService {
             usedPoint.setComment("예약포인트사용");
             pointRepo.save(usedPoint);
         }
+    }
 
+    private void updateReservationCoupon(Map<String, String> formData, Reservation reservation, Date now) {
         if (formData.get("coupon").equals("쿠폰사용 안함")) {
             if (reservation.getCoupon() != null) {
                 Coupon cp = reservation.getCoupon();
@@ -225,19 +245,5 @@ public class ReservationService {
             reservation.setCoupon(coupon);
             couponRepo.save(coupon);
         }
-
-        UnavailableTime unavailTime = new UnavailableTime();
-        unavailTime.setDoctor(doctorRepo.findById(Long.parseLong(formData.get("doctorId"))).get());
-        unavailTime.setHospital(reservation.getHospital());
-        unavailTime.setComment("진료예약");
-        Date date = java.sql.Timestamp.valueOf(dateTime);
-        LocalTime localTime = dateTime.toLocalTime();
-        unavailTime.setDate(date);
-        unavailTime.setTime(localTime);
-        unavailableTimeRepo.save(unavailTime);
-
-        reservRepo.save(reservation);
-
-        return "";
     }
 }

@@ -6,24 +6,18 @@
 	flex-direction:row;
 	justify-content: space-evenly;
 	font-family: "Jua", sans-serif;
+	flex-wrap: wrap;
 }
-.filter{
-	padding: 10px 15px;
+.filter {
+    padding: 10px 15px;
     border-radius: 20px;
     border: 1px solid #ddd;
     transition: background-color 0.3s, color 0.3s;
+    margin: 5px; /* 추가: 작은 화면에서 필터 간 여백을 줌 */
 }
 
-.cityContainer {
-	width:500px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin: 15px auto;
-}
-
-.guContainer {
-	width:700px;
+.cityContainer, .guContainer {
+    width: 100%; /* 기본적으로 100% 너비로 설정 */
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
@@ -354,4 +348,14 @@
 	font-family: "Jua", sans-serif;
 	padding:50px;
 	text-align:center;
+}
+
+@media (min-width: 768px) {
+    .cityContainer {
+        width: 500px; /* 더 큰 화면에서는 고정된 너비 */
+    }
+
+    .guContainer {
+        width: 700px; /* 더 큰 화면에서는 고정된 너비 */
+    }
 }

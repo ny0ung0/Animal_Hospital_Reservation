@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.restServer.dto.MemVetDto;
-import com.example.restServer.service.user.ConvertingAop;
 import com.example.restServer.service.user.VetListService;
 
 import jakarta.servlet.http.HttpServletRequest;
