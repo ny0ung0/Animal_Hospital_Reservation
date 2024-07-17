@@ -117,7 +117,10 @@ fetch("http://localhost:9001/api/v1/hospital/reservation/" + reservId, {
 	let gender = "";
 	obj.pet.isNeutered ? isNeutered = "Y" : isNeutered = "N";
 	obj.pet.gender=="female" ? gender = "여아" : gender = "남아";
-	let dateTime = obj.reservationDatetime[0] + "-" + obj.reservationDatetime[1] + "-" + obj.reservationDatetime[2] + " " + obj.reservationDatetime[3] + ":" + obj.reservationDatetime[4] + "0";
+	let minute = "";
+	obj.reservationDatetime[4].toString().length == 1 ? minute = obj.reservationDatetime[4] + "0" : minute = obj.reservationDatetime[4];
+	
+	let dateTime = obj.reservationDatetime[0] + "-" + obj.reservationDatetime[1] + "-" + obj.reservationDatetime[2] + " " + obj.reservationDatetime[3] + ":" + minute;
 	console.log(obj.pet.birthdate);
 	// 서버에서 받은 UTC 시간을 Date 객체로 변환
     const utcDate = new Date(obj.pet.birthdate);
@@ -140,7 +143,11 @@ fetch("http://localhost:9001/api/v1/hospital/reservation/" + reservId, {
 	document.getElementById("memo").innerHTML = obj.memo;
 	document.getElementById("couponname").innerHTML = couponeChek;
 	document.getElementById("point").innerHTML = obj.pointsUsed == null ? 0 : obj.pointsUsed;
-	document.getElementById("petPhoto").setAttribute("src", "/images/user/"+obj.pet.photo);
+	if(obj.pet.photo == null){
+		document.getElementById("petPhoto").setAttribute("src", "/images/no_image.jpg");
+	}else{
+		document.getElementById("petPhoto").setAttribute("src", "/images/user/"+obj.pet.photo);
+	}
 	document.getElementById("petType").innerHTML = obj.pet.type;
 	document.getElementById("petName").innerHTML = obj.pet.name;
 	document.getElementById("petBirthdate").innerHTML = birthdate;
