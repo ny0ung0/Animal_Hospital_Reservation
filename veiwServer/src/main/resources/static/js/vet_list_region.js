@@ -364,7 +364,7 @@ document.querySelector("#keywordSearchBtn").addEventListener("click", function()
     };
     xhttp.open("GET", "http://localhost:9001/api/v1/keyword-vet-list?"+ params.toString(), true); 
     xhttp.setRequestHeader("MemberId", localStorage.getItem("MemberId"));
-    xhttp.setRequestHeader("token", localStorage.getItem("token"));
+    xhttp.setRequestHeader("Authorization", localStorage.getItem("token"));
     xhttp.setRequestHeader("role", localStorage.getItem("role"));
     xhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     xhttp.send(); // vetInfo 배열을 전송
