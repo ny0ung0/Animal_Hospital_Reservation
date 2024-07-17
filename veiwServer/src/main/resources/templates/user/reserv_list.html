@@ -205,7 +205,7 @@ ready();
           </button></td>
           <td>${day}</td>
           <td>${time}</td>
-          <td><button class="btn btn-outline-user-sub" onclick="cancel(${reservation.id})">취소</button>   <button class="btn btn-outline-hospital-sub">변경</button></td>
+          <td><button class="btn btn-outline-user-sub" onclick="cancel(${reservation.id})">취소</button>   <button class="btn btn-outline-hospital-sub" onclick="change(${reservation.id})">변경</button></td>
         </tr>`
       
       }
@@ -223,6 +223,10 @@ ready();
   }
   
   function wait(){
+	 
+	  document.querySelector("#waitBtn").className="btn btn-outline-main";
+	  document.querySelector("#confirmBtn").className="btn btn-main";
+	  document.querySelector("#completeBtn").className="btn btn-main";
     var cnt = 1;
     var reservList = document.querySelector("#tbody");
     reservList.innerHTML=` `;
@@ -242,11 +246,14 @@ ready();
         </button></td>
         <td>${day}</td>
         <td>${time}</td>
-        <td><button class="btn btn-outline-user-sub" onclick="cancel(${waiting.id})" >취소</button>   <button class="btn btn-outline-hospital-sub">변경</button></td>
+        <td><button class="btn btn-outline-user-sub" onclick="cancel(${waiting.id})" >취소</button>   <button class="btn btn-outline-hospital-sub" onclick="change(${waiting.id})">변경</button></td>
       </tr>`
     }
   }
   function confirm(){
+	  document.querySelector("#waitBtn").className="btn btn-main";
+	  document.querySelector("#confirmBtn").className="btn btn-outline-main";
+	  document.querySelector("#completeBtn").className="btn btn-main";
     var cnt = 1;
     var reservList = document.querySelector("#tbody");
     reservList.innerHTML=` `;
@@ -266,12 +273,15 @@ ready();
         </button></td>
         <td>${day}</td>
         <td>${time}</td>
-        <td><button class="btn btn-outline-user-sub" onclick="cancel(${reservation.id})">취소</button>   <button class="btn btn-outline-hospital-sub">변경</button></td>
+        <td><button class="btn btn-outline-user-sub" onclick="cancel(${reservation.id})">취소</button>   <button class="btn btn-outline-hospital-sub" onclick="change(${reservation.id})">변경</button></td>
       </tr>`
     }
   }
   
   function complete(){
+	  document.querySelector("#waitBtn").className="btn btn-main";
+	  document.querySelector("#confirmBtn").className="btn btn-main";
+	  document.querySelector("#completeBtn").className="btn btn-outline-main";
     var cnt = 1;
     var reservList = document.querySelector("#tbody");
     reservList.innerHTML=` `;
@@ -430,9 +440,11 @@ ready();
 			if(this.status==200){
 				alert("예약이 취소되었습니다.");
 				window.location.href="/user/reserv_list";
+			}else{
+				var result = this.responseText;
+				alert(result);
 			}
-			var result = this.responseText;
-			alert(result);
+			
 			
 		}
 		xhttp.open("put", "http://localhost:9001/api/v1/user/reservation/cancel/"+reservation_id);
@@ -442,6 +454,12 @@ ready();
 	  
   }
   
+  
+  function change(reservation_id){
+
+	 window.location.href="/user/reserv_edit?id="+reservation_id;
+	  
+  }
   
 </script>
 
