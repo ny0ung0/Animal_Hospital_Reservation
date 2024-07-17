@@ -79,7 +79,10 @@
 		integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
 		crossorigin="anonymous"></script>
 <script th:inline="javascript" type="text/javascript" src="/js/reservation.js"></script>
-
+<script src="https://www.gstatic.com/firebasejs/9.9.3/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.9.3/firebase-messaging-compat.js"></script>
+<script src="/js/fcm.js"></script>
+<script src="/js/fcmsend.js"></script>
 <script th:inline="javascript">
 let hosId = "[[${id}]]";
 
@@ -129,6 +132,11 @@ function submitForm(e){
 	 const xhttp = new XMLHttpRequest();
 	  xhttp.onload = function() {
 	     alert("예약이 성공적으로 완료되었습니다");
+	     title='예약 알람';
+	     reservedate= document.querySelector("input[type=date]").value;
+	     body=` ${reservedate}일 예약이 들어왔습니다.`;
+	     receiverId=hosId;
+	     sendTokenToMessageReceiver(title, body);
 	     location.href="/user/reserv_list"
 	  }
 	  xhttp.open("POST", "http://localhost:9001/api/v1/user/reservation", true);
