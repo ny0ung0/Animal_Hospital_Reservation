@@ -93,7 +93,7 @@ function showModal(e) {
 
 	// 기본 정보 설정
 	document.querySelector("#exampleModalLabel").innerText = hospitalName;
-	document.querySelector("#phone").innerHTML = phone;
+	document.querySelector("#phone").innerHTML = phone ? phone : "-";
 	document.querySelector("#address").innerHTML = address;
 
     console.log(memVet[hospitalName])

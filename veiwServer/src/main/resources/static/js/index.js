@@ -149,7 +149,7 @@ function searchHospitals(center, hospitals, map) {
      // 검색된 병원이 없는 경우 안내 문구 표시
     if (nearbyHospitals.length === 0) {
         document.querySelector(".inner").innerHTML = "<div class='h-100 d-flex align-items-center justify-content-center'><div class='error_msg'>"
-                        + "이 지역에는 검색 결과가 없습니다.🥲 </br> 다른 지역으로 이동해 검색해보세요 📍 </div></div>"
+                        + "이 지역에는 검색 결과가 없습니다.😥 </br> 다른 지역으로 이동해 검색해보세요 📍 </div></div>"
         return;
     }
 
@@ -381,3 +381,6 @@ function sortingPoint(e) {
 		})
     }
 }
+
+
+
