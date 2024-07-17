@@ -27,24 +27,24 @@ public class FcmController {
 
 	@Autowired
 	MemberRepository memberRepository;
-	
+
 	private final FcmService fcmService;
 
-    public FcmController(FcmService fcmService) {
-        this.fcmService = fcmService;
-    }
+	public FcmController(FcmService fcmService) {
+		this.fcmService = fcmService;
+	}
 
-    @PostMapping("/send")
-    public ResponseEntity<Object> pushMessage(@RequestBody @Validated FcmSendDto fcmSendDto, @RequestHeader(value= "MemberId", required=false) Long memberId) throws IOException {
-    	System.out.println(fcmSendDto.getToken());
-    	System.out.println(fcmSendDto.toString());
-        log.debug("[+] 푸시 메시지를 전송합니다. ");
+	@PostMapping("/send")
+	public ResponseEntity<Object> pushMessage(@RequestBody @Validated FcmSendDto fcmSendDto,
+			@RequestHeader(value = "MemberId", required = false) Long memberId) throws IOException {
+		System.out.println(fcmSendDto.getToken());
+		System.out.println(fcmSendDto.toString());
+		log.debug("[+] 푸시 메시지를 전송합니다. ");
 		Member member = memberRepository.findById(memberId).get();
 		member.setToken(fcmSendDto.getToken());
-		 
 		memberRepository.save(member);
-		 
-        int result = fcmService.sendMessageTo(fcmSendDto);
-        return new ResponseEntity<>(result, HttpStatus.OK);
-    }
+
+		int result = fcmService.sendMessageTo(fcmSendDto);
+		return new ResponseEntity<>(result, HttpStatus.OK);
+	}
 }
