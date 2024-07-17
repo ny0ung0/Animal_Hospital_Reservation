@@ -78,7 +78,9 @@ fetch("http://localhost:9001/api/v1/hospital/reservation/waiting", {
 		console.log(objs);
 		objs.forEach(obj =>{
 			console.log(obj.reservationDatetime);
-			let dateTime = obj.reservationDatetime[0] + "-" + obj.reservationDatetime[1] + "-" + obj.reservationDatetime[2] + " " + obj.reservationDatetime[3] + ":" + obj.reservationDatetime[4] + "0";
+			let minute = "";
+			obj.reservationDatetime[4].toString().length == 1 ? minute = obj.reservationDatetime[4] + '0' : minute = obj.reservationDatetime[4];
+			let dateTime = obj.reservationDatetime[0] + "-" + obj.reservationDatetime[1] + "-" + obj.reservationDatetime[2] + " " + obj.reservationDatetime[3] + ":" + minute;
 			document.querySelector("#waiting-tab-pane .row").innerHTML += 
 				'<div class="col-12 col-md-4 mb-3">'
 				  	+ '<div class="p-3 p-md-4 border rounded">'
@@ -112,7 +114,9 @@ fetch("http://localhost:9001/api/v1/hospital/reservation/confirmed", {
 		const objs = data;
 		console.log(objs);
 		objs.forEach(obj =>{
-			let dateTime = obj.reservationDatetime[0] + "-" + obj.reservationDatetime[1] + "-" + obj.reservationDatetime[2] + " " + obj.reservationDatetime[3] + ":" + obj.reservationDatetime[4] + "0";
+			let minute = "";
+			obj.reservationDatetime[4].toString().length == 1 ? minute = obj.reservationDatetime[4] + '0' : minute = obj.reservationDatetime[4];
+			let dateTime = obj.reservationDatetime[0] + "-" + obj.reservationDatetime[1] + "-" + obj.reservationDatetime[2] + " " + obj.reservationDatetime[3] + ":" + minute;
 			document.querySelector("#confirmed-tab-pane .row").innerHTML += 
 				'<div class="col-12 col-md-4 mb-3">'
 				  	+ '<div class="p-3 p-md-4 border rounded">'
@@ -146,7 +150,9 @@ fetch("http://localhost:9001/api/v1/hospital/reservation/complete", {
 		const objs = data;
 		console.log(objs);
 		objs.forEach(obj =>{
-			let dateTime = obj.reservationDatetime[0] + "-" + obj.reservationDatetime[1] + "-" + obj.reservationDatetime[2] + " " + obj.reservationDatetime[3] + ":" + obj.reservationDatetime[4] + "0";
+			let minute = "";
+			obj.reservationDatetime[4].toString().length == 1 ? minute = obj.reservationDatetime[4] + '0' : minute = obj.reservationDatetime[4];
+			let dateTime = obj.reservationDatetime[0] + "-" + obj.reservationDatetime[1] + "-" + obj.reservationDatetime[2] + " " + obj.reservationDatetime[3] + ":" + minute;
 			document.querySelector("#complete-tab-pane .row").innerHTML += 
 				'<div class="col-12 col-md-4 mb-3">'
 				  	+ '<div class="p-3 p-md-4 border rounded">'
@@ -181,7 +187,9 @@ fetch("http://localhost:9001/api/v1/hospital/reservation/cancle", {
 		const objs = data;
 		console.log(objs);
 		objs.forEach(obj =>{
-			let dateTime = obj.reservationDatetime.replace("T", " ");
+			let minute = "";
+			obj.reservationDatetime[4].toString().length == 1 ? minute = obj.reservationDatetime[4] + '0' : minute = obj.reservationDatetime[4];
+			let dateTime = obj.reservationDatetime[0] + "-" + obj.reservationDatetime[1] + "-" + obj.reservationDatetime[2] + " " + obj.reservationDatetime[3] + ":" + minute;
 			document.querySelector("#cancle-tab-pane .row").innerHTML += 
 				'<div class="col-12 col-md-4 mb-3">'
 				  	+ '<div class="p-3 p-md-4 border rounded">'

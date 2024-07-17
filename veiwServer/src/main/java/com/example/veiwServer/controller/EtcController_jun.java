@@ -15,4 +15,9 @@ public class EtcController_jun {
 	public void reserv_list() {
 		
 	}
+	
+	@RequestMapping("/user/review_list")
+	public void review_list() {
+		
+	}
 }
