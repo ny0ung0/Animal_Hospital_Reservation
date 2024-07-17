@@ -5,6 +5,7 @@
 <title>견강할고양 관리자센터</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 <link href="/css/manager_style.css" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
 <script src="/js/manager.js"></script>
 </head>
 <body class="d-flex flex-nowrap h-100">
@@ -39,150 +40,126 @@
 				
 			</tbody>
 		</table>
+		<nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center" id="pagination">
+            <li class="page-item" id="prev-btn"><a class="page-link" href="#">이전</a></li>
+            
+            <li class="page-item" id="next-btn"><a class="page-link" href="#">다음</a></li>
+        </ul>
+    </nav>
 	</div>
 </div>
 
 
 <script>
-const memberId = localStorage.getItem("MemberId");
-const token = localStorage.getItem("token");
-function allList(){
-	fetch("http://localhost:9001/api/v1/manager/support/qna", {
-		method : "GET",
-		headers: {
-	        'Authorization': `${token}`
-	    }
-		
-	})
-	.then(response => response.text())
-	.then(data => {
-		const objs = JSON.parse(data);
-		console.log(objs);
-		let cnt = 1;
-		objs.forEach(obj =>{
-			console.log(obj.reply==null);
-			let btnarea = "";
-			obj.reply == null ? btnarea = '<button class="btn btn-outline-danger" onclick="addReply(event, ' + obj.id + ')">답변 대기</button>' :  btnarea = '<button class="btn btn-outline-primary" onclick="reply(event, ' + obj.id + ')">답변 완료</button>';
-			document.getElementById("tbody").innerHTML += 
-				'<tr>'
-					+ '<td>' + cnt + '</td>'
-					+ '<td>' + obj.category + '</td>'
-					+ '<td>' + obj.title + '</td>'
-					+ '<td>' + obj.member.name + '</td>'
-					+ '<td>'
-						+ '<a class="btn btn-primary" href="/qnaDetail?id='+ obj.id +'">상세보기</a>'
-					+ '</td>'
-					+ '<td>'
-						+ btnarea
-					+ '</td>'
-				+ '</tr>';
-				cnt++;
-		});
-		
-	})
-	.catch(error => console.log(error));
-}
-allList();
+$(document).ready(function() {
+    const token = localStorage.getItem("token");
+    let currentPage = 0;
+    let size = 10; // 페이지 당 항목 수
+    let totalPages = 0;
+    let currentCategory = 'all';
+    let currentKeyword = '';
 
+    function fetchData(page, category = 'all', keyword = '') {
+        let url = `http://localhost:9001/api/v1/manager/support/qna?page=${page}&size=${size}`;
+        
+        if (category !== 'all') {
+            url = `http://localhost:9001/api/v1/manager/support/qna/category/${category}?page=${page}&size=${size}`;
+        }
+        if (keyword !== '') {
+            url = `http://localhost:9001/api/v1/manager/support/qna/category/${category}/keyword/${keyword}?page=${page}&size=${size}`;
+        }
+        
+        fetch(url, {
+            method: "GET",
+            headers: {
+                'Authorization': `${token}`
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            $('#tbody').empty();
+            let cnt = page * size + 1;
+            data.content.forEach(obj => {
+                let btnarea = obj.reply == null 
+                    ? '<button class="btn btn-outline-danger" onclick="addReply(event, ' + obj.id + ')">답변 대기</button>' 
+                    : '<button class="btn btn-outline-primary" onclick="reply(event, ' + obj.id + ')">답변 완료</button>';
+                let innerHtml = 
+                    '<tr>' +
+                        '<td>' + cnt + '</td>' +
+                        '<td>' + obj.category + '</td>' +
+                        '<td>' + obj.title + '</td>' +
+                        '<td>' + obj.member.name + '</td>' +
+                        '<td><a class="btn btn-primary" href="/qnaDetail?id=' + obj.id + '">상세보기</a></td>' +
+                        '<td>' + btnarea + '</td>' +
+                    '</tr>';
+                cnt++;
+                $('#tbody').append(innerHtml);
+            });
+            currentPage = page;
+            totalPages = data.totalPages;
+            updatePagination();
+        })
+        .catch(error => console.log(error));
+    }
 
-document.querySelector("#categorySelector").addEventListener("change", function(){
-	
-	let selectValue = this.value;
-	console.log(selectValue);
-		fetch("http://localhost:9001/api/v1/manager/support/qna/category/" + selectValue, {
-			method : "GET",
-			headers: {
-		        'Authorization': `${token}`
-		    }
-		})
-		.then(response => response.text())
-		.then(data => {
-			const objs = JSON.parse(data);
-			document.getElementById("tbody").innerHTML = ""; // 이전 검색 결과를 초기화
-			//console.log(objs);
-			if(objs.length === 0){
-				document.getElementById("tbody").innerHTML = "<tr><td colspan='7'>리스트가 없습니다.</td><tr>";
-			}else{
-				let cnt = 1;
-				objs.forEach(obj =>{
-					console.log(obj.reply==null);
-					let btnarea = "";
-					obj.reply == null ? btnarea = '<button class="btn btn-outline-danger" onclick="addReply(event, ' + obj.id + ')">답변 대기</button>' :  btnarea = '<button class="btn btn-outline-primary" onclick="reply(event, ' + obj.id + ')">답변 완료</button>';
-					document.getElementById("tbody").innerHTML += 
-						'<tr>'
-							+ '<td>' + cnt + '</td>'
-							+ '<td>' + obj.category + '</td>'
-							+ '<td>' + obj.title + '</td>'
-							+ '<td>' + obj.member.name + '</td>'
-							+ '<td>'
-								+ '<a class="btn btn-primary" href="/manager/userDetail?id='+ obj.id +'">상세보기</a>'
-							+ '</td>'
-							+ '<td>'
-								+ btnarea
-							+ '</td>'
-						+ '</tr>';
-						cnt++;
-				});
-			}
-		})
+    function updatePagination() {
+        var pagination = $('#pagination');
+        pagination.find('.page-item:not(#prev-btn, #next-btn)').remove();
 
-	
-})
+        var startPage = Math.max(0, currentPage - 2);
+        var endPage = Math.min(totalPages - 1, startPage + 4);
 
+        if (endPage - startPage < 4) {
+            startPage = Math.max(0, endPage - 4);
+        }
 
+        for (var i = startPage; i <= endPage; i++) {
+            var pageItem = $('<li class="page-item"><a class="page-link" href="#" data-page="' + i + '">' + (i + 1) + '</a></li>');
+            pagination.find('#next-btn').before(pageItem);
+        }
 
+        $('#prev-btn').toggle(currentPage > 0);
+        $('#next-btn').toggle(currentPage < totalPages - 1);
+        pagination.find('.page-link[data-page="' + currentPage + '"]').parent().addClass('active');
+    }
 
-const keyword = document.querySelector("#keywordInput");
+    $(document).on('click', '.page-link', function(event) {
+        event.preventDefault();
+        var page = $(this).data('page');
+        if (page !== undefined && page !== currentPage) {
+            fetchData(page, currentCategory, currentKeyword);
+        }
+    });
 
+    $('#prev-btn').click(function() {
+        if (currentPage > 0) {
+            fetchData(currentPage - 1, currentCategory, currentKeyword);
+        }
+    });
 
-document.querySelector("#searchBtn").addEventListener("click", function(){
-	let selectValue = document.querySelector("#categorySelector").value;
-	if(keyword.value==""){
-		document.getElementById("tbody").innerHTML = ""; // 이전 검색 결과를 초기화
-		allList();
-	}else{
-		console.log(keyword.value);
-		fetch("http://localhost:9001/api/v1/manager/support/qna/category/" + selectValue + "/keyword/" + keyword.value, {
-			method : "GET",
-			headers: {
-		        'Authorization': `${token}`
-		    }
-		})
-		.then(response => response.text())
-		.then(data => {
-			const objs = JSON.parse(data);
-			document.getElementById("tbody").innerHTML = ""; // 이전 검색 결과를 초기화
-			//console.log(objs);
-			if(objs.length === 0){
-				document.getElementById("tbody").innerHTML = "<tr><td colspan='7'>검색 결과 없습니다.</td><tr>";
-			}else{
-				let cnt = 1;
-				objs.forEach(obj =>{
-					console.log(obj.reply==null);
-					let btnarea = "";
-					obj.reply == null ? btnarea = '<button class="btn btn-outline-danger" onclick="addReply(event, ' + obj.id + ')">답변 대기</button>' :  btnarea = '<button class="btn btn-outline-primary" onclick="reply(event, ' + obj.id + ')">답변 완료</button>';
-					document.getElementById("tbody").innerHTML += 
-						'<tr>'
-							+ '<td>' + cnt + '</td>'
-							+ '<td>' + obj.category + '</td>'
-							+ '<td>' + obj.title + '</td>'
-							+ '<td>' + obj.member.name + '</td>'
-							+ '<td>'
-								+ '<a class="btn btn-primary" href="/manager/userDetail?id='+ obj.id +'">상세보기</a>'
-							+ '</td>'
-							+ '<td>'
-								+ btnarea
-							+ '</td>'
-						+ '</tr>';
-						cnt++;
-				});
-			}
-		})
-	}
-	
-})
+    $('#next-btn').click(function() {
+        if (currentPage < totalPages - 1) {
+            fetchData(currentPage + 1, currentCategory, currentKeyword);
+        }
+    });
 
+    $('#categorySelector').change(function() {
+        currentCategory = $(this).val();
+        currentKeyword = ''; // 카테고리 변경 시 키워드 초기화
+        $('#keywordInput').val('');
+        fetchData(0, currentCategory);
+    });
 
+    $('#searchBtn').click(function() {
+        currentKeyword = $('#keywordInput').val();
+        fetchData(0, currentCategory, currentKeyword);
+    });
+
+    // 초기 데이터 로드
+    fetchData(currentPage);
+});
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>

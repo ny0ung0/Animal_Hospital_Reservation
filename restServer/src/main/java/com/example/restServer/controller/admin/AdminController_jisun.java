@@ -151,8 +151,11 @@ public class AdminController_jisun {
 	}
 	
 	@GetMapping("/support/qna")
-    public ResponseEntity<List<Support>> getSupportQna(){
-        List<Support> list = supportRepo.findAllByCategoryQna();
+    public ResponseEntity<Page<Support>> getSupportQna(@RequestParam(name = "page", defaultValue = "0") int page, @RequestParam(name = "size", defaultValue = "0") int size){
+		System.out.println("page test 중");
+		//int size = 10;
+		Pageable pageable = PageRequest.of(page, size);
+		Page<Support> list = supportRepo.findAllByCategoryQna(pageable);
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
 	
@@ -183,23 +186,27 @@ public class AdminController_jisun {
     }
 	
 	@GetMapping("/support/qna/category/{category}/keyword/{keyword}")
-    public ResponseEntity<List<Support>> getSupportQnaFindByKeyword(@PathVariable("category")String category, @PathVariable("keyword")String keyword){
-        if(category.equals("all")) {
-        	List<Support> list = supportRepo.findAllByCategoryQnaByAllCategoryKeyword(keyword);
+    public ResponseEntity<Page<Support>> getSupportQnaFindByKeyword(@RequestParam(name = "page", defaultValue = "0") int page, @PathVariable("category")String category, @PathVariable("keyword")String keyword){
+        int size = 10;
+        Pageable pageable = PageRequest.of(page, size);
+		if(category.equals("all")) {
+        	Page<Support> list = supportRepo.findAllByCategoryQnaByAllCategoryKeyword(pageable, keyword);
        	 	return new ResponseEntity<>(list, HttpStatus.OK);
        }else {
-    	   List<Support> list = supportRepo.findAllByCategoryQnaByCategoryKeyword(category, keyword);
+    	   Page<Support> list = supportRepo.findAllByCategoryQnaByCategoryKeyword(pageable, category, keyword);
        	 return new ResponseEntity<>(list, HttpStatus.OK);
        }
     }
 	
 	@GetMapping("/support/qna/category/{category}")
-    public ResponseEntity<List<Support>> getSupportQnaFindByCategory(@PathVariable("category")String category){
-        if(category.equals("all")) {
-        	 List<Support> list = supportRepo.findAllByCategoryQna();
+    public ResponseEntity<Page<Support>> getSupportQnaFindByCategory(@RequestParam(name = "page", defaultValue = "0") int page, @PathVariable("category")String category){
+       int size = 10;
+       Pageable pageable = PageRequest.of(page, size);
+		if(category.equals("all")) {
+        	 Page<Support> list = supportRepo.findAllByCategoryQna(pageable);
         	 return new ResponseEntity<>(list, HttpStatus.OK);
         }else {
-        	 List<Support> list = supportRepo.findAllByCategoryQnaByCategory(category);
+        	 Page<Support> list = supportRepo.findAllByCategoryQnaByCategory(pageable, category);
         	 return new ResponseEntity<>(list, HttpStatus.OK);
         } 
     }
