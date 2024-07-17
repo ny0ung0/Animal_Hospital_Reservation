@@ -219,10 +219,16 @@ function resetFilter(){
 }
 
 function sortingReserv(e){
-	 if(searchResult.length != 0){
+ console.log(memVet);
+    if (searchResult.length != 0) {
         searchResult.sort((a, b) => {
-            const aInMemVet = Object.keys(memVet).includes(a["사업장명"]);
-            const bInMemVet = Object.keys(memVet).includes(b["사업장명"]);
+            const aName = a["사업장명"];
+            const bName = b["사업장명"];
+            const aAddress = a["소재지전체주소"];
+            const bAddress = b["소재지전체주소"];
+
+            const aInMemVet = Object.values(memVet).some(vet => vet["사업장명"] === aName && vet["소재지전체주소"] === aAddress);
+            const bInMemVet = Object.values(memVet).some(vet => vet["사업장명"] === bName && vet["소재지전체주소"] === bAddress);
 
             if (aInMemVet && !bInMemVet) {
                 return -1; // a를 b보다 앞으로
@@ -230,14 +236,15 @@ function sortingReserv(e){
             if (!aInMemVet && bInMemVet) {
                 return 1; // b를 a보다 앞으로
             }
+
             return 0; // 변화 없음
         });
 
-        // 정렬된 결과를 콘솔에 출력
-        document.querySelector(".vet_list").innerHTML="";
-        searchResult.forEach(vetItem=>{
-			addHospitalToList(vetItem);
-		})
+        // 정렬된 결과를 화면에 출력
+        document.querySelector(".vet_list").innerHTML = "";
+        searchResult.forEach(vetItem => {
+            addHospitalToList(vetItem);
+        });
     }
 }
 
