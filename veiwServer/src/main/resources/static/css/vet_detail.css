@@ -1,16 +1,6 @@
 @charset "UTF-8";
 
 
-.vet_header {
- 	margin:20px;
- 	display:flex;
- 	justify-items:center;
- 	align-items:center;
-}
-
-#bookmarkImg{
-	width:50px;
-}
 
 #vet_name{
 	font-family: "Jua", sans-serif;
@@ -29,11 +19,6 @@
 	 margin-bottom:10px;
 }
 
-.img_container{
-	width:100%;
-
-	text-align:center;
-}
 
 #logo{
 	width:auto;	
@@ -46,6 +31,7 @@
     flex-direction: row;
     justify-content: space-around;
     align-items: flex-start;
+    margin:0 auto;
 }
 
 #review_overview{

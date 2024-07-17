@@ -191,8 +191,12 @@ function checkBookmark(e){
 		alert("로그인한 회원만 이용 가능한 서비스입니다. 로그인 후 이용해주세요");
 		return false;
 	}
-	if(!e.target.parentElement.parentElement.querySelector("button").getAttribute("data-id")){
+	
+
+	if(!e.target.parentElement.parentElement.querySelector("button").getAttribute("data-id") && e.target.parentElement.querySelector("#exampleModalLabel")){
 		hosId = e.target.parentElement.querySelector("#exampleModalLabel").getAttribute("data-id");
+	}else if(e.target.parentElement.querySelector("#hospital_id").getAttribute("data-id")){
+	    hosId = e.target.parentElement.querySelector("#hospital_id").getAttribute("data-id");
 	}else{
 		hosId = e.target.parentElement.parentElement.querySelector("button").getAttribute("data-id");
 	}
