@@ -182,7 +182,10 @@ function statusConfirmed(){
 	let status = "확정";
 	console.log(status);
 	fetch("http://localhost:9001/api/v1/hospital/reservation/" + reservId + "/"+ status, {
-		method : "PUT"
+		method : "PUT",
+		headers: {
+	        'Authorization': token
+	    }
 		
 	})
 	.then(response => response.text())
