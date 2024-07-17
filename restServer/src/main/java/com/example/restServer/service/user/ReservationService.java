@@ -66,6 +66,7 @@ public class ReservationService {
             Long docId = doctor.getId();
             String docName = doctor.getName();
             List<UnavailableTime> unavailList = unavailableTimeRepo.findAllByDoctorId(docId);
+            System.out.println(unavailList);
             map.put(docId + "//" + docName, unavailList);
         }
         return map;
@@ -74,6 +75,7 @@ public class ReservationService {
     public Map<String, Object> getVetInfo(Long hospitalId) {
         Map<String, Object> map = new HashMap<>();
         Member vet = memRepo.findById(hospitalId).get();
+        vet.setBusinessHours(DateTimeUtil.getBusinessHours(vet.getBusinessHours()));
         map.put(vet.getHospitalName() + "", vet);
         return map;
     }
@@ -92,7 +94,6 @@ public class ReservationService {
     }
 
     public Reservation findReservInfo(Long reservId) {
-        System.out.println(reservRepo.findById(reservId).get());
         return reservRepo.findById(reservId).get();
     }
 
@@ -102,8 +103,9 @@ public class ReservationService {
         LocalDateTime dateTime = DateTimeUtil.parseDateTime(formData);
 
         Reservation reservation = reservRepo.findById(reservId).get();
+        
         deleteOriginalUnavailableTime(reservation);
-
+        
         updateReservation(formData, reservation, dateTime, now);
         reservRepo.save(reservation);
 
@@ -168,7 +170,7 @@ public class ReservationService {
     private UnavailableTime createUnavailableTime(Map<String, String> formData, Reservation reservation, LocalDateTime dateTime) throws ParseException {
         UnavailableTime unavailTime = new UnavailableTime();
         unavailTime.setDoctor(doctorRepo.findById(Long.parseLong(formData.get("doctorId"))).get());
-        unavailTime.setHospital(memRepo.findById(Long.parseLong(formData.get("hospitalId"))).get());
+        unavailTime.setHospital(doctorRepo.findById(Long.parseLong(formData.get("doctorId"))).get().getHospital());
         unavailTime.setComment("진료예약");
         unavailTime.setDate(DateTimeUtil.parseDate(formData.get("date")));
         unavailTime.setTime(DateTimeUtil.parseTimeHourMins(formData.get("time")));
