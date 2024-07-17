@@ -9,8 +9,10 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.restServer.dto.ChatRoomListDto;
 import com.example.restServer.entity.Chat;
 import com.example.restServer.entity.ChatRoom;
 import com.example.restServer.service.ChatService;
@@ -42,8 +44,8 @@ public class ChatController_songi {
     }
     
     
-    
-    @GetMapping("/user/chatList")
+    //채팅방 리스트 불러오기
+    @GetMapping("/chatList")
     public ResponseEntity<?> chatList(HttpServletRequest request){
        String memberIdHeader = request.getHeader("MemberId");
  	   String authHeader = request.getHeader("Authorization");
@@ -54,14 +56,23 @@ public class ChatController_songi {
         }
  	   Long memberId = Long.parseLong(memberIdHeader);
  	   
- 	   List<ChatRoom> chatRoomList = chatService.chatList(memberId);
+ 	   
+ 	   List<ChatRoomListDto> chatRoomList = chatService.getChatRoomList(memberId);
     	
  	   System.out.println("채팅방목록 출력 : " + chatRoomList);
  	   
  	   return ResponseEntity.ok(chatRoomList);
  	   
     }
+
+    //채팅 내역 불러오기
+    @GetMapping("/chat/{id}")
+    public ResponseEntity<List<Chat>> getChatMessages(@PathVariable("id") Long chatRoomId) {
+        List<Chat> chats = chatService.getMessages(chatRoomId);
+        System.out.println("채팅내역 출력 : " + chats);
+        return ResponseEntity.ok(chats);
+    }
     
-	
+    
 
 }

@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.example.restServer.dto.BookmarkDto;
+import com.example.restServer.entity.Chat;
 import com.example.restServer.entity.ChatRoom;
 import com.example.restServer.entity.Member;
 import com.example.restServer.entity.Pet;
@@ -18,15 +19,7 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long>{
     
 	public List<ChatRoom> findByHospital(Member hospital);
 	
-	
-	
-	@Query(value = "SELECT c.*, cr.* " +
-            "FROM chat c " +
-            "JOIN chat_room cr ON c.chat_room_id = cr.id " +
-            "WHERE cr.user_id = :userId " +
-            "ORDER BY c.send_date DESC", nativeQuery = true)
-	List<Object[]> findChatsAndRoomsByUserId(Long userId);
-
-	
+	@Query("SELECT c FROM Chat c WHERE c.chatRoom.id = :chatRoomId ORDER BY c.sendDate DESC")
+    List<Chat> findChatsByChatRoomId(@Param("chatRoomId") Long chatRoomId);
 	
 }
