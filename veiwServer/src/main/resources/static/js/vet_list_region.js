@@ -142,6 +142,7 @@ function fetchHospitalData(guMap, noGuCities) {
             try {
                 let jsonData = JSON.parse(this.responseText);
                 let datas = jsonData["동물병원"];
+                console.log(datas)
                 datas.forEach(hospital => {
                     if (hospital["소재지전체주소"] != null) {
                         let address = hospital["소재지전체주소"].split(" ");
@@ -394,6 +395,28 @@ document.getElementById("keywordSearchBtn").addEventListener("click", function (
 document.getElementById("searchBtn").addEventListener("click", function () {
 	
 	 if (guMap.size == 0 && citiesWithNoGu.size == 0) {
+		return false;
+	  }
+    showLoading();
+    setTimeout(() => {
+        hideLoading(); 
+    }, 1000);
+});
+
+document.getElementById("sortingReserv").addEventListener("click", function () {
+	
+	 if (searchResult.length == 0 ) {
+		return false;
+	  }
+    showLoading();
+    setTimeout(() => {
+        hideLoading(); 
+    }, 1000);
+});
+
+document.getElementById("sortingPoint").addEventListener("click", function () {
+	
+	 if (searchResult.length == 0 ) {
 		return false;
 	  }
     showLoading();
