@@ -75,13 +75,7 @@
 	                    	
 	                        localStorage.setItem("role", role);
 	                    }
-	                    setTimeout(() => {
-	                        console.log("15초 후 토큰 삭제");
-	                        localStorage.removeItem("token");
-	                        localStorage.removeItem("MemberId");
-	                        localStorage.removeItem("role");
-	                        console.log("토큰 삭제 완료");
-	                    }, 15 * 1000);
+	                    
 	                    
 	                    if(role =="ROLE_USER"){
 	                    	window.location.href="/";

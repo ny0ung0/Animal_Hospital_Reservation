@@ -196,6 +196,17 @@ public class JoinService {
 			member.setIntroduction(memberEditDto.getIntroduction());
 			//이미지 파일 처리
 			if(memberEditDto.getFile() != null && !memberEditDto.getFile().isEmpty()) {
+				//기존 사진 삭제
+				String existingLogo = member.getLogo();
+				if(existingLogo !=null && !(existingLogo.equals(""))) {
+					File existingFile = new File(uploadPath + existingLogo);
+					if(existingFile.exists()) {
+						existingFile.delete();
+						System.out.println("기존 파일 삭제 성공: "+ existingLogo);
+					}
+				}
+				
+				//새로운 사진 저장
 				String originName = memberEditDto.getFileName();
 				String newName = UUID.randomUUID().toString() + originName;
 				member.setLogo(newName);
