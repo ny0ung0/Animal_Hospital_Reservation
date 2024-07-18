@@ -1,9 +1,16 @@
 package com.example.restServer.util;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.context.Context;
+import org.thymeleaf.spring6.SpringTemplateEngine;
+
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 
 @Service
 public class MailService {
@@ -11,7 +18,10 @@ public class MailService {
 	@Autowired
 	private JavaMailSender javaMailSender;
 	
-	//단순 문자 메일 보내기
+	@Autowired
+    private SpringTemplateEngine templateEngine;
+	
+	//단순 문자 메일 보내기(반려)
 	public void sendSimpleEmail(String toEmail) {
 		SimpleMailMessage message = new SimpleMailMessage();
 		message.setSubject("[견강할고양] 회원 가입 취소 안내");
@@ -28,11 +38,36 @@ public class MailService {
 		javaMailSender.send(message);
 	}
 	
-	//HTML 메일 보내기
-	public void sendHTMLEmail() {
-		
-	}
-	
+
+    // HTML 메일 보내기(승인)
+    public void sendHTMLEmail(String toEmail, String hospitalName) {
+        try {
+            MimeMessage message = javaMailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+            
+            helper.setSubject("[건강할고양] 회원 가입 승인 안내");
+            helper.setTo(toEmail);
+            
+            // HTML 콘텐츠 설정
+            String htmlContent = setContext(hospitalName, helper);
+            helper.setText(htmlContent, true);
+            
+            javaMailSender.send(message);
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public String setContext(String hospitalName, MimeMessageHelper helper) throws MessagingException {
+        Context context = new Context();
+        context.setVariable("hospitalName", hospitalName);
+        
+        // Add the image as an inline resource
+        //ClassPathResource image = new ClassPathResource("static/img/logo_hospital.png");
+       // helper.addInline("logoImage", image);
+        
+        return templateEngine.process("mail", context);
+    }
 	
 }
 
