@@ -19,7 +19,7 @@ public interface MemberRepository extends JpaRepository<Member,Long>{
 	@Query(value="Select * from Member where status='승인' and role='ROLE_HOSPITAL' AND address LIKE :address and hospital_name=:hospitalName;" , nativeQuery=true)
 	public List<Member> findMemberVet(@Param("address") String address, @Param("hospitalName") String hospitalName);
 	
-	@Query(value = "SELECT m.*, l.username, l.id AS login_id FROM member m JOIN login l ON m.id = l.member_id WHERE m.role='ROLE_HOSPITAL' AND m.status='대기'", nativeQuery = true)
+	@Query(value = "SELECT m.*, l.username, l.id AS login_id FROM member m JOIN login l ON m.id = l.member_id WHERE m.role='ROLE_WAIT' AND m.status='대기'", nativeQuery = true)
 	public List<IMemberLoginDto> findByStatusWaiting();
 	
 	@Query(value = "SELECT m.*, l.username, l.id AS login_id FROM member m JOIN login l ON m.id = l.member_id WHERE m.role='ROLE_USER' AND m.status = '승인'", nativeQuery = true)

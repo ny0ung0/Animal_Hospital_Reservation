@@ -32,4 +32,6 @@ public interface LoginRepository extends JpaRepository<Login, Long> {
 			+ "ON l.member_id = m.id "
 			+ "WHERE member_id = :memberId;", nativeQuery = true)
 	public List<IMemberEditDto> findByMemberIdEditHospital(@Param("memberId") String memberId);
+
+	public Login findByMemberId(@Param("id")Long id);
 }
