@@ -1,0 +1,199 @@
+@charset "UTF-8";
+
+
+
+
+/* #chat-box {
+    height: 600px;
+    overflow-y: scroll;
+    border: 1.2px solid #ddd;
+    padding: 10px;
+    display: flex;
+    flex-direction: row;
+}
+
+.message-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+
+.sent-container {
+    justify-content: flex-end;
+    display : flex;
+    flex-direction : column;
+}
+
+.received-container {
+    justify-content: flex-start;
+    display : flex;
+    flex-direction : column;
+}
+
+
+.messageBox{
+	display : flex;
+	flex-direction : row;
+}
+
+
+.text-message {
+    padding: 10px;
+    border-radius: 10px;
+    max-width: 60%;
+    word-wrap: break-word;
+    position: relative;
+}
+
+
+.text-message.receivedMsg {
+    background-color: #dcf8c6;
+    text-align: left;
+    margin-left: auto;
+}
+
+.text-message.sentMsg {
+    background-color: #F5ECCE;
+    text-align: right;
+    margin-right: auto;
+}
+
+
+.meta-container {
+    display: flex;
+    flex-direction: column;
+    margin: 0 10px;
+}
+
+.timestamp {
+    font-size: 0.8em;
+    color: gray;
+}
+
+.is-read {
+    font-size: 0.6em;
+    color: red;
+}
+
+
+#inputBox {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    margin-top: 30px;
+    margin-bottom: 10px;
+}
+
+
+#inputBox button {
+    width: 100px;
+}
+ */
+
+
+
+
+
+
+
+
+
+
+
+
+
+#chat-box {
+    height: 400px;
+    overflow-y: scroll;
+    border: 1.2px solid #ddd;
+    padding: 10px;
+    display: flex;
+    flex-direction: row;
+}
+
+.message-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.sent-container {
+    justify-content: flex-end;
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+}
+
+.received-container {
+    justify-content: flex-start;
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+}
+
+.messageBox {
+    display: flex;
+    flex-direction: row;
+    margin : 10px;
+
+}
+
+.messageBox.sentBox{
+	margin-right : 0;
+/* 	justify-content : flex-end; */
+	display : flex;
+	flex-direction : row-reverse;
+}
+
+
+.text-message {
+    padding: 10px;
+    border-radius: 10px;
+    max-width: 60%;
+    word-wrap: break-word;
+    position: relative;
+    
+}
+
+.text-message.receivedMsg {
+    background-color: #dcf8c6;
+    text-align: left;
+    margin-left: 0;
+}
+
+.text-message.sentMsg {
+    background-color: #F5ECCE;
+    text-align: right;
+    margin-right: 0;
+}
+
+.meta-container {
+    display: flex;
+    flex-direction: column;
+    margin: 0 10px;
+}
+
+.timestamp {
+    font-size: 0.8em;
+    color: gray;
+}
+
+.is-read {
+    font-size: 0.6em;
+    color: red;
+}
+
+#inputBox {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    margin-top: 30px;
+    margin-bottom: 10px;
+}
+
+#inputBox button {
+    width: 100px;
+}
+
+

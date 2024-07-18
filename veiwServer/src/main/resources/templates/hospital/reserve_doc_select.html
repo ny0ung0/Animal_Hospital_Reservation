@@ -16,7 +16,7 @@
 	<h1 class="mt-3 mt-md-5 mb-3 mb-md-3">진료 일정 관리</h1>
 	<hr/>
 	<h4 class="fw-bold mb-3">의사 선택</h4>
-	<div id="listarea"></div>
+	<div id="listarea" class="row"></div>
 	
 </div>
 <div th:replace="~{hospital/footer :: footer}"></div>
@@ -42,9 +42,9 @@ fetch("http://localhost:9001/api/v1/hospital/doctor", {
 		objs.forEach(obj =>{
 			console.log(obj);
 			document.querySelector("#listarea").innerHTML += 
-				'<a class="btn btn-outline-main w-100 mb-3" href="/hospital/reserveCalender?doctorId=' + obj.id +'&doctorName=' + obj.name  +'">'
+				'<div class="col-md-3"><a class="btn btn-outline-main w-100 py-4 mb-3" href="/hospital/reserveCalender?doctorId=' + obj.id +'&doctorName=' + obj.name  +'">'
 			    + obj.name + ' 수의사'
-				+ '</a>';
+				+ '</a></div>';
 		});
 	}
 })

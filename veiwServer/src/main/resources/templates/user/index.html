@@ -125,11 +125,8 @@
 </div>
 <div th:replace="~{user/footer :: footer}"></div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-<script src="https://www.gstatic.com/firebasejs/9.9.3/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.9.3/firebase-messaging-compat.js"></script>
 <script type="text/javascript" src="/js/index.js"></script>
 <script type="text/javascript" src="/js/modal.js"></script>
-<script src="/js/fcm.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 <script>
 
@@ -138,7 +135,7 @@ const mainGif = document.querySelector("#mainGif");
 function chat(e){
 	let hosId=e.target.closest("#exampleModal").querySelector("#exampleModalLabel").getAttribute("data-id");
 	console.log(e.target.closest("#exampleModal").querySelector("#exampleModalLabel").getAttribute("data-id"))
-	window.location.href = "/user/chat/" + hosId;
+	window.location.href = "/user/newChat/" + hosId;
 }
 
 

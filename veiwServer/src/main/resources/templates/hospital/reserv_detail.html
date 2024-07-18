@@ -104,6 +104,7 @@ const memberId = localStorage.getItem("MemberId");
 const token = localStorage.getItem("token");
 const reservId = document.querySelector("input[name='reservId']").value;
 console.log(reservId);
+let userid = '';
 fetch("http://localhost:9001/api/v1/hospital/reservation/" + reservId, {
 	method : "GET",
 	headers: {
@@ -119,7 +120,7 @@ fetch("http://localhost:9001/api/v1/hospital/reservation/" + reservId, {
 	obj.pet.gender=="female" ? gender = "여아" : gender = "남아";
 	let minute = "";
 	obj.reservationDatetime[4].toString().length == 1 ? minute = obj.reservationDatetime[4] + "0" : minute = obj.reservationDatetime[4];
-	
+	userid = obj.user.id;
 	let dateTime = obj.reservationDatetime[0] + "-" + obj.reservationDatetime[1] + "-" + obj.reservationDatetime[2] + " " + obj.reservationDatetime[3] + ":" + minute;
 	console.log(obj.pet.birthdate);
 	// 서버에서 받은 UTC 시간을 Date 객체로 변환
@@ -167,10 +168,13 @@ fetch("http://localhost:9001/api/v1/hospital/reservation/" + reservId, {
 	}
 })
 .catch(error => console.log(error));
-
 function statusComplete(){
 	let status = "완료";
 	console.log(status);
+	title='예약 알람';
+	body="진료가 완료되었습니다. 감사합니다 : )";
+	receiverId= userid;
+    sendTokenToMessageReceiver(title, body);
 	fetch("http://localhost:9001/api/v1/hospital/reservation/" + reservId + "/"+ status, {
 		method : "PUT",
 		headers: {
@@ -184,10 +188,13 @@ function statusComplete(){
 	})
 	.catch(error => console.log(error));
 }
-
 function statusConfirmed(){
 	let status = "확정";
 	console.log(status);
+	title='예약 알람';
+	body="예약 확정되었습니다.";
+	receiverId= userid;
+    sendTokenToMessageReceiver(title, body);
 	fetch("http://localhost:9001/api/v1/hospital/reservation/" + reservId + "/"+ status, {
 		method : "PUT",
 		headers: {
@@ -206,6 +213,10 @@ function statusConfirmed(){
 function statusCancle(){
 	let status = "취소";
 	console.log(status);
+	title='예약 알람';
+	body="예약이 거절되었습니다. 다시 예약 해주시기 바랍니다.";
+	receiverId= userid;
+    sendTokenToMessageReceiver(title, body);
 	fetch("http://localhost:9001/api/v1/hospital/reservation/" + reservId + "/"+ status, {
 		method : "PUT",
 		headers: {

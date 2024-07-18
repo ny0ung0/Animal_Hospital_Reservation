@@ -23,7 +23,9 @@
 </head>
 <body class="d-flex flex-column h-100">
 	<div th:replace="~{user/header :: header}"></div>
+	
 	<div class="container-xl">
+		<h1>회원가입</h1>
 		<div id="tab" class="d-flex">
 			<button id ="btnUser" class="btn btn-main" onclick="showUser()">반려인</button>
 			<button id ="btnHospital" class="btn btn-outline-main" onclick="showHospital()">동물병원</button>
@@ -764,7 +766,7 @@
             document.getElementById("user").style.display = "none";
             document.getElementById("hospital").style.display = "block";
             const frm = document.querySelector("#frmUser");
-            frm.role.value="ROLE_HOSPITAL";
+            frm.role.value="ROLE_WAIT";
             
             document.getElementById("btnUser").className = "btn btn-outline-main";
             document.getElementById("btnHospital").className = "btn btn-main";

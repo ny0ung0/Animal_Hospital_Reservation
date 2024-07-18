@@ -20,6 +20,7 @@
 <body class="d-flex flex-column h-100">
 	<div th:replace="~{user/header :: header}"></div>
 	<div class="container-xl">
+		<h1>로그인</h1>
 		<div id="user">
 			<form id="frmUser">
 				<input type="hidden" name="role" value="ROLE_USER">
@@ -60,36 +61,42 @@
 			const xhttp = new XMLHttpRequest();
 			xhttp.onload = function() {
 				 if (this.status === 200) {
-	                    alert("로그인 성공");
-	                    const token = this.getResponseHeader("Authorization");
-	                    if (token) {
-	                        localStorage.setItem("token", token);
-	                        
-	                    }
-	                    const MemberId = this.getResponseHeader("MemberId");
-	                    if (MemberId) {
-	                        localStorage.setItem("MemberId", MemberId);
-	                    }
-	                    const role = this.getResponseHeader("role");
-	                    if (role) {
-	                    	
-	                        localStorage.setItem("role", role);
-	                    }
+	                   if(!(this.getResponseHeader("role") =="ROLE_WAIT")){
+						 	alert("로그인 성공");
+		                    const token = this.getResponseHeader("Authorization");
+		                    if (token) {
+		                        localStorage.setItem("token", token);
+		                        
+		                    }
+		                    const MemberId = this.getResponseHeader("MemberId");
+		                    if (MemberId) {
+		                        localStorage.setItem("MemberId", MemberId);
+		                    }
+		                    const role = this.getResponseHeader("role");
+		                    if (role) {
+		                    	
+		                        localStorage.setItem("role", role);
+		                    }
+		                    
+		                    
+		                    if(role =="ROLE_USER"){
+		                    	window.location.href="/";
+		                    }else if(role == "ROLE_HOSPITAL"){
+		                    	window.location.href="/hospital";
+		                    }else if(role == "ROLE_ADMIN"){
+		                    	window.location.href="/manager/";
+		                    }
 	                    
 	                    
-	                    if(role =="ROLE_USER"){
-	                    	window.location.href="/";
-	                    }else if(role == "ROLE_HOSPITAL"){
-	                    	window.location.href="/hospital";
-	                    }else if(role == "ROLE_ADMIN"){
-	                    	window.location.href="/manager/";
-	                    }
 	                    
-	                    
-	                    
-	                } else if (this.status === 401) {
-	                    alert("로그인 실패");
-	                }
+		                }else if(this.getResponseHeader("role") =="ROLE_WAIT"){
+		                	alert("아직 승인되지 않았습니다.");
+		                }	
+	             }else {
+	                	
+	              		alert("로그인 정보가 없습니다.");
+	                   
+	             }
 			}
 			xhttp.open("post", "http://localhost:9001/login");
 			xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");	

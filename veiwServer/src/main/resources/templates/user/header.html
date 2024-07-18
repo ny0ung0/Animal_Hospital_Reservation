@@ -4,9 +4,30 @@
 		<div class="d-lg-none">
 			<a href="#" onclick="openMobileMenu()" class="navbar-brand">메뉴</a>
 		</div>
-		<div class="ms-auto">
+		<div class="ms-auto d-flex">
+		<a id="chat" href="/user/chatList" class="navbar-brand me-4" style="display:none;">💬 챗팅</a>
 		<a id="login-link" class="navbar-brand" href="/login_form">로그인</a>
-		<a id="mypage-link" class="navbar-brand" href="#" onclick="mypage()" style="display: none;">마이페이지</a>
+		<div id="mypage-link" class="navbar-brand" style="display: none;">
+			<div class="dropdown">
+			  <a class="btn btn-none dropdown-toggle nav-link rounded-0" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+			   마이페이지
+			  </a>
+			
+			  <ul class="dropdown-menu">
+			    <li><a class="dropdown-item" href="/user/my_info_edit">내 정보 수정</a></li>
+			    <li><a class="dropdown-item" href="#">내가 쓴 병원 리뷰</a></li>
+			    <li><a class="dropdown-item" href="#">커뮤니티(집수다) 관리</a></li>
+			    <li><a class="dropdown-item" href="/user/myPetList">반려동물 리스트</a></li>
+			    <li><a class="dropdown-item" href="#">경매 참여 내역</a></li>
+			    <li><a class="dropdown-item" href="#">펀딩 참여 내역</a></li>
+			    <li><a class="dropdown-item" href="#">쿠폰함</a></li>
+			    <li><a class="dropdown-item" href="#">포인트 관리</a></li>
+			    <li><a class="dropdown-item" href="/user/fav_vet_list">즐겨찾기 내역</a></li>
+			    <li><a class="dropdown-item" href="/user/myQnaList">문의내역</a></li>
+			  </ul>
+			</div>
+		
+		</div>
 		<span class="mx-3" id ="bar"> | </span>
 		<a id="logout-link" class="navbar-brand" href="#" onclick="logout()" style="display: none;">로그아웃</a>
 		<a id="register-link" class="navbar-brand" href="/register_form">회원가입</a>
@@ -68,15 +89,19 @@
 	</div>
 </div>
 </header>
+<script src="https://www.gstatic.com/firebasejs/9.9.3/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.9.3/firebase-messaging-compat.js"></script>
+<script src="/js/fcm.js"></script>
+<script src="/js/fcmsend.js"></script>
 <script>
     function logout() {
         localStorage.clear();
         window.location.href = "/";
     }
     
-    function mypage() {
-        window.location.href = "/user/my_info_edit";
-    }
+//     function mypage() {
+//         window.location.href = "/user/my_info_edit";
+//     }
     
     document.addEventListener("DOMContentLoaded", function() {
         const memberId = localStorage.getItem('MemberId');
@@ -86,18 +111,21 @@
         const mypageLink = document.getElementById('mypage-link');
         const logoutLink = document.getElementById('logout-link');
         const bar = document.getElementById('bar');
+        const chat = document.getElementById('chat');
         if (memberId) {
             loginLink.style.display = 'none';
             registerLink.style.display = 'none';
             logoutLink.style.display = '';
             mypageLink.style.display = '';
             //bar.style.display = 'none';
+            chat.style.display = '';
         } else {
             loginLink.style.display = '';
             registerLink.style.display = '';
             logoutLink.style.display = 'none';
             mypageLink.style.display = 'none';
             bar.style.display = '';
+            chat.style.display = 'none';
         }
         
         if (role === null) {
