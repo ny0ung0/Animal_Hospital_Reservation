@@ -96,7 +96,7 @@
       </div>
       <div class="modal-body" id="reviewBody">
          <form id="reviewForm">
-         <input type="text" name="id" id="reservation_id">
+         <input type="hidden" name="id" id="reservation_id">
           <div class="mb-3">
             <label for="recipient-name" class="col-form-label">평점:</label>
             <div id="starRating2" class="stars">
@@ -107,7 +107,7 @@
               <span class="star" data-value="5">&#9733;</span>
             </div>
           </div>
-          <input type="text" name="rating" id="rating">
+          <input type="hidden" name="rating" id="rating">
           <div class="mb-3">
             <label for="message-text" class="col-form-label">리뷰:</label>
             <textarea class="form-control" name="review"></textarea>
@@ -161,7 +161,7 @@ var allList=[];
 var waitingList = [];
 var completedList = [];
 var confirmedList = [];
-
+let hospitalId='';
 ready();
   function ready(){
     var reservList = document.querySelector("#tbody");
@@ -292,7 +292,7 @@ ready();
         reservation.reservation_datetime[4] ='00';
       }
       var time = reservation.reservation_datetime[3]+':'+ reservation.reservation_datetime[4];
-      var btn = `<button class="btn btn-user-sub" data-bs-toggle="modal" data-bs-target="#review" onclick="openReviewModal(${reservation.id})">리뷰작성</button>`;
+      var btn = `<button class="btn btn-user-sub" data-bs-toggle="modal" data-bs-target="#review" onclick="openReviewModal(${reservation.id},${reservation.hospital_id})">리뷰작성</button>`;
       if(reservation.review !=null){
     	  
         btn = `<button class="btn btn-user-sub" data-bs-toggle="modal" data-bs-target="#reviewComplete" onclick="openReviewCompleteModal(${i})">리뷰확인</button>`;
@@ -354,9 +354,10 @@ ready();
     
   }
 
-  function openReviewModal(reservationId) {
+  function openReviewModal(reservationId, hospital_id) {
     // 리뷰 모달에 예약 정보를 설정하는 로직을 추가
    document.getElementById('reservation_id').value = reservationId;
+   hospitalId = hospital_id;
    
  
     
@@ -414,9 +415,14 @@ ready();
 	  const formData = new FormData(frm);
 	  const xhttp = new XMLHttpRequest();
 		xhttp.onload = function() {
+			
 			//alert(this.responseText);
 			if(this.status==200){
 				alert("리뷰등록이 완료되었습니다.");
+				title='리뷰 알람';
+			    body=`작성된 리뷰가 있습니다.`;
+			    receiverId=hospitalId;
+			    sendTokenToMessageReceiver(title, body);
 				window.location.href="/user/reserv_list";
 			}else{
 			var result = this.responseText;
