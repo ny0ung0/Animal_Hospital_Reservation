@@ -14,9 +14,19 @@ public class ChatController_songi {
 	}
 	
 	
-	@RequestMapping("/user/chat/{id}")
-	public String chat(@PathVariable("id")Long id, Model model) {
-		model.addAttribute("id",id);
+	//새로운 채팅방
+	@RequestMapping("/user/newChat/{hosId}")
+	public String newChat(@PathVariable("hosId")Long hospitalId, Model model) {
+		model.addAttribute("hospitalId",hospitalId);
+		
+		return "/user/chatroom";
+	}
+	
+	
+	//기존에 하던 채팅방
+	@RequestMapping("/user/chat/{chatRoomId}")
+	public String chat(@PathVariable("chatRoomId")Long chatRoomId, Model model) {
+		model.addAttribute("chatRoomId",chatRoomId);
 		
 		return "/user/chatroom";
 	}
