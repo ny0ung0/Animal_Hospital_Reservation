@@ -8,4 +8,8 @@ public class UserNotApprovedException extends AuthenticationException {
 	public UserNotApprovedException(String message) {
         super(message);
     }
+
+	
+	
+	
 }

@@ -69,7 +69,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
 		String role = auth.getAuthority();
 
-		String token = jwtUtil.createJwt(username, role,  1000L);
+		String token = jwtUtil.createJwt(username, role,  24*60*60*1000L);
 		
 		response.addHeader("Authorization", "Bearer " + token);
 		response.addHeader("MemberId", customUserDetails.getMemberId()+"");
@@ -84,6 +84,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 	@Override
 	protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response,
 			AuthenticationException failed) throws IOException, ServletException, UnsupportedEncodingException{
+		
 		System.out.println("로그인필터에서 로그인 실패 들어옴");
 		response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 		String errorMessage = failed.getMessage();
