@@ -40,8 +40,14 @@
     </ul>
     <hr>
     <div class="dropdown">
-        <a href="#" class="nav-link text-white">로그아웃</a>
+        <a onclick="logout()" href="#" class="nav-link text-white">로그아웃</a>
     </div>
+    <script>
+    function logout() {
+        localStorage.clear();
+        window.location.href = "/";
+    }
+    </script>
 </div>
 
   
