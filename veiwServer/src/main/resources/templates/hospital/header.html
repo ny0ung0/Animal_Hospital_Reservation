@@ -15,7 +15,7 @@
         
       </a>
 
-      <ul class="nav nav-pills user-nav">
+      <ul class="nav nav-pills hospital-nav">
         <li class="nav-item"><a href="/hospital/my_info_edit" class="nav-link fs-5" aria-current="page">내 정보 수정 </a></li>
         <li class="nav-item"><a href="/hospital/my_qna_list" class="nav-link fs-5">문의내역</a></li>
         <li class="nav-item">
@@ -71,6 +71,67 @@
                     logoutLink.style.display = 'none';
                     bar.style.display = '';
                 }
+                
+             	// 현재 URL 가져오기
+        	    const currentPath = window.location.pathname;
+        		console.log(currentPath);	
+        	    // 모든 nav-link 요소 가져오기
+        	    const navLinks = document.querySelectorAll('.nav-link');
+
+        	    // 각 nav-link 요소에 대해 현재 URL과 비교하여 active 클래스 추가
+        	    navLinks.forEach(function (link) {
+        	        if (link.getAttribute('href') === currentPath) {
+        	            link.classList.add('active-pet');
+        	        }
+        	    });
+
+        	    // 드롭다운 메뉴 내부의 링크에 대해서도 같은 작업 수행
+        	    const dropdownItems = document.querySelectorAll('.dropdown-item');
+        	    dropdownItems.forEach(function (item) {
+        	        if (item.getAttribute('href') === currentPath) {
+        	            item.classList.add('active-pet');
+        	            // 부모 드롭다운 링크에도 active 클래스 추가
+        	            item.closest('.dropdown').querySelector('.dropdown-toggle').classList.add('active-pet');
+        	        }
+        	    });
+        	    
+        	    
+            	if (currentPath.includes('/hospital/reservDetail')) {
+        	        const parentMenuLink = document.querySelector('a[href="/hospital/reservList"]');
+        	        dropdownItems.forEach(function (item) {
+            	        if (item.getAttribute('href') === parentMenuLink.getAttribute('href')) {
+            	            item.classList.add('active-pet');
+            	            // 부모 드롭다운 링크에도 active 클래스 추가
+            	            item.closest('.dropdown').querySelector('.dropdown-toggle').classList.add('active-pet');
+            	        }
+            	    });
+        	    }
+            	
+            	if (currentPath.includes('/hospital/reserveCalender')) {
+        	        const parentMenuLink = document.querySelector('a[href="/hospital/reserveDocSelect"]');
+        	        dropdownItems.forEach(function (item) {
+            	        if (item.getAttribute('href') === parentMenuLink.getAttribute('href')) {
+            	            item.classList.add('active-pet');
+            	            // 부모 드롭다운 링크에도 active 클래스 추가
+            	            item.closest('.dropdown').querySelector('.dropdown-toggle').classList.add('active-pet');
+            	        }
+            	    });
+        	    }
+            	
+            	if (currentPath.includes('/hospital/reserveSchedule')) {
+        	        const parentMenuLink = document.querySelector('a[href="/hospital/reserveDocSelect"]');
+        	        dropdownItems.forEach(function (item) {
+            	        if (item.getAttribute('href') === parentMenuLink.getAttribute('href')) {
+            	            item.classList.add('active-pet');
+            	            // 부모 드롭다운 링크에도 active 클래스 추가
+            	            item.closest('.dropdown').querySelector('.dropdown-toggle').classList.add('active-pet');
+            	        }
+            	    });
+        	    }
+                
             });
+            
+            
+            
         </script>
 </header>
