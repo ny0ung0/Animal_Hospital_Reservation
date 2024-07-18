@@ -192,6 +192,11 @@ ready();
       });
       for(let i=0 ;i < confirmedList.length;i++ ){
        let reservation = confirmedList[i];
+       for(let i=1 ; i<4; i++){
+    	   if(reservation.reservation_datetime[i] < 10){
+    		   reservation.reservation_datetime[i] ="0"+reservation.reservation_datetime[i];
+           }
+       }
        var day =reservation.reservation_datetime[0]+'-'+ reservation.reservation_datetime[1]+'-' +reservation.reservation_datetime[2];
         if(reservation.reservation_datetime[4]=='0'){
           reservation.reservation_datetime[4] ='00';
@@ -233,6 +238,13 @@ ready();
     
     for(let i=0 ;i < waitingList.length;i++ ){
        let waiting = waitingList[i];
+       for(let i=1 ; i<4; i++){
+    	   if(waiting.reservation_datetime[i] < 10){
+        	   waiting.reservation_datetime[i] ="0"+waiting.reservation_datetime[i];
+           }
+       }
+       
+       
       var day =waiting.reservation_datetime[0]+'-'+ waiting.reservation_datetime[1]+'-' +waiting.reservation_datetime[2];
       if(waiting.reservation_datetime[4]=='0'){
         waiting.reservation_datetime[4] ='00';
@@ -260,6 +272,11 @@ ready();
     
     for(let i=0 ;i < confirmedList.length;i++ ){
        let reservation = confirmedList[i];
+       for(let i=1 ; i<4; i++){
+    	   if(reservation.reservation_datetime[i] < 10){
+    		   reservation.reservation_datetime[i] ="0"+reservation.reservation_datetime[i];
+           }
+       }
       var day =reservation.reservation_datetime[0]+'-'+ reservation.reservation_datetime[1]+'-' +reservation.reservation_datetime[2];
       if(reservation.reservation_datetime[4]=='0'){
         reservation.reservation_datetime[4] ='00';
@@ -287,6 +304,11 @@ ready();
     reservList.innerHTML=` `;
     for(let i=0 ;i < completedList.length;i++ ){
        let reservation = completedList[i];
+       for(let i=1 ; i<4; i++){
+    	   if(reservation.reservation_datetime[i] < 10){
+    		   reservation.reservation_datetime[i] ="0"+reservation.reservation_datetime[i];
+           }
+       }
       var day =reservation.reservation_datetime[0]+'-'+ reservation.reservation_datetime[1]+'-' +reservation.reservation_datetime[2];
       if(reservation.reservation_datetime[4]=='0'){
         reservation.reservation_datetime[4] ='00';
