@@ -35,16 +35,10 @@ public class CustomUserDetailsService implements UserDetailsService {
         if (userData != null) {
         	 Member member = memberRepository.findById(userData.getMember().getId()).get();
              System.out.println(member);
-             if(!(member.getStatus().equals("승인"))) {
-             	if(member.getStatus().equals("대기")) {
-             		throw new UserNotApprovedException("wating" );
-             	}
-             	throw new UserNotApprovedException("notLogin" );
-             }			
-						//UserDetails에 담아서 return하면 AutneticationManager가 검증 함
+             	
             return new CustomUserDetails(userData);
         }
         System.out.println("User not found with username");
-        throw new UsernameNotFoundException("notFound" );
+        throw new UsernameNotFoundException("notFound");
     }
 }
