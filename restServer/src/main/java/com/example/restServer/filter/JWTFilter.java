@@ -83,8 +83,8 @@ public class JWTFilter extends OncePerRequestFilter {
 
         } catch (ExpiredJwtException e) {
             // 만료된 토큰 처리
-        	String encodedMsg = URLEncoder.encode("토큰기한만기", StandardCharsets.UTF_8.toString());
-        	response.addHeader("msg", encodedMsg);
+        	String msg = "tokenExpired";
+        	response.addHeader("msg", msg);
         	//response.addHeader("Access-Control-Expose-Headers", "msg");
             System.out.println("ExpiredJwtException: Token expired"); // 콘솔 출력
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401 상태 코드 설정

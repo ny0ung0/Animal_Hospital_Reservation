@@ -61,46 +61,42 @@
 			const xhttp = new XMLHttpRequest();
 			xhttp.onload = function() {
 				 if (this.status === 200) {
-	                    alert("로그인 성공");
-	                    const token = this.getResponseHeader("Authorization");
-	                    if (token) {
-	                        localStorage.setItem("token", token);
-	                        
-	                    }
-	                    const MemberId = this.getResponseHeader("MemberId");
-	                    if (MemberId) {
-	                        localStorage.setItem("MemberId", MemberId);
-	                    }
-	                    const role = this.getResponseHeader("role");
-	                    if (role) {
-	                    	
-	                        localStorage.setItem("role", role);
-	                    }
+	                   if(!(this.getResponseHeader("role") =="ROLE_WAIT")){
+						 	alert("로그인 성공");
+		                    const token = this.getResponseHeader("Authorization");
+		                    if (token) {
+		                        localStorage.setItem("token", token);
+		                        
+		                    }
+		                    const MemberId = this.getResponseHeader("MemberId");
+		                    if (MemberId) {
+		                        localStorage.setItem("MemberId", MemberId);
+		                    }
+		                    const role = this.getResponseHeader("role");
+		                    if (role) {
+		                    	
+		                        localStorage.setItem("role", role);
+		                    }
+		                    
+		                    
+		                    if(role =="ROLE_USER"){
+		                    	window.location.href="/";
+		                    }else if(role == "ROLE_HOSPITAL"){
+		                    	window.location.href="/hospital";
+		                    }else if(role == "ROLE_ADMIN"){
+		                    	window.location.href="/manager/";
+		                    }
 	                    
 	                    
-	                    if(role =="ROLE_USER"){
-	                    	window.location.href="/";
-	                    }else if(role == "ROLE_HOSPITAL"){
-	                    	window.location.href="/hospital";
-	                    }else if(role == "ROLE_ADMIN"){
-	                    	window.location.href="/manager/";
-	                    }
 	                    
-	                    
-	                    
-	                } else {
-	                	const msgLogin = decodeURIComponent(this.getResponseHeader("msgLogin"));
+		                }else if(this.getResponseHeader("role") =="ROLE_WAIT"){
+		                	alert("아직 승인되지 않았습니다.");
+		                }	
+	             }else {
+	                	
+	              		alert("로그인 정보가 없습니다.");
 	                   
-	                   if(msgLogin && msgLogin =="wating"){
-	                	   alert("아직 승인 처리가 완료되지 않았습니다.");
-	                   }else if(msgLogin && msgLogin =="notLogin"){
-	                	   alert("로그인 할 수 없습니다.");
-	                   }else if(msgLogin && msgLogin =="자격+증명에+실패하였습니다."){
-	                	   alert("로그인 정보가 없습니다.");
-	                   }else{
-	                	   alert(msgLogin);
-	                   }
-	                }
+	             }
 			}
 			xhttp.open("post", "http://localhost:9001/login");
 			xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");	
