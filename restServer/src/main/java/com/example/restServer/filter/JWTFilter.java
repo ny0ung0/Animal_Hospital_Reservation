@@ -2,6 +2,8 @@
 package com.example.restServer.filter;
 
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 
@@ -58,17 +60,8 @@ public class JWTFilter extends OncePerRequestFilter {
 				//Bearer 부분 제거 후 순수 토큰만 획득
         String token = authorization.split(" ")[1];
         try {
-            // 토큰 소멸 시간 검증
-            if (jwtUtil.isExpired(token)) {
-                System.out.println("Token expired"); // 콘솔 출력
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401 상태 코드 설정
-                response.setContentType("application/json");
-                response.setCharacterEncoding("UTF-8");
-                response.getWriter().write("{\"error\": \"Token expired\"}");
-                response.getWriter().flush();
-                response.getWriter().close();
-                return;
-            }
+            // 토큰 소멸 시간 검증 은 try/catch에서 catch로 잡아냄
+
 
             // 토큰에서 username과 role 획득
             String username = jwtUtil.getUsername(token);
@@ -90,6 +83,9 @@ public class JWTFilter extends OncePerRequestFilter {
 
         } catch (ExpiredJwtException e) {
             // 만료된 토큰 처리
+        	String encodedMsg = URLEncoder.encode("토큰기한만기", StandardCharsets.UTF_8.toString());
+        	response.addHeader("msg", encodedMsg);
+        	//response.addHeader("Access-Control-Expose-Headers", "msg");
             System.out.println("ExpiredJwtException: Token expired"); // 콘솔 출력
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401 상태 코드 설정
             response.setContentType("application/json");

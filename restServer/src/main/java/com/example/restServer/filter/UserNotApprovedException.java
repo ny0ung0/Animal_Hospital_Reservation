@@ -1,7 +1,11 @@
 package com.example.restServer.filter;
 
-public class UserNotApprovedException extends RuntimeException {
-    public UserNotApprovedException(String message) {
+import org.springframework.security.core.AuthenticationException;
+
+public class UserNotApprovedException extends AuthenticationException {
+   
+	
+	public UserNotApprovedException(String message) {
         super(message);
     }
 }
