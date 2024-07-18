@@ -101,7 +101,8 @@ fetch("http://localhost:9001/api/v1/manager/user/" + memberId, {
 .then(data => {
 	const obj = JSON.parse(data);
 	console.log(obj);
-	let dateTime = obj.createdAt.substring(0,obj.createdAt.indexOf("T"));
+	let dateTime = obj.createdAt[0] + "-" + obj.createdAt[1] + "-" + obj.createdAt[2];
+	
 	let address = obj.address.replace(/\/\//g, " ");
 	document.getElementById("name").innerHTML = obj.name;
 	document.getElementById("username").innerHTML = obj.username;

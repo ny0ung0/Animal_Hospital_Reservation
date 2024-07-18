@@ -29,6 +29,7 @@ import com.example.restServer.dto.PointAddDto;
 import com.example.restServer.entity.Member;
 import com.example.restServer.entity.Point;
 import com.example.restServer.entity.Support;
+import com.example.restServer.repository.DoctorRepository;
 import com.example.restServer.repository.LoginRepository;
 import com.example.restServer.repository.MemberRepository;
 import com.example.restServer.repository.PointRepository;
@@ -54,6 +55,9 @@ public class AdminController_jisun {
 	@Autowired
 	SupportRepository supportRepo;
 	
+	@Autowired
+	DoctorRepository doctorRepo;
+	
 	@Resource(name = "mailService")
 	private MailService mailService;
 
@@ -70,6 +74,11 @@ public class AdminController_jisun {
 		Member member = result.get();
 		member.setStatus("승인");
 		memberRepo.save(member);
+		if(member.getEmail() != null) {
+			mailService.sendHTMLEmail(member.getEmail(), member.getHospitalName());
+		}else {
+			System.out.println("이메일이 없네용");
+		}
 		return new ResponseEntity<>(member, HttpStatus.OK);
 	}
 	
@@ -84,7 +93,9 @@ public class AdminController_jisun {
 		}
 		
 		loginRepo.deleteByMemberId(id);
+		doctorRepo.deleteByHospitalId(id);
 		memberRepo.deleteById(id);
+		
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	
