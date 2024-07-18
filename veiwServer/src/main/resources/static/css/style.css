@@ -20,6 +20,9 @@ header, h1{
 	color:#333 !important;
 }
 
+.hospital-nav .nav-link{
+	color:#333 !important;
+}
 .btn-main {
     --bs-btn-color: #fff;
     --bs-btn-bg: #4C5CB3;
@@ -174,6 +177,31 @@ header, h1{
 }
 
 .user-nav .nav-link.active-pet {
+    color: #4C5CB3 !important;
+}
+
+
+.hospital-nav .nav-item {
+    position: relative; /* 부모 요소에 position을 설정하여 가상 요소의 위치를 제어합니다. */
+}
+
+.hospital-nav .nav-item::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 5px; /* 아래쪽 테두리의 높이를 지정 */
+    background-color: transparent;
+    transition: width 0.3s, background-color 0.3s; /* 너비 변경 및 배경색 변경에 대한 시간 설정 */
+}
+
+.hospital-nav .nav-item:hover::after {
+    width: 100%;
+    background-color: #84e3d0; /* 호버 시 배경색을 보라색으로 변경합니다. */
+}
+
+.hospital-nav .nav-link.active-pet {
     color: #4C5CB3 !important;
 }
 
