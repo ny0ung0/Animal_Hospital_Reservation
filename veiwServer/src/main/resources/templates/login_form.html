@@ -20,6 +20,7 @@
 <body class="d-flex flex-column h-100">
 	<div th:replace="~{user/header :: header}"></div>
 	<div class="container-xl">
+		<h1>로그인</h1>
 		<div id="user">
 			<form id="frmUser">
 				<input type="hidden" name="role" value="ROLE_USER">
@@ -87,8 +88,18 @@
 	                    
 	                    
 	                    
-	                } else if (this.status === 401) {
-	                    alert("로그인 실패");
+	                } else {
+	                	const msgLogin = decodeURIComponent(this.getResponseHeader("msgLogin"));
+	                   
+	                   if(msgLogin && msgLogin =="wating"){
+	                	   alert("아직 승인 처리가 완료되지 않았습니다.");
+	                   }else if(msgLogin && msgLogin =="notLogin"){
+	                	   alert("로그인 할 수 없습니다.");
+	                   }else if(msgLogin && msgLogin =="자격+증명에+실패하였습니다."){
+	                	   alert("로그인 정보가 없습니다.");
+	                   }else{
+	                	   alert(msgLogin);
+	                   }
 	                }
 			}
 			xhttp.open("post", "http://localhost:9001/login");

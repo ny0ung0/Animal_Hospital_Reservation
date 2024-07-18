@@ -43,6 +43,7 @@ ready();
 		const xhttp = new XMLHttpRequest();
 		xhttp.onload = function() {
 			//alert(this.responseText);
+			if(this.status ==200){
 			const list = JSON.parse(this.responseText);
 			list.forEach(vet =>{
 				var adds = vet.address.split("//");
@@ -59,6 +60,17 @@ ready();
 						</div>	
 					</div>`;
 			});
+				
+			}else{
+				 const msg = decodeURIComponent(this.getResponseHeader("msg"));
+				if(msg && msg=="토큰기한만기"){
+					
+					alert(msg);
+					 localStorage.clear();
+					 window.location.href="/login_form";
+				}
+			}
+			
 			
 			
 		}
