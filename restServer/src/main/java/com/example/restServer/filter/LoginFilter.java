@@ -88,6 +88,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 		System.out.println("로그인필터에서 로그인 실패 들어옴");
 		response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 		String errorMessage = failed.getMessage();
+		System.out.println("zzz:"+errorMessage);
 		String encodedMsg = URLEncoder.encode(errorMessage, StandardCharsets.UTF_8.toString());
 		if (errorMessage != null && !errorMessage.isEmpty()) {
         	System.out.println("에러메세지 들어옴");
