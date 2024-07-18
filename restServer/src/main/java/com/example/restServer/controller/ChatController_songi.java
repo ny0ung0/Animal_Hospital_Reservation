@@ -66,8 +66,8 @@ public class ChatController_songi {
     }
 
     //채팅 내역 불러오기
-    @GetMapping("/chat/{id}")
-    public ResponseEntity<List<Chat>> getChatMessages(@PathVariable("id") Long chatRoomId) {
+    @GetMapping("/chat/{chatRoomId}")
+    public ResponseEntity<List<Chat>> getChatMessages(@PathVariable("chatRoomId") Long chatRoomId) {
         List<Chat> chats = chatService.getMessages(chatRoomId);
         System.out.println("채팅내역 출력 : " + chats);
         return ResponseEntity.ok(chats);
