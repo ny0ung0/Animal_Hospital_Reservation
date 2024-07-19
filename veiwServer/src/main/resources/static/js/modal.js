@@ -237,3 +237,86 @@ function makeReservation(e){
 		location.href="/user/reserv_form?id="+hosId;
 	}
 }
+
+function sortingReserv(e){
+	
+	let totalResult;
+    let container;
+    let disFunction;
+
+    if (typeof searchResult !== 'undefined' && searchResult.length !== 0) {
+        totalResult = searchResult;
+        container = ".vet_list";
+    } else{
+        totalResult = nearVet;
+        container = ".inner";
+    } 
+    
+    
+	 if(totalResult.length != 0){
+         const sortedNearVet = totalResult.slice().sort((a, b) => {
+            const aInMemVet = memVet[a["사업장명"]] && memVet[a["사업장명"]].address == a["소재지전체주소"]
+            const bInMemVet = memVet[b["사업장명"]] && memVet[b["사업장명"]].address == b["소재지전체주소"]
+
+            if (aInMemVet && !bInMemVet) {
+                return -1; // a를 b보다 앞으로
+            }
+            if (!aInMemVet && bInMemVet) {
+                return 1; // b를 a보다 앞으로
+            }
+            return 0; // 변화 없음
+        });
+
+        // 정렬된 결과를 콘솔에 출력
+        document.querySelector(container).innerHTML="";
+        sortedNearVet.forEach((vetItem, index) =>{
+			if(container == ".vet_list"){
+				addHospitalToList(vetItem)
+			}else{
+				loadList(vetItem, index);
+			}
+		})
+		return sortedNearVet;
+    }
+}
+
+
+function sortingPoint(e) {
+	
+	let totalResult;
+    let container;
+    let disFunction;
+
+    if (typeof searchResult !== 'undefined' && searchResult.length !== 0) {
+        totalResult = searchResult;
+        container = ".vet_list";
+    } else{
+        totalResult = nearVet;
+        container = ".inner";
+    } 
+    
+     if (totalResult.length != 0) {
+        const sortedNearVet = sortingReserv(e).slice().sort((a, b) => {
+            const aPartnership = memVet[a["사업장명"]] && memVet[a["사업장명"]].partnership === true;
+            const bPartnership = memVet[b["사업장명"]] && memVet[b["사업장명"]].partnership === true;
+
+            if (aPartnership && !bPartnership) {
+                return -1; // a를 b보다 앞으로
+            }
+            if (!aPartnership && bPartnership) {
+                return 1; // b를 a보다 앞으로
+            }
+            return 0; // 변화 없음
+        });
+
+        // 정렬된 결과를 콘솔에 출력
+        document.querySelector(container).innerHTML="";
+        sortedNearVet.forEach((vetItem, index)=>{
+			if(container == ".vet_list"){
+				addHospitalToList(vetItem)
+			}else{
+				loadList(vetItem, index);
+			}
+		})
+    }
+}
