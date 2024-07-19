@@ -169,6 +169,9 @@
                     checked="false">
                 <label class="btn btn-light mb-2 mx-1" for="btn-check-48">23:30</label>
             </div>
+            <div id="unavailableContent" class="text-center mt-3">
+            	<strong class="text-danger">진료 불가 사유</strong><br/><span>사유 나오기</span>
+            </div>
         </div>
         <div class="clear-fix mt-3">
         	<button class="btn btn-outline-secondary float-start" onclick="goBack()">이전</button>
@@ -254,11 +257,24 @@
 		        const unavDate = localDate.toISOString().split('T')[0];
 		        
 		        console.log("unavDate ", unavDate);
-                if (unavDate === selectedDate) {
-                    unavailableTime.push(unavTime.time.slice(0, 5));
-                }
+		        if (unavDate === selectedDate) {
+		            unavailableTime.push(unavTime.time.slice(0, 5));
+		            console.log("사유", unavTime.comment);
+
+		            const unavailableContent = document.querySelector("#unavailableContent");
+		            const unavailableCommentSpan = unavailableContent.querySelector("span");
+
+		            if (unavTime.comment) {
+		                console.log("Comment exists, showing content");
+		                unavailableCommentSpan.innerHTML = unavTime.comment;
+		            }
+		        }
             });
             console.log("unavailableTime", unavailableTime);
+            //console.log(unavailableTime.length === 0);
+            if(unavailableTime.length === 0){
+            	document.querySelector("#unavailableContent").style.display = "none";
+            }
             updateCheckboxes();
         })
         .catch(error => console.log(error));
