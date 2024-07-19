@@ -179,27 +179,64 @@ function showDates(startTime, endTime, lunchStart, lunchEnd){
     }
 }
 
-function loadTimeslot(basicHours,vetAvailInfo){
-	let selectedDayArr = ["sun", "mon", "tue", "wed", "thu", "fri", "sat", "hol"];
+function loadTimeslot(basicHours, vetAvailInfo) {
+    let selectedDayArr = ["sun", "mon", "tue", "wed", "thu", "fri", "sat", "hol"];
     let selected = selectedDayArr[selectedDay];
-	//해당날짜 기본 타임슬롯보여주기
-	if(basicHours[selected] !=null){
-		let selectedBasicTime = basicHours[selected];
-		showDates(selectedBasicTime[0], selectedBasicTime[1], selectedBasicTime[2], selectedBasicTime[3])
-		//해당날짜 해당선생님의 availability보여주기
-		Object.keys(vetAvailInfo).forEach(key=>{
-			if(key.split("//")[0] == selectedVet){
-				for(v of vetAvailInfo[key]){
-					if(convertTimestamp(v.date) == selectedDate){
-						console.log(v.time.slice(0,5))
-						console.log(v.time)
-						let time =  v.time[0].toString().padStart(2, '0')+":"+v.time[1].toString().padStart(2, '0')
-						document.querySelector("span[value='"+time+"']").classList.add("disabled");
-					}
-				}
-			}
-		})
-	}
+    let date = new Date();
+    let year = date.getFullYear();
+    let month = (date.getMonth() + 1).toString().padStart(2, '0');
+    let day = date.getDate().toString().padStart(2, '0');
+    let hours = date.getHours().toString().padStart(2, '0');
+    let minutes = date.getMinutes().toString().padStart(2, '0');
+
+    // 현재 날짜
+    let todayDate = year + "-" + month + "-" + day;
+
+    // 기본 타임슬롯 보여주기
+    if (basicHours[selected] != null) {
+        let selectedBasicTime = basicHours[selected];
+        showDates(selectedBasicTime[0], selectedBasicTime[1], selectedBasicTime[2], selectedBasicTime[3]);
+
+        // 선택한 날짜가 오늘이라면 현재 시간 이전의 타임슬롯 비활성화
+        if (selectedDate === todayDate) {
+            let currentTime;
+            if (Number(minutes) < 30) {
+                minutes = "00";
+                currentTime = hours + ":" + minutes;
+            } else {
+                minutes = "30";
+                currentTime = hours + ":" + minutes;
+            }
+
+            // 기본 타임슬롯 범위 내의 타임슬롯을 순회하며 비활성화
+            let startHour = parseInt(selectedBasicTime[0].split(":")[0]);
+            let startMinute = parseInt(selectedBasicTime[0].split(":")[1]);
+            let endHour = parseInt(selectedBasicTime[1].split(":")[0]);
+            let endMinute = parseInt(selectedBasicTime[1].split(":")[1]);
+
+            for (let h = startHour; h <= endHour; h++) {
+                for (let m = 0; m < 60; m += 30) {
+                    let time = h.toString().padStart(2, '0') + ":" + m.toString().padStart(2, '0');
+                    if (time <= currentTime) {
+                        document.querySelector("span[value='" + time + "']").classList.add("disabled");
+                    }
+                    if (h === endHour && m === endMinute) break;
+                }
+            }
+        }
+
+        // 선생님의 availability 보여주기
+        Object.keys(vetAvailInfo).forEach(key => {
+            if (key.split("//")[0] === selectedVet) {
+                for (let v of vetAvailInfo[key]) {
+                    if (convertTimestamp(v.date) === selectedDate) {
+                        let time = v.time[0].toString().padStart(2, '0') + ":" + v.time[1].toString().padStart(2, '0');
+                        document.querySelector("span[value='" + time + "']").classList.add("disabled");
+                    }
+                }
+            }
+        });
+    }
 }
 
 
