@@ -187,33 +187,32 @@ function showModal(e) {
 
 function checkBookmark(e){
 	let hosId;
+	let filled = "http://localhost:8093/images/bookmark_fill.png"
+	let empty = "http://localhost:8093/images/bookmark.png"
+	let isBookmarked;
+	
 	if(!localStorage.getItem("MemberId")){
 		alert("로그인한 회원만 이용 가능한 서비스입니다. 로그인 후 이용해주세요");
 		return false;
 	}
 	
-
 	if(!e.target.parentElement.parentElement.querySelector("button").getAttribute("data-id") && e.target.parentElement.querySelector("#exampleModalLabel")){
 		hosId = e.target.parentElement.querySelector("#exampleModalLabel").getAttribute("data-id");
-	}else if(e.target.parentElement.querySelector("#hospital_id").getAttribute("data-id")){
+	}else if(!e.target.parentElement.parentElement.querySelector("button").getAttribute("data-id") && e.target.parentElement.querySelector("#hospital_id").getAttribute("data-id")){
 	    hosId = e.target.parentElement.querySelector("#hospital_id").getAttribute("data-id");
 	}else{
 		hosId = e.target.parentElement.parentElement.querySelector("button").getAttribute("data-id");
 	}
-	let filled = "/images/bookmark_fill.png"
-	let empty = "/images/bookmark.png"
-	let isBookmarked;
 	
 	if(e.target.src == filled){
-		e.target.src = empty;
 		if(confirm("이 병원을 즐겨찾기 목록에서 삭제하시겠습니까?")){
+			e.target.src = empty;
 			//북마크 취소 db에 업데이트해주기
 			isBookmarked=false;
-		};
-		
+		}
 	}else{
-		e.target.src = filled;
 		if(confirm("이 병원을 즐겨찾기 목록에 추가하시겠습니까?")){
+			e.target.src = filled;
 			//북마크 구독 db에 업데이트해주기
 			isBookmarked=true;
 		}
