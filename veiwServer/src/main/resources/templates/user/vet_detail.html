@@ -29,14 +29,16 @@
 	<div th:replace="~{user/header :: header}"></div>
 	<div class="container-xl">
 		<h1 class="mt-3 mt-md-5 mb-3 mb-md-3">동물병원 상세페이지</h1>
-		
-		<div class="detail_container">
-			<div class="vet_header">
-			<div id="vet_name"></div>
-			<img onclick="checkBookmark(event)" id="bookmarkImg" src="/images/bookmark.png">
-			</div>
-			<div class="item img_container"><img id="logo" src=""  alt="로고"/></div>
+		<div class="row">
+			<div class="d-flex align-items-center">
+			<h1 id="vet_name"></h1>
+			<img style="width:50px;" onclick="checkBookmark(event)" id="bookmarkImg" src="/images/bookmark.png">
 			<div id="hospital_id" style="display:none;">번호</div>
+			</div>
+		<div class="col-md-6">
+			<div class="img_container" style="max-width:300px; margin:50px auto;"><img class="w-100" id="logo" src=""  alt="로고"/></div>
+		</div>
+		<div class="col-md-6">
 	        <div class='item'><span class="modal-sub-title">번호</span><span id="phone">번호</span></div>
 	        <div class='item'><span class="modal-sub-title">주소</span><span id="address">주소</span></div>
 	        <div class='modal-memVetInfo'>
@@ -44,6 +46,9 @@
 	          
 	          <div class='item'><img style="width:35px; transform: rotate(-20deg);" src="/images/pin_p.svg"><span class="modal-sub-title">포인트제휴여부</span><span id="point" >포인트제휴여부</span></div>
 	          <div class='item'><span class="modal-sub-title">병원소개</span><span id="introduction" >병원소개</span></div>
+         	</div>
+        </div>
+         	
 	          <div class='item'>
 	            <span class="modal-sub-title">평균별점</span>
 	            <div class="reviewContainer">
@@ -61,9 +66,11 @@
 	              </div>
 	            </div>
 	          </div>
-	          <div class='item'><span class="modal-sub-title">대표자이름</span><span id="representative" >대표자이름</span></div>
-	          <div class='item'><span class="modal-sub-title">이메일</span><span id="email">이메일</span></div>
-	          <div class='item'><span class="modal-sub-title">사업자번호</span><span id="businessNumber">사업자번호</span></div>
+	          <div class='item'>
+		          <div><span class="modal-sub-title">대표자이름</span><span id="representative" >대표자이름</span></div>
+		          <div><span class="modal-sub-title">이메일</span><span id="email">이메일</span></div>
+		          <div><span class="modal-sub-title">사업자번호</span><span id="businessNumber">사업자번호</span></div>
+	          </div>
 	          <div class="row">
 	            <div class="col-6 p-1">
 	              <button style="width: 100%;" class="btn btn-user-sub reservationBtn" onclick="makeReservation(event)">예약하기</button>
@@ -86,19 +93,18 @@
 	<script>
 		const id = "[[${id}]]";
 		console.log(id)
-		
+		document.querySelector("#hospital_id").setAttribute("data-id", id);
 		const xhttp = new XMLHttpRequest();
 		  xhttp.onload = function() {
 			  let data = JSON.parse(this.responseText)
 		      console.log(data);
 			  document.querySelector("#vet_name").innerText = data.hospitalName;
 		 	  document.querySelector("#phone").innerHTML = data.phone;
-		 	  document.querySelector("#address").innerHTML = data.address;
+		 	  document.querySelector("#address").innerHTML = data.address.replaceAll("//", " ");
  			  let basicHours = JSON.parse(data.businessHours);
- 			  let hoursArr = getBasicBusinessHours(basicHours);
-
+ 			  
 	 			// 영업시간 설정
-	 			showBusinessHour(hoursArr);
+	 			showBusinessHour(basicHours);
 	 			// 포인트제휴여부 설정
 	 			document.querySelector("#point").innerHTML = data.partnership ? "포인트제휴병원 ⭕" : "포인트제휴병원 ❌";
 	 			// 북마크 설정
