@@ -2,6 +2,8 @@ package com.example.restServer.repository;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -12,7 +14,7 @@ import com.example.restServer.entity.Reservation;
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
 
 	@Query(value = "SELECT * FROM reservation WHERE hospital_id = :memberId AND status = :status ORDER BY reservation_datetime asc", nativeQuery = true)
-	List<Reservation> findAllByHospitalIdAndStatus(@Param("memberId")Long memberId, @Param("status")String status);
+	Page<Reservation> findAllByHospitalIdAndStatus(Pageable pageable, @Param("memberId")Long memberId, @Param("status")String status);
 	
 	@Query(value = "SELECT AVG(RATING) FROM reservation WHERE hospital_id = :hospitalId AND !ISNULL(RATING);", nativeQuery = true)
 	Long findAvgReview(@Param("hospitalId") Long hospitalId);
