@@ -331,10 +331,10 @@ document.querySelector("#keywordSearchBtn").addEventListener("click", function()
     
     document.querySelector(".vet_list").innerHTML = "";
     searchResult = [];
-    let params = new URLSearchParams();
+    let dataToSearch={}
 
     keywordSearchResult.forEach(hos => {
-         params.append(hos["사업장명"], hos["도로명전체주소"].split(" ")[0] + "//" + hos["도로명전체주소"].split(" ")[1]);
+		dataToSearch[hos["사업장명"]] = hos["도로명전체주소"].split(" ")[0] + "//" + hos["도로명전체주소"].split(" ")[1];
     });
 
     const xhttp = new XMLHttpRequest();
@@ -363,12 +363,12 @@ document.querySelector("#keywordSearchBtn").addEventListener("click", function()
 	       		searchResult.push(hos)
 	       		});
     };
-    xhttp.open("GET", "http://localhost:9001/api/v1/keyword-vet-list?"+ params.toString(), true); 
+    xhttp.open("POST", "http://localhost:9001/api/v1/keyword-vet-list", true); 
     xhttp.setRequestHeader("MemberId", localStorage.getItem("MemberId"));
     xhttp.setRequestHeader("Authorization", localStorage.getItem("token"));
     xhttp.setRequestHeader("role", localStorage.getItem("role"));
     xhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-    xhttp.send(); // vetInfo 배열을 전송
+    xhttp.send(JSON.stringify(dataToSearch)); // vetInfo 배열을 전송
 });
 
 
