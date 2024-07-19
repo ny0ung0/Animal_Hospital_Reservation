@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html class="h-100" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>견강할고양</title>
+<script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+<link href="/css/style.css" rel="stylesheet">
+<link href="/css/chatroom.css" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Jua&display=swap" rel="stylesheet">
+</head>
+
+<body class="d-flex flex-column h-100">
+<div th:replace="~{hospital/header :: header}"></div>
+<div class="container-xl">
+    <h1 class="mt-3 mt-md-5 mb-3 mb-md-3">채팅방</h1>
+    <hr>
+    <div class="container mt-5">
+          <div id="chat-box" class="d-flex flex-row">
+              <div class="received-container"></div>
+              <div class="sent-container"></div>
+          </div>
+          <form id="chat-form">
+              <div id="inputBox" class="form-group">
+                  <input type="text" id="message" class="form-control" placeholder="메시지를 입력하세요...">
+                  <div class="input-group-append">
+                      <button type="submit" class="btn btn-outline-secondary">Send</button>
+                  </div>
+              </div>
+          </form>
+      </div>
+</div>
+
+
+<div th:replace="~{user/footer :: footer}"></div>
+
+<script th:inline="javascript">
+    const chatRoomId = "[[${chatRoomId}]]";
+    const token = localStorage.getItem("token");
+    const MemberId = localStorage.getItem("MemberId");
+    var receiver = null; 
+
+
+        $(document).ready(function() {
+            $.ajax({
+                url: 'http://localhost:9001/chat/' + chatRoomId,
+                type: 'GET',
+                dataType: 'json',
+                headers: {
+                    'Authorization': token,
+                    'MemberId': MemberId
+                },
+                success: function(response) {
+                    const receivedContainer = $('.received-container');
+                    const sentContainer = $('.sent-container');
+                    receivedContainer.empty();
+                    sentContainer.empty();
+
+                    // 메시지들을 날짜 순으로 정렬
+                    response.sort((a, b) => {
+                        const dateA = new Date(a.sendDate[0], a.sendDate[1] - 1, a.sendDate[2], a.sendDate[3], a.sendDate[4], a.sendDate[5], a.sendDate[6] / 1000);
+                        const dateB = new Date(b.sendDate[0], b.sendDate[1] - 1, b.sendDate[2], b.sendDate[3], b.sendDate[4], b.sendDate[5], b.sendDate[6] / 1000);
+                        return dateA - dateB;
+                    });
+                    
+                    console.log("서버 응답 데이터:", response);
+                    
+              
+                    let finalReceiver = null;
+                    const chatRoomInfo = response[0]; 
+                    console.log("chatroominfo : " + chatRoomInfo.sender.id + chatRoomInfo.receiver.id);
+
+//                     if (MemberId === chatRoomInfo.user.id) {
+//                         finalReceiver = chatRoomInfo.hospital.id;
+//                     } else {
+//                         finalReceiver = chatRoomInfo.user.id;
+//                     }
+                    
+					
+                    if (MemberId == chatRoomInfo.receiver.id) {
+                        finalReceiver = chatRoomInfo.sender.id;
+                    } else {
+                        finalReceiver = chatRoomInfo.receiver.id;
+                    }
+
+                    response.forEach(chat => {
+                        if (chat.message === "채팅이 연결되었습니다.") {
+                            return;
+                        }
+
+                        const messageBox = $('<div class="messageBox"></div>');
+                        const messageElement = $('<div class="text-message"></div>');
+                        const metaContainer = $('<div class="meta-container"></div>');
+                        const timestampElement = $('<div class="timestamp"></div>');
+                        const isReadElement = $('<div class="is-read"></div>');
+
+                        const sendDate = chat.sendDate;
+                        const localDate = new Date(
+                            sendDate[0], sendDate[1] - 1, sendDate[2], sendDate[3], sendDate[4], sendDate[5], sendDate[6] / 1000
+                        );
+
+                        const timestamp = !isNaN(localDate) ? localDate.toLocaleString('ko-KR') : 'Invalid Date';
+                        timestampElement.text(timestamp);
+
+                        if (chat.isRead === false) {
+                            isReadElement.text("읽지않음");
+                        }else{
+                        	isReadElement.text("읽음");
+                        }
+
+                        metaContainer.append(timestampElement);
+                        metaContainer.append(isReadElement);
+                        messageElement.text(chat.message);
+
+                        //receiver = chat.sender.id; 
+                        
+                        /* if (chat.sender.id !== MemberId) {
+                            receiver = chat.sender.id;
+                        }
+                        console.log("receiver 출력: " + receiver);       */           
+   
+
+                        
+                        if (chat.sender.id == MemberId || chat.sender.id === null) {
+                            messageElement.addClass('sentMsg');
+                            messageBox.addClass('sentBox');
+                            messageBox.append(messageElement);
+                            messageBox.append(metaContainer);
+                            sentContainer.append(messageBox);
+                        } else if (receiver != MemberId) {
+                            messageElement.addClass('receivedMsg');
+                            messageBox.addClass('receivedBox');
+                            messageBox.append(messageElement);
+                            messageBox.append(metaContainer);
+                            receivedContainer.append(messageBox);
+                        }
+                    });
+
+                    $('#chat-box').scrollTop($('#chat-box').prop("scrollHeight"));
+
+                    
+                    connectWebSocket(finalReceiver);
+                },
+                error: function(xhr, status, error) {
+                    console.error('채팅내역 불러오기 에러발생', error);
+                }
+            });
+        });
+    
+
+    function connectWebSocket(receiver) {
+        const sender = localStorage.getItem('MemberId');
+        const socket = new WebSocket("ws://localhost:9001/ws/chat");
+
+        socket.onopen = function(event) {
+            console.log("웹소켓 연결 성공!");
+            socket.send(JSON.stringify({
+                type: 'join',
+                sender: sender,
+                receiver: receiver,
+                message: "채팅이 연결되었습니다."
+            }));
+            console.log("웹소켓 연결 시 sender : " + sender);
+            console.log("웹소켓 연결 시 receiver : "+ receiver);
+        };
+
+        socket.onmessage = function(event) {
+            const message = JSON.parse(event.data);
+            const messageBox = document.createElement('div');
+            messageBox.className = 'messageBox';
+
+            const messageElement = document.createElement('div');
+            messageElement.className = 'text-message';
+
+            const metaContainer = document.createElement('div');
+            metaContainer.className = 'meta-container';
+
+            const timestampElement = document.createElement('div');
+            timestampElement.className = 'timestamp';
+
+            const isReadElement = document.createElement('div');
+            isReadElement.className = 'is-read';
+
+            const sendDate = message.sendDate;
+            const localDate = new Date(
+                sendDate[0], sendDate[1] - 1, sendDate[2], sendDate[3], sendDate[4], sendDate[5], sendDate[6] / 1000
+            );
+
+            const timestamp = !isNaN(localDate) ? localDate.toLocaleString('ko-KR') : 'Invalid Date';
+            timestampElement.innerText = timestamp;
+
+            messageElement.innerText = message.message;
+            metaContainer.appendChild(timestampElement);
+
+            if (message.isRead === false) {
+                isReadElement.innerText = "읽지않음";
+                metaContainer.appendChild(isReadElement);
+            }
+
+            const sentContainer = document.querySelector('.sent-container');
+            const receivedContainer = document.querySelector('.received-container');
+
+            if (message.sender.id == sender) {
+                messageElement.classList.add('sentMsg');
+                messageBox.classList.add('sentBox');
+                sentContainer.appendChild(messageBox);
+            } else {
+                messageElement.classList.add('receivedMsg');
+                messageBox.classList.add('receivedBox');
+                receivedContainer.appendChild(messageBox);
+            }
+
+            messageBox.appendChild(messageElement);
+            messageBox.appendChild(metaContainer);
+
+            document.getElementById('chat-box').scrollTop = document.getElementById('chat-box').scrollHeight;
+            console.log(message.sender.id + " : " + message.message);
+        };
+
+        socket.onclose = function() {
+            console.log("서버 연결 해제");
+        };
+
+        document.getElementById('chat-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const message = document.getElementById('message').value;
+            socket.send(JSON.stringify({
+                type: 'message',
+                sender: sender,
+                receiver: receiver,
+                message: message
+            }));
+            document.getElementById('message').value = '';
+        });
+    }
+</script>
+    
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</body>
+</html>
