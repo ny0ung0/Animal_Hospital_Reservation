@@ -45,15 +45,14 @@
     console.log("병원 id 출력 : " + receiver);
     console.log("챗룸 id 출력 : " + chatRoomId);
 
-    // 새로운 채팅 여부를 판단하는 변수
-    const isNewChat = !chatRoomId || chatRoomId === "null";
 
-    if (isNewChat) {
-        // 새로운 채팅인 경우, 바로 웹소켓 연결
+    //const isNewChat = !chatRoomId || chatRoomId === "null";
+
+    if (receiver != null && receiver !== "null") {
         console.log("새로운 채팅입니다. 웹소켓을 바로 연결합니다.");
-        connectWebSocket();
+        connectWebSocket(receiver);
     } else {
-        // 기존 채팅인 경우, AJAX 통신을 통해 이전 채팅 내역을 불러옵니다.
+    	console.log("새로운 채팅이 아닙니다. 기존 채팅 내역을 불러옵니다.");
         $(document).ready(function() {
             $.ajax({
                 url: 'http://localhost:9001/chat/' + chatRoomId,
@@ -75,7 +74,18 @@
                         const dateB = new Date(b.sendDate[0], b.sendDate[1] - 1, b.sendDate[2], b.sendDate[3], b.sendDate[4], b.sendDate[5], b.sendDate[6] / 1000);
                         return dateA - dateB;
                     });
-
+					
+                    let finalReceiver = null;
+                    const chatRoomInfo = response[0]; 
+                    console.log("chatroominfo : " + chatRoomInfo.sender.id + chatRoomInfo.receiver.id);
+                    
+                    if (MemberId == chatRoomInfo.receiver.id) {
+                        finalReceiver = chatRoomInfo.sender.id;
+                    } else {
+                        finalReceiver = chatRoomInfo.receiver.id;
+                    }
+                    
+                    
                     response.forEach(chat => {
                         if (chat.message === "채팅이 연결되었습니다.") {
                             return;
@@ -97,15 +107,18 @@
 
                         if (chat.isRead === false) {
                             isReadElement.text("읽지않음");
+                        }else{
+                        	isReadElement.text("읽음");
                         }
+                        
 
                         metaContainer.append(timestampElement);
                         metaContainer.append(isReadElement);
                         messageElement.text(chat.message);
 
-                        receiver = chat.receiver.id; // AJAX 응답에서 receiver를 설정합니다.
+                        //receiver = chat.receiver.id; // AJAX 응답에서 receiver를 설정합니다.
 
-                        console.log("receiver 출력: " + receiver);
+                        //console.log("receiver 출력: " + receiver);
 
                         if (chat.sender.id == MemberId || chat.sender.id === null) {
                             messageElement.addClass('sentMsg');
@@ -125,7 +138,7 @@
                     $('#chat-box').scrollTop($('#chat-box').prop("scrollHeight"));
 
                     // 웹소켓 연결을 여기서 설정합니다.
-                    connectWebSocket();
+                    connectWebSocket(finalReceiver);
                 },
                 error: function(xhr, status, error) {
                     console.error('채팅내역 불러오기 에러발생', error);
@@ -134,7 +147,7 @@
         });
     }
 
-    function connectWebSocket() {
+    function connectWebSocket(receiver) {
         const sender = localStorage.getItem('MemberId');
         const socket = new WebSocket("ws://localhost:9001/ws/chat");
 
@@ -146,6 +159,8 @@
                 receiver: receiver,
                 message: "채팅이 연결되었습니다."
             }));
+            console.log("웹소켓 연결 시 sender : " + sender);
+            console.log("웹소켓 연결 시 receiver : "+ receiver);
         };
 
         socket.onmessage = function(event) {
@@ -182,15 +197,23 @@
             }
 
             const sentContainer = document.querySelector('.sent-container');
+            const receivedContainer = document.querySelector('.received-container');
 
-            messageElement.classList.add('sentMsg');
-            messageBox.classList.add('sentBox');
+            if (message.sender.id == sender) {
+                messageElement.classList.add('sentMsg');
+                messageBox.classList.add('sentBox');
+                sentContainer.appendChild(messageBox);
+            } else {
+                messageElement.classList.add('receivedMsg');
+                messageBox.classList.add('receivedBox');
+                receivedContainer.appendChild(messageBox);
+            }
+
             messageBox.appendChild(messageElement);
             messageBox.appendChild(metaContainer);
-            sentContainer.appendChild(messageBox);
 
             document.getElementById('chat-box').scrollTop = document.getElementById('chat-box').scrollHeight;
-            console.log(message.sender + " : " + message.message);
+            console.log(message.sender.id + " : " + message.message);
         };
 
         socket.onclose = function() {
