@@ -122,14 +122,6 @@ public class ChatService {
 	
 	
 	
-	
-	
-	
-	
-	
-
-	
-	
 	//채팅 내역 불러오기
 	public List<Chat> getMessages(Long chatRoomId){
 		return chatRepo.findChatsByChatRoomId(chatRoomId);
@@ -157,21 +149,22 @@ public class ChatService {
 
 	//채팅방 찾기	
 	public ChatRoom getChatRoom(Member sender, Member receiver) {
-	    return chatroomRepo.findByUserAndHospital(sender, receiver);
+	    return chatroomRepo.findByMembers(sender, receiver);
 	}
 	
 	//채팅방 생성 OR 채팅방 불러오기 
 	private ChatRoom getOrCreateChatRoom(Member sender, Member receiver) {
-	    ChatRoom chatRoom = chatroomRepo.findByUserAndHospital(sender, receiver);
-	    if (chatRoom != null) {
-	        return chatRoom;
-	    } else {
-	        // 채팅 방이 없으면 새로 생성
-	        ChatRoom newChatRoom = new ChatRoom();
-	        newChatRoom.setUser(sender);
-	        newChatRoom.setHospital(receiver);
-	        return chatroomRepo.save(newChatRoom);
-	    }
+
+	    ChatRoom chatRoom = chatroomRepo.findByMembers(sender, receiver);
+        if (chatRoom != null) {
+            return chatRoom;
+        } else {
+            // 채팅 방이 없으면 새로 생성
+            ChatRoom newChatRoom = new ChatRoom();
+            newChatRoom.setUser(sender);
+            newChatRoom.setHospital(receiver);
+            return chatroomRepo.save(newChatRoom);
+        }
 	}
 	
 	

@@ -104,7 +104,6 @@ function loadReservationInfo(data){
 	let vetInfo = data[2];
 	let reservInfo = data[3].reservation;
 	let basicHours = JSON.parse(vetInfo[Object.keys(vetInfo)[0]].businessHours);
-	let basicHoursArr = getBasicBusinessHours(basicHours);
 	
 	// 배열에서 년, 월, 일, 시, 분을 추출
     const [year, month, day, hour, minute] = reservInfo.reservationDatetime;
@@ -141,7 +140,7 @@ function loadReservationInfo(data){
 	 
 	 console.log(vetAvailInfo)
 	 console.log(selectedDay)
-	 loadTimeslot(basicHoursArr,vetAvailInfo);
+	 loadTimeslot(basicHours,vetAvailInfo);
 	 
 	 selectedTime = hour.toString().padStart(2, '0')+":"+minute.toString().padStart(2, '0');
 	 selectedSlot = oriSelectedTimeslot;
@@ -198,22 +197,7 @@ function submitForm(e){
 	  xhttp.send(JSON.stringify(formData));
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
 </script>
-
-
-
 </body>
 
 </html>

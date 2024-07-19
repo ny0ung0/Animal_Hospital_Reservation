@@ -220,56 +220,6 @@ function resetFilter(){
 	})
 }
 
-function sortingReserv(e){
-	console.log(memVet)
-	 if(searchResult.length != 0){
-        searchResult.sort((a, b) => {
-            const aInMemVet = memVet[a["사업장명"]] && memVet[a["사업장명"]].address == a["소재지전체주소"]
-            const bInMemVet = memVet[b["사업장명"]] && memVet[b["사업장명"]].address == b["소재지전체주소"]
-
-            if (aInMemVet && !bInMemVet) {
-                return -1; // a를 b보다 앞으로
-            }
-            if (!aInMemVet && bInMemVet) {
-                return 1; // b를 a보다 앞으로
-            }
-            return 0; // 변화 없음
-        });
-
-        // 정렬된 결과를 콘솔에 출력
-        document.querySelector(".vet_list").innerHTML="";
-        searchResult.forEach(vetItem=>{
-			addHospitalToList(vetItem);
-		})
-    }
-}
-
-
-function sortingPoint(e) {
-     if (searchResult.length != 0) {
-		sortingReserv(e);
-        searchResult.sort((a, b) => {
-            const aPartnership = memVet[a["사업장명"]] && memVet[a["사업장명"]].partnership === true;
-            const bPartnership = memVet[b["사업장명"]] && memVet[b["사업장명"]].partnership === true;
-
-            if (aPartnership && !bPartnership) {
-                return -1; // a를 b보다 앞으로
-            }
-            if (!aPartnership && bPartnership) {
-                return 1; // b를 a보다 앞으로
-            }
-            return 0; // 변화 없음
-        });
-
-        // 정렬된 결과를 콘솔에 출력
-        document.querySelector(".vet_list").innerHTML="";
-        searchResult.forEach(vetItem=>{
-			addHospitalToList(vetItem);
-		})
-    }
-}
-
-
 // 디바운스를 위한 타이머 변수
 let debounceTimer;
 let isResultContainerOpen;
