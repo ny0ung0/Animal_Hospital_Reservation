@@ -91,7 +91,8 @@ $(document).ready(function() {
                     chatList.append(listItem);
                 }
             } else {
-                chatList.html("<div class='list-group'>채팅 내역이 없습니다!</div>");
+            	chatList.html("<img src='/images/cute.png' style='width:160px; height:160px; margin : 0 auto;'>");
+            	chatList.append("<div class='list-group' style='text-align : center;'>아직 채팅 내역이 없네요!</div>");
             }
         },
         error: function(xhr, status, error) {
