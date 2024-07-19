@@ -100,7 +100,7 @@
 		      console.log(data);
 			  document.querySelector("#vet_name").innerText = data.hospitalName;
 		 	  document.querySelector("#phone").innerHTML = data.phone;
-		 	  document.querySelector("#address").innerHTML = data.address;
+		 	  document.querySelector("#address").innerHTML = data.address.replaceAll("//", " ");
  			  let basicHours = JSON.parse(data.businessHours);
  			  
 	 			// 영업시간 설정
