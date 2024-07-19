@@ -40,12 +40,12 @@
 const xhttp = new XMLHttpRequest();
 xhttp.onload = function() {
   let data = JSON.parse(this.responseText)
-  console.log(data)
+  console.log(data[0].createdAt)
   
   for(let i = 0; i < data.length; i++){
 	  let listItem = document.createElement("tr");
 	  listItem.innerHTML = "<th>"+ (i+1) +"</th>" + "<th>"+ data[i].category +"</th>"
-	  						+ "<th><a href='/qnaDetail?id=" + data[i].id + "'>" + data[i].title + "</a></th>" + "<th>"+ data[i].createdAt.slice(0,10) +"</th>"
+	  						+ "<th><a href='/qnaDetail?id=" + data[i].id + "'>" + data[i].title + "</a></th>" + "<th>"+ data[i].createdAt[0]+"-"+data[i].createdAt[1]+"-" +data[i].createdAt[2]+"</th>"
 	  document.querySelector("#myList").appendChild(listItem);
   }
  }

@@ -142,6 +142,7 @@ function fetchHospitalData(guMap, noGuCities) {
             try {
                 let jsonData = JSON.parse(this.responseText);
                 let datas = jsonData["동물병원"];
+                console.log(datas)
                 datas.forEach(hospital => {
                     if (hospital["소재지전체주소"] != null) {
                         let address = hospital["소재지전체주소"].split(" ");
@@ -330,10 +331,10 @@ document.querySelector("#keywordSearchBtn").addEventListener("click", function()
     
     document.querySelector(".vet_list").innerHTML = "";
     searchResult = [];
-    let params = new URLSearchParams();
+    let dataToSearch={}
 
     keywordSearchResult.forEach(hos => {
-         params.append(hos["사업장명"], hos["도로명전체주소"].split(" ")[0] + "//" + hos["도로명전체주소"].split(" ")[1]);
+		dataToSearch[hos["사업장명"]] = hos["도로명전체주소"].split(" ")[0] + "//" + hos["도로명전체주소"].split(" ")[1];
     });
 
     const xhttp = new XMLHttpRequest();
@@ -362,12 +363,12 @@ document.querySelector("#keywordSearchBtn").addEventListener("click", function()
 	       		searchResult.push(hos)
 	       		});
     };
-    xhttp.open("GET", "http://localhost:9001/api/v1/keyword-vet-list?"+ params.toString(), true); 
+    xhttp.open("POST", "http://localhost:9001/api/v1/keyword-vet-list", true); 
     xhttp.setRequestHeader("MemberId", localStorage.getItem("MemberId"));
     xhttp.setRequestHeader("Authorization", localStorage.getItem("token"));
     xhttp.setRequestHeader("role", localStorage.getItem("role"));
     xhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-    xhttp.send(); // vetInfo 배열을 전송
+    xhttp.send(JSON.stringify(dataToSearch)); // vetInfo 배열을 전송
 });
 
 
@@ -394,6 +395,28 @@ document.getElementById("keywordSearchBtn").addEventListener("click", function (
 document.getElementById("searchBtn").addEventListener("click", function () {
 	
 	 if (guMap.size == 0 && citiesWithNoGu.size == 0) {
+		return false;
+	  }
+    showLoading();
+    setTimeout(() => {
+        hideLoading(); 
+    }, 1000);
+});
+
+document.getElementById("sortingReserv").addEventListener("click", function () {
+	
+	 if (searchResult.length == 0 ) {
+		return false;
+	  }
+    showLoading();
+    setTimeout(() => {
+        hideLoading(); 
+    }, 1000);
+});
+
+document.getElementById("sortingPoint").addEventListener("click", function () {
+	
+	 if (searchResult.length == 0 ) {
 		return false;
 	  }
     showLoading();
