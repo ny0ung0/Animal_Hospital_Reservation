@@ -169,6 +169,9 @@
                     checked="false">
                 <label class="btn btn-light mb-2 mx-1" for="btn-check-48">23:30</label>
             </div>
+            <div id="unavailableContent" class="text-center mt-3">
+            	<strong class="text-danger">진료 불가 사유</strong><br/><span>사유 나오기</span>
+            </div>
         </div>
         <div class="clear-fix mt-3">
         	<button class="btn btn-outline-secondary float-start" onclick="goBack()">이전</button>
@@ -203,6 +206,28 @@
     const token = localStorage.getItem("token");
     document.addEventListener('DOMContentLoaded', function () {
        
+    	let todayLastTime = [];
+    	function formatDate(date) {
+    	    const year = date.getFullYear();
+    	    const month = String(date.getMonth() + 1).padStart(2, '0');
+    	    const day = String(date.getDate()).padStart(2, '0');
+    	    const hours = String(date.getHours()).padStart(2, '0');
+    	    const minutes = String(date.getMinutes()).padStart(2, '0');
+
+    	    return `${year}-${month}-${day} ${hours}:${minutes}`;
+    	}
+
+    	let todayTime = new Date();
+    	let formattedDate = formatDate(todayTime);
+
+    	console.log(formattedDate);
+    	
+    	if(formattedDate.startsWith(selectedDate)){
+    		console.log("날짜 시작");
+    		let todayHoureMinute = formattedDate.slice(11, 16);
+    		console.log(todayHoureMinute);
+    		
+    	}
 
         let reservationTime = [];
         let unavailableTime = [];
@@ -232,11 +257,24 @@
 		        const unavDate = localDate.toISOString().split('T')[0];
 		        
 		        console.log("unavDate ", unavDate);
-                if (unavDate === selectedDate) {
-                    unavailableTime.push(unavTime.time.slice(0, 5));
-                }
+		        if (unavDate === selectedDate) {
+		            unavailableTime.push(unavTime.time.slice(0, 5));
+		            console.log("사유", unavTime.comment);
+
+		            const unavailableContent = document.querySelector("#unavailableContent");
+		            const unavailableCommentSpan = unavailableContent.querySelector("span");
+
+		            if (unavTime.comment) {
+		                console.log("Comment exists, showing content");
+		                unavailableCommentSpan.innerHTML = unavTime.comment;
+		            }
+		        }
             });
             console.log("unavailableTime", unavailableTime);
+            //console.log(unavailableTime.length === 0);
+            if(unavailableTime.length === 0){
+            	document.querySelector("#unavailableContent").style.display = "none";
+            }
             updateCheckboxes();
         })
         .catch(error => console.log(error));
@@ -382,14 +420,32 @@
 
         function updateCheckboxesNone() {
             const checkboxes = document.querySelectorAll('.btn-check');
+            const isToday = selectedDate === formattedDate.slice(0, 10); // 오늘 날짜인지 확인
+
             checkboxes.forEach(checkbox => {
                 const time = checkbox.dataset.time;
+
                 if (!isTimeSelectable(time)) {
                     checkbox.style.display = "none";
                     const labelId = checkbox.id.replace('btn-check-', '');
                     const label = document.querySelector(`label[for="btn-check-${labelId}"]`);
                     if (label) {
                         label.style.display = "none";
+                    }
+                }
+
+                // 오늘 날짜인 경우, 현재 시간 이전의 시간대를 숨김
+                if (isToday) {
+                    const [currentHours, currentMinutes] = formattedDate.slice(11, 16).split(':').map(Number);
+                    const [checkboxHours, checkboxMinutes] = time.split(':').map(Number);
+
+                    if (checkboxHours < currentHours || (checkboxHours === currentHours && checkboxMinutes < currentMinutes)) {
+                        checkbox.style.display = "none";
+                        const labelId = checkbox.id.replace('btn-check-', '');
+                        const label = document.querySelector(`label[for="btn-check-${labelId}"]`);
+                        if (label) {
+                            label.style.display = "none";
+                        }
                     }
                 }
             });
