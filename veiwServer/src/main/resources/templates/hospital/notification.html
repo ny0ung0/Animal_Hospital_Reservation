@@ -20,6 +20,7 @@
 <body class="d-flex flex-column h-100">
 	<div th:replace="~{hospital/header :: header}"></div>
 	<div class="container-xl">
+		<input type="hidden" name="reservId" th:value=${reservId}>
 		<div
 			class="container d-flex flex-wrap justify-content-between align-items-center">
 			<div
@@ -29,33 +30,35 @@
 			<div
 				class="col-12 col-lg-auto mb-3 mb-lg-0 d-flex align-items-center">
 				<div class="ms-2 mt-3 mt-md-5 mb-3mb-md-3">
-					<i class="bi bi-house-door-fill"></i> <i
-						class="bi bi-caret-right-fill"></i> <span>알림 설정</span>
+					<i class="bi bi-house-door-fill"></i>
+					<i class="bi bi-caret-right-fill"></i>
+					<span>알림 설정</span>
 				</div>
 			</div>
 		</div>
 		<hr />
 		<div>
-			<div class="input-group mb-3 mx-auto p-2" style='width:700px'>
-				<span class="input-group-text">고객명</span>
-				<input type="text" class="form-control" name="username"/>
+			<div class="input-group mb-3 mx-auto p-2" style='width: 700px'>
+				<span class="input-group-text">고객명</span> <input type="text"
+					class="form-control" name="username" id="username" />
 			</div>
-			<div class="input-group mb-3 mx-auto p-2" style='width:700px'>
-			<span class="input-group-text">반려동물정보</span>
-			<input type="text" class="form-control" name="petinfo"/>
+			<div class="input-group mb-3 mx-auto p-2" style='width: 700px'>
+				<span class="input-group-text">반려동물정보</span> <input type="text"
+					class="form-control" name="petinfo" id="petinfo" />
 			</div>
-			
-			<div class="input-group mb-3 mx-auto p-2" style='width:700px'>
-			<span class="input-group-text">제목</span>
-			<input type="text" class="form-control" name="title"/>
+
+			<div class="input-group mb-3 mx-auto p-2" style='width: 700px'>
+				<span class="input-group-text">제목</span> <input type="text"
+					class="form-control" name="title" />
 			</div>
-			
-			<div class="input-group mb-3 mx-auto p-2" style='width:700px'>
-			<span class="input-group-text">내용</span>
-			<input type="text" class="form-control" name="content"/>
+
+			<div class="input-group mb-3 mx-auto p-2" style='width: 700px'>
+				<span class="input-group-text">내용</span> <input type="text"
+					class="form-control" name="content" />
 			</div>
-			<div class="d-grid gap-2 col-6 mx-auto" style='width:400px'>
-			<button class="btn btn-primary opacity-75" onsubmit="#">알림 보내기</button>
+			<div class="d-grid gap-2 col-6 mx-auto" style='width: 400px'>
+				<button class="btn btn-primary opacity-75"
+					onclick="sendnotification()">알림 보내기</button>
 			</div>
 		</div>
 
@@ -66,8 +69,43 @@
 		integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
 		crossorigin="anonymous"></script>
 	<script>
-	
-	
+	const memberId = localStorage.getItem("MemberId");
+	const token = localStorage.getItem("token");
+	const urlParams = new URLSearchParams(window.location.search);
+    const reservId = urlParams.get('id');
+	console.log(reservId);
+	let userid = '';
+	fetch("http://localhost:9001/api/v1/hospital/reservation/" + reservId, {
+		method : "GET",
+		headers: {
+	        'Authorization': token
+	    }
+	})
+	.then(response => response.text())
+	.then(data => {
+		const obj = JSON.parse(data);
+		let isNeutered = "";
+		let gender = "";
+		obj.pet.isNeutered ? isNeutered = "Y" : isNeutered = "N";
+		obj.pet.gender=="female" ? gender = "여아" : gender = "남아";
+		userid = obj.user.id;
+		console.log(obj.pet.birthdate);
+		// 서버에서 받은 UTC 시간을 Date 객체로 변환
+	    const utcDate = new Date(obj.pet.birthdate);
+	   // console.log("utcDate", utcDate);
+	    
+	    // UTC 시간을 로컬 시간대로 변환
+	    const localDate = new Date(utcDate.getTime() - new Date().getTimezoneOffset() * 60000);
+	    //console.log("localDate", localDate);
+	    
+	    // 로컬 날짜를 ISO 포맷의 문자열로 변환하여 날짜 부분만 추출
+	    let birthdate = localDate.toISOString().split('T')[0];
+		
+		document.getElementById("username").value = obj.user.name;
+		document.getElementById("petinfo").value = "종류: " + obj.pet.type + " " + obj.pet.name + " " + gender + " " + isNeutered + " " + obj.pet.weight;
+		console.log(birthdate)
+	})
+	.catch(error => console.log(error));
 	</script>
 </body>
 </html>
