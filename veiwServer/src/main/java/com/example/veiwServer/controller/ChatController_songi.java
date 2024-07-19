@@ -31,4 +31,22 @@ public class ChatController_songi {
 		return "/user/chatroom";
 	}
 	
+	
+	//////////////////병원용//////////////
+	
+	
+	@RequestMapping("/hospital/chatList")
+	public String chatList_hospital() {
+		return "/hospital/chat_list";
+	}
+	
+	
+
+	@RequestMapping("/hospital/chat/{chatRoomId}")
+	public String hospitalChat(@PathVariable("chatRoomId")Long chatRoomId, Model model) {
+		model.addAttribute("chatRoomId",chatRoomId);
+		
+		return "/hospital/chatroom";
+	}
+	
 }
