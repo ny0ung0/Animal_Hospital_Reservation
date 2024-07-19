@@ -54,8 +54,8 @@ public class HospitalReservationController_js {
 	@Autowired
 	UnavailableTimeRepository unavailableTimeRepo;
 	
-	@GetMapping("/reservation/waiting")
-	public ResponseEntity<List<Reservation>> getWaitingReservation(HttpServletRequest request){
+	@GetMapping("/reservation/status/{status}")
+	public ResponseEntity<List<Reservation>> getWaitingReservation(HttpServletRequest request, @PathVariable("status")String status){
 		String memberIdHeader = request.getHeader("memberId");
 	    String authHeader = request.getHeader("Authorization");
 
@@ -65,62 +65,22 @@ public class HospitalReservationController_js {
 
 	    Long memberId = Long.parseLong(memberIdHeader);
 	    
-		System.out.println("대기 예약정보가져오기" + memberId);
-		List<Reservation> list = reservationRepo.findAllByHospitalIdAndStatus(memberId, "대기");
-		System.out.println("대기" + list);
+	    if(status.equals("waiting")) {
+	    	status = "대기";
+	    }else if(status.equals("confirmed")){
+	    	status = "확정";
+	    }else if(status.equals("complete")) {
+	    	status = "완료";
+	    }else if(status.equals("cancle")) {
+	    	status = "취소";
+	    }
+		System.out.println(status + "예약정보가져오기" + memberId);
+		List<Reservation> list = reservationRepo.findAllByHospitalIdAndStatus(memberId, status);
+		System.out.println(status + "리스트" + list);
 		return new ResponseEntity<>(list, HttpStatus.OK);
 	}
 	
-	@GetMapping("/reservation/confirmed")
-	public ResponseEntity<List<Reservation>> getConfirmedReservation(HttpServletRequest request){
-		String memberIdHeader = request.getHeader("memberId");
-	    String authHeader = request.getHeader("Authorization");
-
-	    if (memberIdHeader == null || authHeader == null) {
-	        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-	    }
-
-	    Long memberId = Long.parseLong(memberIdHeader);
-	    
-		System.out.println("확정 예약정보가져오기");
-		List<Reservation> list = reservationRepo.findAllByHospitalIdAndStatus(memberId, "확정");
-		System.out.println(list);
-		return new ResponseEntity<>(list, HttpStatus.OK);
-	}
 	
-	@GetMapping("/reservation/complete")
-	public ResponseEntity<List<Reservation>> getCompleteReservation(HttpServletRequest request){
-		String memberIdHeader = request.getHeader("memberId");
-	    String authHeader = request.getHeader("Authorization");
-
-	    if (memberIdHeader == null || authHeader == null) {
-	        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-	    }
-
-	    Long memberId = Long.parseLong(memberIdHeader);
-	    
-		System.out.println("완료 예약정보가져오기");
-		List<Reservation> list = reservationRepo.findAllByHospitalIdAndStatus(memberId, "완료");
-		System.out.println(list);
-		return new ResponseEntity<>(list, HttpStatus.OK);
-	}
-	
-	@GetMapping("/reservation/cancle")
-	public ResponseEntity<List<Reservation>> getCancleReservation(HttpServletRequest request){
-		String memberIdHeader = request.getHeader("memberId");
-	    String authHeader = request.getHeader("Authorization");
-
-	    if (memberIdHeader == null || authHeader == null) {
-	        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-	    }
-
-	    Long memberId = Long.parseLong(memberIdHeader);
-	    
-		System.out.println("취소 예약정보가져오기");
-		List<Reservation> list = reservationRepo.findAllByHospitalIdAndStatus(memberId, "취소");
-		System.out.println(list);
-		return new ResponseEntity<>(list, HttpStatus.OK);
-	}
 	
 	@GetMapping("/reservation/{reservId}")
 	public ResponseEntity<Reservation> getHospitalReservationById( @PathVariable("reservId") Long reservId){

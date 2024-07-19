@@ -11,7 +11,7 @@ import com.example.restServer.entity.Reservation;
 
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
 
-	@Query(value = "SELECT * FROM reservation WHERE hospital_id = :memberId AND status = :status", nativeQuery = true)
+	@Query(value = "SELECT * FROM reservation WHERE hospital_id = :memberId AND status = :status ORDER BY reservation_datetime asc", nativeQuery = true)
 	List<Reservation> findAllByHospitalIdAndStatus(@Param("memberId")Long memberId, @Param("status")String status);
 	
 	@Query(value = "SELECT AVG(RATING) FROM reservation WHERE hospital_id = :hospitalId AND !ISNULL(RATING);", nativeQuery = true)
