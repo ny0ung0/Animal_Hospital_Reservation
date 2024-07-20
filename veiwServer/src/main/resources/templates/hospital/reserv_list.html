@@ -118,9 +118,11 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log("data", data);
 
             const tabContent = document.querySelector(`#${status}-content`);
-            if (data.length === 0) {
+			const tabPagination = document.querySelector(`#${status}-pagination`);
+            if (data.content.length === 0) {
                 tabContent.innerHTML = 
                     '<div class="col-12 mb-3"><div class="p-5 text-center text-secondary">예약 내역이 없습니다.</div></div>';
+				tabPagination.style.display="none";
             } else {
                 let content = '';
                 data.content.forEach(obj => {
