@@ -93,7 +93,7 @@
 </div>
 
 <div class="mb-5">
-	<a href="/hospital/reservList" class="btn btn-outline-secondary">목록 보기</a>
+	<a href="#" onclick="goBack()" class="btn btn-outline-secondary">이전</a>
 </div>
 
 </div>
@@ -229,6 +229,10 @@ function statusCancle(){
 		location.reload();
 	})
 	.catch(error => console.log(error));
+}
+
+function goBack(){
+	history.back(); // 이전 페이지로 이동
 }
 
 </script>

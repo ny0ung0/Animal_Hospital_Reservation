@@ -94,6 +94,22 @@ public class HospitalReservationController_js {
 	            .body(list);
 	}
 	
+
+	@GetMapping("/reservation/hospital")
+	public ResponseEntity<List<Reservation>> getHospitalReservationById(HttpServletRequest request){
+		String memberIdHeader = request.getHeader("memberId");
+	    String authHeader = request.getHeader("Authorization");
+
+	    if (memberIdHeader == null || authHeader == null) {
+	        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+	    }
+	   
+	    Long memberId = Long.parseLong(memberIdHeader);
+		System.out.println("병원별 예약 정보가져오기");
+		List<Reservation> list = reservationRepo.findByHospitalId(memberId);
+		
+		return new ResponseEntity<>(list, HttpStatus.OK);
+	}
 	
 	
 	@GetMapping("/reservation/{reservId}")
