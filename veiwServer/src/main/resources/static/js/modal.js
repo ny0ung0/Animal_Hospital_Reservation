@@ -209,7 +209,6 @@ function checkBookmark(e){
 			e.target.src = empty;
 			//북마크 취소 db에 업데이트해주기
 			isBookmarked=false;
-			
 		}
 	}else{
 		if(confirm("이 병원을 즐겨찾기 목록에 추가하시겠습니까?")){
