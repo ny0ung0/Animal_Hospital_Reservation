@@ -28,6 +28,7 @@ function loadBasicInfo(data){
 	let vetNamesNIds = Object.keys(vetAvailInfo);
 	let basicHours = JSON.parse(vetInfo[Object.keys(vetInfo)[0]].businessHours);
 	
+
 	  //병원 이름 넣기
 	  document.querySelector("#vetName").setAttribute("value", Object.keys(vetInfo)[0]);
 	  //로그인한 사용자 이름 넣어주기
@@ -208,7 +209,7 @@ function loadTimeslot(basicHours, vetAvailInfo) {
                 currentTime = hours + ":" + minutes;
             }
 
-            // 기본 타임슬롯 범위 내의 타임슬롯을 순회하며 비활성화
+            // 기본 타임슬롯 범위 내의 타임슬롯을 순회하며 비활성화(예약이 당일일때 예약하려는 시간 전시간 타임슬롯은 모두 비활성화)
             let startHour = parseInt(selectedBasicTime[0].split(":")[0]);
             let startMinute = parseInt(selectedBasicTime[0].split(":")[1]);
             let endHour = parseInt(selectedBasicTime[1].split(":")[0]);
@@ -224,13 +225,17 @@ function loadTimeslot(basicHours, vetAvailInfo) {
                 }
             }
         }
-
+console.log("타임슬롯뿌ㅡ리기")
         // 선생님의 availability 보여주기
         Object.keys(vetAvailInfo).forEach(key => {
-            if (key.split("//")[0] === selectedVet) {
+				
+            if (key.split("//")[0] == selectedVet) {
                 for (let v of vetAvailInfo[key]) {
-                    if (convertTimestamp(v.date) === selectedDate) {
+		
+                    if (convertTimestamp(v.date) == selectedDate) {
                         let time = v.time[0].toString().padStart(2, '0') + ":" + v.time[1].toString().padStart(2, '0');
+                        
+                        console.log(time)
                         document.querySelector("span[value='" + time + "']").classList.add("disabled");
                     }
                 }
