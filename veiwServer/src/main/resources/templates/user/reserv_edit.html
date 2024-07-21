@@ -184,10 +184,10 @@ function submitForm(e){
 	
 	 const xhttp = new XMLHttpRequest();
 	  xhttp.onload = function() {
-	    //다른페이지로 이동?ㅎㅎ,,
+	
 	    alert("예약이 성공적으로 수정되었습니다");
 	    //마이페이지로 이동
-// 	    location.href="/"
+	    location.href="/user/reserv_list"
 	    }
 	  xhttp.open("PUT", "http://localhost:9001/api/v1/user/reservation", true);
 	  xhttp.setRequestHeader("MemberId", localStorage.getItem("MemberId"));
