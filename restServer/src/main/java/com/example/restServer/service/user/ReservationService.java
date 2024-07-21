@@ -6,6 +6,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -43,6 +45,7 @@ public class ReservationService {
     private UnavailableTimeRepository unavailableTimeRepo;
     @Autowired 
     private PointRepository pointRepo;
+    private final Lock reservationLock = new ReentrantLock();
 
     public Map<String, Object> getPetInfo(Long userId, Long hospitalId) {
         Member user = memRepo.findById(userId).get();
@@ -81,41 +84,68 @@ public class ReservationService {
     }
 
     public String makeReservation(Map<String, String> formData, Long userId) throws ParseException {
-        Date now = new Date();
-        LocalDateTime dateTime = DateTimeUtil.parseDateTime(formData);
+        reservationLock.lock();
+        try { 
+            Date now = new Date();
+            LocalDateTime dateTime = DateTimeUtil.parseDateTime(formData);
 
-        Reservation reservation = createReservation(formData, userId, dateTime);
-        reservRepo.save(reservation);
+            Reservation reservation = createReservation(formData, userId, dateTime);
+            
+             // 예약 중복 확인
+            if (isDuplicateReservation(reservation)) {
+                throw new IllegalArgumentException("중복예약이 발생했습니다.");
+            }
+            
+            reservRepo.save(reservation);
 
-        UnavailableTime unavailTime = createUnavailableTime(formData, reservation, dateTime);
-        unavailableTimeRepo.save(unavailTime);
+            UnavailableTime unavailTime = createUnavailableTime(formData, reservation, dateTime);
+            unavailableTimeRepo.save(unavailTime);
+            return "";
+        } finally {
+            reservationLock.unlock();
+        }
+    }
 
-        return "";
+    public String editReservation(Map<String, String> formData, Long userId) throws ParseException {
+        reservationLock.lock();
+        try {
+            Date now = new Date();
+           
+            Long reservId = Long.parseLong(formData.get("reservId"));
+            LocalDateTime dateTime = DateTimeUtil.parseDateTime(formData);
+
+            Reservation reservation = reservRepo.findById(reservId).get();
+            
+            deleteOriginalUnavailableTime(reservation);
+            
+            updateReservation(formData, reservation, dateTime, now);
+            
+            // 예약 중복 확인
+            if (isDuplicateReservation(reservation)) {
+                throw new IllegalArgumentException("중복예약이 발생했습니다.");
+            }
+            reservRepo.save(reservation);
+
+            UnavailableTime unavailTime = createUnavailableTime(formData, reservation, dateTime);
+            unavailableTimeRepo.save(unavailTime);
+            return "";
+        } finally {
+            reservationLock.unlock();
+        }
+    }
+    
+    private boolean isDuplicateReservation(Reservation reservation) {
+        Long doctorId = reservation.getDoctor().getId();
+        LocalDateTime dateTime = reservation.getReservationDatetime();
+        UnavailableTime conflictingReservation = unavailableTimeRepo.findTimeByDoctorIdNDatetime(doctorId, DateTimeUtil.formatDate(dateTime), DateTimeUtil.formatTime1(dateTime));
+        return conflictingReservation != null;
+        		
     }
 
     public Reservation findReservInfo(Long reservId) {
         return reservRepo.findById(reservId).get();
     }
 
-    public String editReservation(Map<String, String> formData, Long userId) throws ParseException {
-        Date now = new Date();
-        Long reservId = Long.parseLong(formData.get("reservId"));
-        LocalDateTime dateTime = DateTimeUtil.parseDateTime(formData);
-
-        Reservation reservation = reservRepo.findById(reservId).get();
-        
-        deleteOriginalUnavailableTime(reservation);
-        
-        updateReservation(formData, reservation, dateTime, now);
-        reservRepo.save(reservation);
-
-        UnavailableTime unavailTime = createUnavailableTime(formData, reservation, dateTime);
-        unavailableTimeRepo.save(unavailTime);
-
-        return "";
-    }
-
-  
     private void deleteOriginalUnavailableTime(Reservation reservation) {
         LocalDateTime oriDateTime = reservation.getReservationDatetime();
         UnavailableTime oriUnavailTime = unavailableTimeRepo.findTimeByDoctorIdNDatetime(

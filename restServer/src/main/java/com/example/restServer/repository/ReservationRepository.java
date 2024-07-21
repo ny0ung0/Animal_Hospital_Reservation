@@ -1,5 +1,6 @@
 package com.example.restServer.repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -44,6 +45,8 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 			+ "WHERE re.user_id = :userId order by re.reservation_datetime desc;", nativeQuery = true )
 	List<UserReservationDto> findReserListByUserId(@Param("userId")Long userId);
 
-	List<Reservation> findByHospitalId(Long memberId);	
+	List<Reservation> findByHospitalId(Long memberId);
+
+	List<Reservation> findByDoctorIdAndReservationDatetime(Long doctorId, LocalDateTime reservationDatetime);
 	
 }

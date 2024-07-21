@@ -50,6 +50,9 @@ public class DateTimeUtil {
     public static String formatTime(LocalTime time) {
         return time.format(TIME_FORMATTER);
     }
+    public static String formatTime1(LocalDateTime time) {
+        return time.format(TIME_FORMATTER);
+    }
 
     public static String formatDate(LocalDateTime dateTime) {
         return dateTime.format(DATE_FORMATTER);
