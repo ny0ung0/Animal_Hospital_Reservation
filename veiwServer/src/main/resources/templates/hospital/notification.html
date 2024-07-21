@@ -40,21 +40,21 @@
 		<div>
 			<div class="input-group mb-3 mx-auto p-2" style='width: 700px'>
 				<span class="input-group-text">고객명</span> <input type="text"
-					class="form-control" name="username" id="username" />
+					class="form-control" name="username" id="username" disabled />
 			</div>
 			<div class="input-group mb-3 mx-auto p-2" style='width: 700px'>
 				<span class="input-group-text">반려동물정보</span> <input type="text"
-					class="form-control" name="petinfo" id="petinfo" />
+					class="form-control" name="petinfo" id="petinfo" disabled />
 			</div>
 
 			<div class="input-group mb-3 mx-auto p-2" style='width: 700px'>
 				<span class="input-group-text">제목</span> <input type="text"
-					class="form-control" name="title" />
+					class="form-control" id="title" placeholder="ex)예약 알람, 정기검진 알람" />
 			</div>
 
 			<div class="input-group mb-3 mx-auto p-2" style='width: 700px'>
 				<span class="input-group-text">내용</span> <input type="text"
-					class="form-control" name="content" />
+					class="form-control" id="content" />
 			</div>
 			<div class="d-grid gap-2 col-6 mx-auto" style='width: 400px'>
 				<button class="btn btn-primary opacity-75"
@@ -102,10 +102,17 @@
 	    let birthdate = localDate.toISOString().split('T')[0];
 		
 		document.getElementById("username").value = obj.user.name;
-		document.getElementById("petinfo").value = "종류: " + obj.pet.type + " " + obj.pet.name + " " + gender + " " + isNeutered + " " + obj.pet.weight;
+		document.getElementById("petinfo").value = "종류: " + obj.pet.type + " " + "이름: " + obj.pet.name + " " + "성별: " + gender + " " + "중성화: " + isNeutered + " " + "무게: " + obj.pet.weight;
 		console.log(birthdate)
 	})
 	.catch(error => console.log(error));
+	
+	function sendnotification() {
+	receiverId= userid;
+	title = document.getElementById("title").value;
+	body = document.getElementById("content").value;
+    sendTokenToMessageReceiver(title, body);
+	}
 	</script>
 </body>
 </html>
