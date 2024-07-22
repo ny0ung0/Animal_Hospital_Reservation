@@ -116,8 +116,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 'memberId': memberId
             }
         })
-        .then(response => response.json())
+        .then(response => {
+        	console.log(response);
+        	fetchResponseCheck(response);
+        	return response.json();
+        	}
+        )
         .then(data => {
+        	
             console.log("data", data);
 
             const tabContent = document.querySelector(`#${status}-content`);
