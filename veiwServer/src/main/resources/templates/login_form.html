@@ -52,6 +52,15 @@
 		integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
 		crossorigin="anonymous"></script>
 	<script>
+	let loginRole =localStorage.getItem("role");
+	if(loginRole){
+		alert("이미 로그인 상태입니다.");
+		if(loginRole=="ROLE_HOSPITAL"){
+		window.location.href="/hospital";
+		}else{
+			window.location.href="/";
+		}
+	}
 		function loginUser() {
 			//alert("로그인들어옴");
 			

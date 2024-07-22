@@ -169,6 +169,7 @@ ready();
 
     const xhttp = new XMLHttpRequest();
     xhttp.onload = function() {
+    	responseCheck(this);
       var cnt = 1;
       console.log(this.responseText);
       const list = JSON.parse(this.responseText);
@@ -440,7 +441,7 @@ ready();
 	  const formData = new FormData(frm);
 	  const xhttp = new XMLHttpRequest();
 		xhttp.onload = function() {
-			
+			responseCheck(this);
 			//alert(this.responseText);
 			if(this.status==200){
 				alert("리뷰등록이 완료되었습니다.");
@@ -467,6 +468,7 @@ ready();
 
 	  const xhttp = new XMLHttpRequest();
 		xhttp.onload = function() {
+			responseCheck(this);
 			//alert(this.responseText);
 			if(this.status==200){
 				alert("예약이 취소되었습니다.");

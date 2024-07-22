@@ -83,6 +83,7 @@ ready();
 			var bookmarkId = e.target.id;
 			const xhttp = new XMLHttpRequest();
 			xhttp.onload = function() {
+				responseCheck(this);
 				try{
 					if(this.status ==200){
 						window.location.href="/user/fav_vet_list";

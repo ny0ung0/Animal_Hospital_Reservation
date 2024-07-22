@@ -64,6 +64,7 @@ ready();
 		let cnt = 1;
 		const xhttp = new XMLHttpRequest();
 		xhttp.onload = function() {
+			responseCheck(this);
 			//alert(this.responseText);
 			const list = JSON.parse(this.responseText);
 			list.forEach(review =>{				
