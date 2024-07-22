@@ -96,6 +96,7 @@
 		document.querySelector("#hospital_id").setAttribute("data-id", id);
 		const xhttp = new XMLHttpRequest();
 		  xhttp.onload = function() {
+			  responseCheck(this);
 			  let data = JSON.parse(this.responseText)
 		      console.log(data);
 			  document.querySelector("#vet_name").innerText = data.hospitalName;
