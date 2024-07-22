@@ -12,69 +12,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Jua&display=swap" rel="stylesheet">
-<style>
-    #userHeader, #hospitalHeader {
-        display: none; /* 초기 상태에서 숨기기 */
-    }
-    
-    #deleteBtn{
-    	display: none;
-    }
-
-    #detail_wrap {
-        padding: 20px;
-    }
-    .detail-item {
-        display: flex;
-        flex-direction: column;
-        margin-bottom: 15px;
-    }
-    .detail-item span {
-        font-weight: bold;
-        font-size: 1.2rem;
-        
-        margin-bottom: 10px;
-    }
-    .detail-item div {
-        font-size: 1rem;
-        padding: 10px;
-		font-weight : bold;
-    }
-    .btn-container {
-        display: flex;
-        justify-content: space-between;
-        margin-top: 20px;
-    }
-    .btn-primary, .btn-danger {
-        padding: 10px 20px;
-        font-size: 1rem;
-        border-radius: 5px;
-        transition: background-color 0.3s, color 0.3s;
-    }
-    .btn-primary:hover {
-        background-color: #0056b3;
-        color: #ffffff;
-    }
-    .btn-danger:hover {
-        background-color: #ff4d4d;
-        color: #ffffff;
-    }
-    #content{
-    	margin : 20px;
-    }
-    #title{
-    	font-size: 1.2rem;
-    }
-</style>
 
 </head>
 
 <body class="d-flex flex-column h-100">
 
-<!-- <div id="userHeader" th:replace="~{user/header :: header}"></div> -->
-<!-- <div id="hospitalHeader" th:replace="~{hospital/header :: header}"></div> -->
 
-<!-- 숨겨진 헤더 템플릿 -->
 <template id="userHeaderTemplate">
     <div th:replace="~{user/header :: header}"></div>
 </template>
