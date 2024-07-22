@@ -43,7 +43,7 @@ public class MyController {
 	
 	@RequestMapping("/noticeForm")
 	public String noticeForm() {
-		return "notice_form";
+		return "/manager/notice_form";
 	}
 	
 	
