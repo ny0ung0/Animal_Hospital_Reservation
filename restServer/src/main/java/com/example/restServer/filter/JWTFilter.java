@@ -87,23 +87,7 @@ public class JWTFilter extends OncePerRequestFilter {
         	response.addHeader("msg", msg);
         	//response.addHeader("Access-Control-Expose-Headers", "msg");
             System.out.println("ExpiredJwtException: Token expired"); // 콘솔 출력
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401 상태 코드 설정
-            response.setContentType("application/json");
-            response.setCharacterEncoding("UTF-8");
-            response.getWriter().write("{\"error\": \"Token expired\"}");
-            response.getWriter().flush();
-            response.getWriter().close();
-            return;
-        } catch (Exception e) {
-            // 기타 오류 처리
-            System.out.println("Exception: Invalid token"); // 콘솔 출력
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401 상태 코드 설정
-            response.setContentType("application/json");
-            response.setCharacterEncoding("UTF-8");
-            response.getWriter().write("{\"error\": \"Invalid token\"}");
-            response.getWriter().flush();
-            response.getWriter().close();
-            return;
+           
         }
 
         filterChain.doFilter(request, response);

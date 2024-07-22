@@ -656,6 +656,7 @@
         const frm = document.querySelector("#frmEditHospital");
         const xhttp = new XMLHttpRequest();
         xhttp.onload = function() {
+        	responseCheck(this);
             var result = JSON.parse(this.responseText)[0];
             frm.username.value = result.username;
             frm.passwordOrigin.value = result.password;
