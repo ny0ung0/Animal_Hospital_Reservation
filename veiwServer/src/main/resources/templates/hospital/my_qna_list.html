@@ -39,6 +39,7 @@
 <script>
 const xhttp = new XMLHttpRequest();
 xhttp.onload = function() {
+  responseCheck(this);
   let data = JSON.parse(this.responseText)
   console.log(data[0].createdAt)
   

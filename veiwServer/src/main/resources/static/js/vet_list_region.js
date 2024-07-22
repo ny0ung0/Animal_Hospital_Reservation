@@ -95,6 +95,7 @@ searchBtn.addEventListener("click", function() {
     //예약되는 병원 + 포인트 제휴병원 여부 보여주기
     const xhttp = new XMLHttpRequest();
     xhttp.onload = function () {
+		responseCheck(this);
         if (this.status === 200) {
 	       	let data = JSON.parse(this.responseText);
 	       	data.forEach(hospital =>{
@@ -289,29 +290,30 @@ document.querySelector("#keywordSearchBtn").addEventListener("click", function()
 
     const xhttp = new XMLHttpRequest();
     xhttp.onload = function() {
-           	let data = JSON.parse(this.responseText);
-	       	data.forEach(hospital =>{
-       		let addr = hospital.address.replaceAll("//", " ")
-       		memVet[hospital.hospitalName] = {
-												"id":hospital.id,
-												"phone":hospital.phone,
-												"address" : addr, 
-									       		"avgReview" : hospital.avgReview,
-									       		"review" : hospital.review,
-									       		"bookmarked" : hospital.bookmarked,
-									       		"businessNumber" : hospital.businessNumber,
-									       		"email" : hospital.email,
-									       		"introduction" : hospital.introduction,
-									       		"logo" : hospital.logo,
-									       		"representative" : hospital.representative,
-									       		"partnership" : hospital.partnership, 
-									       		"businessHours" : hospital.businessHours
-									       		};
-	       	})
-	       	keywordSearchResult.forEach(hos=>{
-				addHospitalToList(hos);
-	       		searchResult.push(hos)
-	       		});
+		responseCheck(this);
+       	let data = JSON.parse(this.responseText);
+       	data.forEach(hospital =>{
+   		let addr = hospital.address.replaceAll("//", " ")
+   		memVet[hospital.hospitalName] = {
+											"id":hospital.id,
+											"phone":hospital.phone,
+											"address" : addr, 
+								       		"avgReview" : hospital.avgReview,
+								       		"review" : hospital.review,
+								       		"bookmarked" : hospital.bookmarked,
+								       		"businessNumber" : hospital.businessNumber,
+								       		"email" : hospital.email,
+								       		"introduction" : hospital.introduction,
+								       		"logo" : hospital.logo,
+								       		"representative" : hospital.representative,
+								       		"partnership" : hospital.partnership, 
+								       		"businessHours" : hospital.businessHours
+								       		};
+       	})
+       	keywordSearchResult.forEach(hos=>{
+			addHospitalToList(hos);
+       		searchResult.push(hos)
+       		});
     };
     xhttp.open("POST", "http://localhost:9001/api/v1/keyword-vet-list", true); 
     xhttp.setRequestHeader("MemberId", localStorage.getItem("MemberId"));

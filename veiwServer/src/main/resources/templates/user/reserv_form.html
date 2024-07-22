@@ -85,6 +85,7 @@ let hosId = "[[${id}]]";
 
 const xhttp = new XMLHttpRequest();
 xhttp.onload = function() {
+	responseCheck(this);
 	let data = JSON.parse(this.responseText);
 	loadBasicInfo(data);
 }
@@ -127,6 +128,7 @@ function submitForm(e){
 	
 	 const xhttp = new XMLHttpRequest();
 	  xhttp.onload = function() {
+		 responseCheck(this);
 	     alert("예약이 성공적으로 완료되었습니다");
 	     title='예약 알람';
 	     reservedate= document.querySelector("input[type=date]").value;

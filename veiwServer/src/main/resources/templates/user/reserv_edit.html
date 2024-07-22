@@ -87,6 +87,7 @@ let oriSelectedTimeslot = null;
 
 const xhttp = new XMLHttpRequest();
 xhttp.onload = function() {
+	responseCheck(this);
 	let data = JSON.parse(this.responseText);
 	console.log(data)
 	loadBasicInfo(data)
@@ -184,7 +185,7 @@ function submitForm(e){
 	
 	 const xhttp = new XMLHttpRequest();
 	  xhttp.onload = function() {
-	
+		responseCheck(this);
 	    alert("예약이 성공적으로 수정되었습니다");
 	    //마이페이지로 이동
 	    location.href="/user/reserv_list"
