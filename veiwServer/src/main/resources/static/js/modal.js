@@ -219,6 +219,7 @@ function checkBookmark(e){
 	}
 	 const xhttp = new XMLHttpRequest();
 	  xhttp.onload = function() {
+		responseCheck(this);
 	     alert("성공적으로 즐겨찾기목록이 업데이트 되었습니다.")
 	  }
 	  xhttp.open("POST", "http://localhost:9001/api/v1/user/bookmark/"+isBookmarked+"/"+hosId, true);

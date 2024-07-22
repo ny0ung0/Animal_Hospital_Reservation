@@ -27,16 +27,18 @@
                 <a href="#" class="d-flex align-items-center nav-link text-white dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">고객센터 관리</a>
                 <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
                     <li><a class="dropdown-item" href="/manager/qnaList">문의게시판</a></li>
-                    <li><a class="dropdown-item" href="#">펀딩/경매</a></li>
+                    <!-- <li><a class="dropdown-item" href="#">펀딩/경매</a></li> -->
                 </ul>
             </div>
         </li>
+        <!-- 
         <li>
             <a href="#" class="nav-link text-white">블랙리스트 관리</a>
         </li>
         <li>
             <a href="#" class="nav-link text-white">광고 관리</a>
         </li>
+        -->
     </ul>
     <hr>
     <div class="dropdown">
@@ -47,42 +49,59 @@
         localStorage.clear();
         window.location.href = "/";
     }
-	 function responseCheck(response){
-  		 const msg =response.getResponseHeader("msg");
-  		 if(msg && msg=="tokenExpired"){
-  				alert("로그인 시간이 만료되었습니다.다시 로그인 해주세요.");
-  				 localStorage.clear();
-  				 window.location.href="/login_form";
-  			}
-  		 if(response.status ==401){
-  			 alert("사용자 정보 인증에 실패하였습니다.로그인 해주세요.");
-  			 window.location.href="/login_form";
-  		 }else if(response.status ==403){
-  			 alert("접근 가능한 페이지가 아닙니다.");
-  			 window.location.href="/";
-  		 }else if(response.status ==400){
-  			 alert("잘못된 접근입니다.")
-  			 window.location.href="/";
-  		 }
-    }
-	 function fetchResponseCheck(response){
-  		 const msg =response.headers.get("msg");
-  		 if(msg && msg=="tokenExpired"){
-  				alert("로그인 시간이 만료되었습니다.다시 로그인 해주세요.");
-  				 localStorage.clear();
-  				 window.location.href="/login_form";
-  			}
-  		 if(response.status ==401){
-  			 alert("사용자 정보 인증에 실패하였습니다.로그인 해주세요.");
-  			 window.location.href="/login_form";
-  		 }else if(response.status ==403){
-  			 alert("접근 가능한 페이지가 아닙니다.");
-  			 window.location.href="/";
-  		 }else if(response.status ==400){
-  			 alert("잘못된 접근입니다.")
-  			 window.location.href="/";
-  		 }
-    }
+    
+    function responseCheck(response){
+		 const msg =response.getResponseHeader("msg");
+		 if(msg && msg=="tokenExpired"){
+				alert("로그인 시간이 만료되었습니다.다시 로그인 해주세요.");
+				 localStorage.clear();
+				 window.location.href="/login_form";
+			}
+		 if(response.status ==401){
+			 alert("사용자 정보 인증에 실패하였습니다.로그인 해주세요.");
+			 window.location.href="/login_form";
+		 }else if(response.status ==403){
+			 alert("접근 가능한 페이지가 아닙니다.");
+			if(localStorage.getItem("role")=="ROLE_HOSPITAL"){
+				 window.location.href="/hospital";
+			 }else{
+	 			 window.location.href="/";
+				 }
+		 }else if(response.status ==400){
+			 alert("잘못된 접근입니다.")
+			if(localStorage.getItem("role")=="ROLE_HOSPITAL"){
+				 window.location.href="/hospital";
+			 }else{
+				 window.location.href="/";
+			 }
+		 }
+  }
+ 	 function fetchResponseCheck(response){
+		 const msg =response.headers.get("msg");
+		 if(msg && msg=="tokenExpired"){
+				alert("로그인 시간이 만료되었습니다.다시 로그인 해주세요.");
+				 localStorage.clear();
+				 window.location.href="/login_form";
+			}
+		 if(response.status ==401){
+			 alert("사용자 정보 인증에 실패하였습니다.로그인 해주세요.");
+			 window.location.href="/login_form";
+		 }else if(response.status ==403){
+			 alert("접근 가능한 페이지가 아닙니다.");
+			 if(localStorage.getItem("role")=="ROLE_HOSPITAL"){
+				 window.location.href="/hospital";
+			 }else{
+	 			 window.location.href="/";
+			 }
+		 }else if(response.status ==400){
+			 alert("잘못된 접근입니다.")
+			if(localStorage.getItem("role")=="ROLE_HOSPITAL"){
+				 window.location.href="/hospital";
+			 }else{
+	 			 window.location.href="/";
+			 }
+		 }
+  }
     </script>
 </div>
 

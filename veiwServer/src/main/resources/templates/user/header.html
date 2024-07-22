@@ -16,11 +16,11 @@
 			  <ul class="dropdown-menu">
 			    <li><a class="dropdown-item" href="/user/my_info_edit">내 정보 수정</a></li>
 			    <li><a class="dropdown-item" href="/user/review_list">내가 쓴 병원 리뷰</a></li>
-			    <li><a class="dropdown-item" href="#">커뮤니티(집수다) 관리</a></li>
+			    <!-- <li><a class="dropdown-item" href="#">커뮤니티(집수다) 관리</a></li> -->
 			    <li><a class="dropdown-item" href="/user/myPetList">반려동물 리스트</a></li>
-			    <li><a class="dropdown-item" href="#">경매 참여 내역</a></li>
-			    <li><a class="dropdown-item" href="#">펀딩 참여 내역</a></li>
-			    <li><a class="dropdown-item" href="#">쿠폰함</a></li>
+			    <!-- <li><a class="dropdown-item" href="#">경매 참여 내역</a></li> -->
+			    <!-- <li><a class="dropdown-item" href="#">펀딩 참여 내역</a></li> -->
+			    <!-- <li><a class="dropdown-item" href="#">쿠폰함</a></li> -->
 			    <li><a class="dropdown-item" href="#">포인트 관리</a></li>
 			    <li><a class="dropdown-item" href="/user/fav_vet_list">즐겨찾기 내역</a></li>
 			    <li><a class="dropdown-item" href="/user/myQnaList">문의내역</a></li>
@@ -45,10 +45,10 @@
         <li class="nav-item"><a href="/" class="nav-link fs-5 rounded-0" aria-current="page">내주변 동물병원</a></li>
         <li class="nav-item"><a href="/user/vet_list_region" class="nav-link fs-5 rounded-0">지역별 동물병원</a></li>
         <li class="nav-item"><a href="/user/reserv_list" class="nav-link fs-5 rounded-0">병원 예약 내역</a></li>
-        <li class="nav-item"><a href="#" class="nav-link fs-5 rounded-0">이벤트 경매</a></li>
-        <li class="nav-item"><a href="#" class="nav-link fs-5 rounded-0">펀딩</a></li>
+        <!-- <li class="nav-item"><a href="#" class="nav-link fs-5 rounded-0">이벤트 경매</a></li> -->
+        <!-- <li class="nav-item"><a href="#" class="nav-link fs-5 rounded-0">펀딩</a></li>-->
         <li class="nav-item"><a href="/webGame/" class="nav-link fs-5 rounded-0">펫키우기</a></li>
-        <li class="nav-item"><a href="#" class="nav-link fs-5 rounded-0">집수다</a></li>
+        <!--<li class="nav-item"><a href="#" class="nav-link fs-5 rounded-0">집수다</a></li>-->
         <li class="nav-item">
 	        <div class="dropdown">
 			  <a class="btn btn-none dropdown-toggle nav-link fs-5 rounded-0" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -79,9 +79,9 @@
 		    <li class="list-group-item bg-user-sub border-white border-opacity-50"><a href="/" class="nav-link fs-5">내주변 동물병원</a></li>
 		    <li class="list-group-item bg-user-sub border-white border-opacity-50"><a href="/user/vet_list_region" class="nav-link fs-5">지역별 동물병원</a></li>
 		    <li class="list-group-item bg-user-sub border-white border-opacity-50"><a href="/user/reserv_list" class="nav-link fs-5">병원 예약 내역</a></li>
-		    <li class="list-group-item bg-user-sub border-white border-opacity-50"><a href="#" class="nav-link fs-5">이벤트 경매</a></li>
-		    <li class="list-group-item bg-user-sub border-white border-opacity-50"><a href="#" class="nav-link fs-5">펀딩</a></li>
-		    <li class="list-group-item bg-user-sub border-white border-opacity-50"><a href="/webGame/" class="nav-link fs-5">펫키우기</a></li>
+		    <!-- <li class="list-group-item bg-user-sub border-white border-opacity-50"><a href="#" class="nav-link fs-5">이벤트 경매</a></li> -->
+		    <!-- <li class="list-group-item bg-user-sub border-white border-opacity-50"><a href="#" class="nav-link fs-5">펀딩</a></li>
+		    <li class="list-group-item bg-user-sub border-white border-opacity-50"><a href="/webGame/" class="nav-link fs-5">펫키우기</a></li> -->
 		    <li class="list-group-item bg-user-sub border-white border-opacity-50 fs-5">고객센터</li>
 		    <li class="list-group-item bg-user-sub border-white border-opacity-50"><a href="/noticeList" class="nav-link fs-6 ps-3">공지사항</a></li>
 		    <li class="list-group-item bg-user-sub border-white border-opacity-50"><a href="/qnaForm" class="nav-link fs-6 ps-3">문의작성</a></li>
@@ -212,44 +212,59 @@
 	    closeMobileMenu(); // 클릭 시 모바일 메뉴 닫기
 	});
 	
-	
-	 function responseCheck(response){
-  		 const msg =response.getResponseHeader("msg");
-  		 if(msg && msg=="tokenExpired"){
-  				alert("로그인 시간이 만료되었습니다.다시 로그인 해주세요.");
-  				 localStorage.clear();
-  				 window.location.href="/login_form";
-  			}
-  		 if(response.status ==401){
-  			 alert("사용자 정보 인증에 실패하였습니다.로그인 해주세요.");
-  			 window.location.href="/login_form";
-  		 }else if(response.status ==403){
-  			 alert("접근 가능한 페이지가 아닙니다.");
-  			 window.location.href="/";
-  		 }else if(response.status ==400){
-  			 alert("잘못된 접근입니다.")
-  			 window.location.href="/";
-  		 }
-    }
-	 
-	 function fetchResponseCheck(response){
-  		 const msg =response.headers.get("msg");
-  		 if(msg && msg=="tokenExpired"){
-  				alert("로그인 시간이 만료되었습니다.다시 로그인 해주세요.");
-  				 localStorage.clear();
-  				 window.location.href="/login_form";
-  			}
-  		 if(response.status ==401){
-  			 alert("사용자 정보 인증에 실패하였습니다.로그인 해주세요.");
-  			 window.location.href="/login_form";
-  		 }else if(response.status ==403){
-  			 alert("접근 가능한 페이지가 아닙니다.");
-  			 window.location.href="/";
-  		 }else if(response.status ==400){
-  			 alert("잘못된 접근입니다.")
-  			 window.location.href="/";
-  		 }
-    }
+    
+  	 function responseCheck(response){
+ 		 const msg =response.getResponseHeader("msg");
+ 		 if(msg && msg=="tokenExpired"){
+ 				alert("로그인 시간이 만료되었습니다.다시 로그인 해주세요.");
+ 				 localStorage.clear();
+ 				 window.location.href="/login_form";
+ 			}
+ 		 if(response.status ==401){
+ 			 alert("사용자 정보 인증에 실패하였습니다.로그인 해주세요.");
+ 			 window.location.href="/login_form";
+ 		 }else if(response.status ==403){
+ 			 alert("접근 가능한 페이지가 아닙니다.");
+ 			if(localStorage.getItem("role")=="ROLE_HOSPITAL"){
+				 window.location.href="/hospital";
+			 }else{
+	 			 window.location.href="/";
+				 }
+ 		 }else if(response.status ==400){
+ 			 alert("잘못된 접근입니다.")
+ 			if(localStorage.getItem("role")=="ROLE_HOSPITAL"){
+				 window.location.href="/hospital";
+			 }else{
+ 				 window.location.href="/";
+			 }
+ 		 }
+   }
+  	 function fetchResponseCheck(response){
+ 		 const msg =response.headers.get("msg");
+ 		 if(msg && msg=="tokenExpired"){
+ 				alert("로그인 시간이 만료되었습니다.다시 로그인 해주세요.");
+ 				 localStorage.clear();
+ 				 window.location.href="/login_form";
+ 			}
+ 		 if(response.status ==401){
+ 			 alert("사용자 정보 인증에 실패하였습니다.로그인 해주세요.");
+ 			 window.location.href="/login_form";
+ 		 }else if(response.status ==403){
+ 			 alert("접근 가능한 페이지가 아닙니다.");
+ 			 if(localStorage.getItem("role")=="ROLE_HOSPITAL"){
+ 				 window.location.href="/hospital";
+ 			 }else{
+	 			 window.location.href="/";
+			 }
+ 		 }else if(response.status ==400){
+ 			 alert("잘못된 접근입니다.")
+ 			if(localStorage.getItem("role")=="ROLE_HOSPITAL"){
+				 window.location.href="/hospital";
+			 }else{
+	 			 window.location.href="/";
+			 }
+ 		 }
+   }
 </script>
 </div>
 

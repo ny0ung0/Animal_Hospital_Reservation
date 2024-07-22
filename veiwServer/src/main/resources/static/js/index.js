@@ -189,6 +189,7 @@ function searchHospitals(center, hospitals, map) {
 function getMemVetList(params, map, currentPos) {
     const xhttp = new XMLHttpRequest();
     xhttp.onload = function() {
+		responseCheck(this);
         if (this.status === 200) {
             let data = JSON.parse(this.responseText);
             data.forEach(hospital => {

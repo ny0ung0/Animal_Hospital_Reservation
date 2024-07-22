@@ -11,11 +11,8 @@
 <link href="/css/style.css" rel="stylesheet">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link
-	href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Jua&display=swap"
-	rel="stylesheet">
-<link rel="stylesheet"
-	href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Jua&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 <body class="d-flex flex-column h-100">
 	<div th:replace="~{hospital/header :: header}"></div>
@@ -101,9 +98,30 @@
 	    // 로컬 날짜를 ISO 포맷의 문자열로 변환하여 날짜 부분만 추출
 	    let birthdate = localDate.toISOString().split('T')[0];
 		
+	    function calculateAge(birthdate) {
+		    // birthdate를 Date 객체로 변환
+		    let birthDate = new Date(birthdate);
+		    let today = new Date();
+		    
+		    let age = today.getFullYear() - birthDate.getFullYear();
+		    let monthDifference = today.getMonth() - birthDate.getMonth();
+
+		    // 생일이 지나지 않았다면 나이를 1살 줄임
+		    if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
+		        age--;
+		    }
+		    
+		    return age;
+		}
+
+		let age = calculateAge(birthdate);
+		console.log(age);
+	    
+	    
 		document.getElementById("username").value = obj.user.name;
-		document.getElementById("petinfo").value = "종류: " + obj.pet.type + " " + "이름: " + obj.pet.name + " " + "성별: " + gender + " " + "중성화: " + isNeutered + " " + "무게: " + obj.pet.weight;
-		console.log(birthdate)
+		document.getElementById("petinfo").value = "종류: " + obj.pet.type + " " + "이름: " + obj.pet.name + " " + "성별: " + gender + " " + "중성화: " + isNeutered + " " + "나이: " + age;
+		// birthdate를 나이로 변환
+		
 	})
 	.catch(error => console.log(error));
 	
