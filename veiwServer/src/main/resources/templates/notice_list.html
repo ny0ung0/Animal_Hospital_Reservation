@@ -13,19 +13,84 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Jua&display=swap" rel="stylesheet">
 </head>
+
+ <style>
+
+      table.table-hover {
+          margin-top: 20px;
+          border-collapse: collapse;
+          width: 100%; /* 테이블의 폭을 100%로 설정 */
+      }
+
+      table.table-hover thead {
+          background-color: #007bff;
+          color: #ffffff;
+      }
+
+      table.table-hover th, table.table-hover td {
+          padding: 12px;
+          text-align: center;
+          border-bottom: 1px solid #dee2e6;
+      }
+
+      table.table-hover tr:hover {
+          background-color: #f1f1f1;
+      }
+
+      #regbtn {
+      	display: none; /* 초기 상태에서 숨기기 */
+          background-color: #4C5CB3;
+          border: none;
+          border-radius: 5px;
+          padding: 10px 20px;
+          font-size: 1rem;
+          color: #ffffff;
+      }
+
+      #regbtn:hover {
+          background-color: #F1F8E0;
+          color : black;
+          font-weight : bold;
+      }
+
+
+      .btn-container {
+          display: flex;
+          justify-content: flex-end; /* 버튼을 오른쪽으로 정렬 */
+          margin-top: 20px;
+      }
+      
+    a {
+    	text-decoration: none;
+	}
+
+	
+	#userHeader, #hospitalHeader {
+        display: none;
+    }
+</style>
 <body class="d-flex flex-column h-100">
-<div th:replace="~{user/header :: header}"></div>
+
+<template id="userHeaderTemplate">
+    <div id="userHeader" th:replace="~{user/header :: header}"></div>
+</template>
+<template id="hospitalHeaderTemplate">
+    <div id="hospitalHeader" th:replace="~{hospital/header :: header}"></div>
+</template>
+<div id="headerContainer"></div>
+
 <div class="container-xl">
 
 
-<h1 class="mt-3 mt-md-5 mb-3 mb-md-3">공지사항</h1>
+<h1 class="mt-3 mt-md-5 mb-3 mb-md-3">🐾공지사항</h1>
 <hr>
 
 	<table class="table table-hover">
-		<thead class="table-primary">
+		<thead >
 			<tr>
 				<th scope="col">순번</th>
 				<th scope="col">공지제목</th>
+				<th scope="col">작성자</th>
 				<th scope="col">작성일자</th>
 			</tr>
 		</thead>
@@ -33,7 +98,10 @@
 		</tbody>
 	</table>
 	
-	<a href="/noticeForm"><button class="btn btn-primary" id="btn">공지 작성</button></a>
+	
+	<div class="btn-container">
+        <a href="/noticeForm"><button id="regbtn">공지 작성</button></a>
+    </div>
 	
 
 </div>
@@ -41,7 +109,49 @@
 
 
 <script>
+
 $(document).ready(function () {
+
+	var role = localStorage.getItem('role');
+    var headerContainer = document.getElementById('headerContainer');
+    var userHeaderTemplate = document.getElementById('userHeaderTemplate').content;
+    var hospitalHeaderTemplate = document.getElementById('hospitalHeaderTemplate').content;
+
+    if (role === 'ROLE_USER') {
+        headerContainer.appendChild(userHeaderTemplate.cloneNode(true));
+    } else if (role === 'ROLE_HOSPITAL') {
+        headerContainer.appendChild(hospitalHeaderTemplate.cloneNode(true));
+    } else {
+        headerContainer.appendChild(userHeaderTemplate.cloneNode(true));
+    }
+
+    setTimeout(function() {
+        if (role === 'ROLE_USER') {
+            var userHeader = document.getElementById('userHeader');
+            if (userHeader) {
+                userHeader.style.display = 'block';
+            }
+        } else if (role === 'ROLE_HOSPITAL') {
+            var hospitalHeader = document.getElementById('hospitalHeader');
+            if (hospitalHeader) {
+                hospitalHeader.style.display = 'block';
+            }
+        } else {
+            var defaultUserHeader = document.getElementById('userHeader');
+            if (defaultUserHeader) {
+                defaultUserHeader.style.display = 'block';
+            }
+        }
+    }, 100);
+	
+	
+	//var role = localStorage.getItem('role');
+    var btn = document.getElementById('regbtn');
+
+    if (role === 'ROLE_ADMIN') {
+        btn.style.display = 'block'; // 버튼 표시
+    }
+    
     $.ajax({
         url: "http://localhost:9001/notice",
         method: "GET",
@@ -54,14 +164,18 @@ $(document).ready(function () {
                 row.append($("<td>").text(index + 1)); // 순번 추가
                 row.append($("<td>").text(notice.title));
                 //row.append($("<td>").text(notice.createdAt));
+                row.append($("<td>").text("관리자"));
+				// 날짜 배열을 Date 객체로 변환
+			    var regdate = notice.createdAt ? new Date(notice.createdAt[0], notice.createdAt[1] - 1, notice.createdAt[2], notice.createdAt[3], notice.createdAt[4], notice.createdAt[5], notice.createdAt[6]) : null;
+			    
+			    // 날짜를 원하는 형식으로 포맷
+			    var formattedDate = regdate ? 
+			        regdate.getFullYear() + '-' + ('0' + (regdate.getMonth() + 1)).slice(-2) + '-' + ('0' + regdate.getDate()).slice(-2) :
+			        '';
+			
+			    row.append($("<td>").text(formattedDate));
                 
-
-                 var regdate = notice.createdAt ? new Date(notice.createdAt) : null;
-                 var formattedDate = regdate ? regdate.getFullYear() + '-' + ('0' + (regdate.getMonth() + 1)).slice(-2) + '-' + ('0' + regdate.getDate()).slice(-2) : '';
-
-                 row.append($("<td>").text(formattedDate));
-                
-                
+			    
                 tbody.append(row);
             });
 
@@ -71,10 +185,9 @@ $(document).ready(function () {
                 window.location.href = "/noticeDetail/" + id;
             });
         },
-        error: function (error) {
-            console.log("에러 :", error);
-            console.log("에러 상세 정보: ", error.responseText);
-        }
+        complete: function(jqXHR, textStatus) {
+            responseCheck(jqXHR);
+        } 
     });
 });
 

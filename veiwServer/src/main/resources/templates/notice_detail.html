@@ -6,56 +6,160 @@
 <meta name="viewport"
 	content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
 <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
-
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 <link href="/css/style.css" rel="stylesheet">
 <link href="/css/notice.css" rel="stylesheet">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Jua&display=swap" rel="stylesheet">
+<style>
+    #userHeader, #hospitalHeader {
+        display: none; /* 초기 상태에서 숨기기 */
+    }
+    
+    #deleteBtn{
+    	display: none;
+    }
+
+    #detail_wrap {
+        padding: 20px;
+    }
+    .detail-item {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 15px;
+    }
+    .detail-item span {
+        font-weight: bold;
+        font-size: 1.2rem;
+        
+        margin-bottom: 10px;
+    }
+    .detail-item div {
+        font-size: 1rem;
+        padding: 10px;
+		font-weight : bold;
+    }
+    .btn-container {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 20px;
+    }
+    .btn-primary, .btn-danger {
+        padding: 10px 20px;
+        font-size: 1rem;
+        border-radius: 5px;
+        transition: background-color 0.3s, color 0.3s;
+    }
+    .btn-primary:hover {
+        background-color: #0056b3;
+        color: #ffffff;
+    }
+    .btn-danger:hover {
+        background-color: #ff4d4d;
+        color: #ffffff;
+    }
+    #content{
+    	margin : 20px;
+    }
+    #title{
+    	font-size: 1.2rem;
+    }
+</style>
 
 </head>
 
 <body class="d-flex flex-column h-100">
-<div th:replace="~{user/header :: header}"></div>
+
+<!-- <div id="userHeader" th:replace="~{user/header :: header}"></div> -->
+<!-- <div id="hospitalHeader" th:replace="~{hospital/header :: header}"></div> -->
+
+<!-- 숨겨진 헤더 템플릿 -->
+<template id="userHeaderTemplate">
+    <div th:replace="~{user/header :: header}"></div>
+</template>
+<template id="hospitalHeaderTemplate">
+    <div th:replace="~{hospital/header :: header}"></div>
+</template>
+
+<div id="headerContainer"></div>
+
+
 <div class="container-xl">
 
-
-<h1 class="mt-3 mt-md-5 mb-3 mb-md-3">공지사항 상세페이지</h1>
+<h1 class="mt-3 mt-md-5 mb-3 mb-md-3">🐾공지사항</h1>
 <hr>
 
 <div id="detail_wrap" class="mb-4">
      <div class="detail-item">
-         <span>제목</span>
+
          <div id="title"></div>
      </div>
+     <hr>
      <div class="detail-item">
-         <span>내용</span>
          <div id="content"></div>
      </div>
  </div>
+
  <div class="btn-container">
  	<a href="/noticeList" class="btn btn-primary">목록가기</a>
      <button id="deleteBtn" class="btn btn-danger">삭제</button>
  </div>
 
-
-
 </div>
 <div th:replace="~{user/footer :: footer}"></div>
+   
+    
 <script th:inline="javascript">
 
 const id = "[[${id}]]";
 
 $(document).ready(function(){
+	var role = localStorage.getItem('role');
+    var headerContainer = document.getElementById('headerContainer');
+    var userHeaderTemplate = document.getElementById('userHeaderTemplate').content;
+    var hospitalHeaderTemplate = document.getElementById('hospitalHeaderTemplate').content;
 
+    if (role === 'ROLE_USER') {
+        headerContainer.appendChild(userHeaderTemplate.cloneNode(true));
+    } else if (role === 'ROLE_HOSPITAL') {
+        headerContainer.appendChild(hospitalHeaderTemplate.cloneNode(true));
+    } else {
+        headerContainer.appendChild(userHeaderTemplate.cloneNode(true));
+    }
+
+    setTimeout(function() {
+        if (role === 'ROLE_USER') {
+            var userHeader = document.getElementById('userHeader');
+            if (userHeader) {
+                userHeader.style.display = 'block';
+            }
+        } else if (role === 'ROLE_HOSPITAL') {
+            var hospitalHeader = document.getElementById('hospitalHeader');
+            if (hospitalHeader) {
+                hospitalHeader.style.display = 'block';
+            }
+        } else {
+            var defaultUserHeader = document.getElementById('userHeader');
+            if (defaultUserHeader) {
+                defaultUserHeader.style.display = 'block';
+            }
+        }
+    }, 100);
+    
+    var btn = document.getElementById('deleteBtn');
+
+    if (role === 'ROLE_ADMIN') {
+        btn.style.display = 'block'; // 버튼 표시
+    }
+    
     console.log("id 값:" + id);
 
     $.ajax({
         url: "http://localhost:9001/notice/" + id,
         method: "GET",
         success: function(notice){
-            $('#title').text(notice.title);
+            $('#title').text("❗ [공지사항] :   " + notice.title);
             
             $('#date').text(notice.createdAt);
 
@@ -65,7 +169,10 @@ $(document).ready(function(){
         error: function(error){
             console.log("에러 :", error);
             console.log("에러 상세 정보: ", error.responseText);
-        }
+        },
+        complete: function(jqXHR, textStatus) {
+            responseCheck(jqXHR);
+        } 
     });
 
 });
@@ -75,6 +182,7 @@ $('#deleteBtn').on('click', function() {
 		const xhttp = new XMLHttpRequest();
 	    xhttp.open("DELETE", "http://localhost:9001/notice/"+id, true);
 	    xhttp.onload = function() {
+	    	responseCheck(this);
 	        if (xhttp.status === 200) {
 	            console.log("공지 삭제 성공!");
 	            alert("공지가 성공적으로 삭제되었습니다.");
@@ -92,7 +200,6 @@ $('#deleteBtn').on('click', function() {
 });
 
 </script>
-<script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
 </html>

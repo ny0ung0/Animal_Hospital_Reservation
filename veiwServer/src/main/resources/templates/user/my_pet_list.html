@@ -75,6 +75,9 @@ $(document).ready(function() {
             	$("#petList").html("나의 반려동물이 없습니다. 반려동물을 등록해보세요!");
             }
         },
+        complete: function(jqXHR, textStatus) {
+           responseCheck(jqXHR);
+        },
         error: function(xhr, status, error) {
             console.error('Error fetching pet data:', error);
         }
