@@ -364,3 +364,40 @@
 #reviewList::-webkit-scrollbar-thumb:active {
   background: #333; /* 핸들 활성 색상 */
 }
+
+@media (max-width: 1320px) {
+  .vet_list {
+    top: 0;
+    right: 0;
+    width: 400px;
+    height: 400px;
+	}
+	
+	#searchAreaBtn{
+	right:50%;
+	margin-right:100px;
+	}
+	
+}
+
+@media (max-width: 786px) {
+  .vet_list {
+    top: 500px;
+    right: 0;
+    width: 100%;
+    height: 400px;
+    z-index:999;
+	}
+	#searchAreaBtn{
+	top:60px;
+	right:50%;
+	margin-right:-59px;
+	}
+	
+	.mapContainer{
+	margin-bottom: 250px;
+	}
+}
+
+
+
