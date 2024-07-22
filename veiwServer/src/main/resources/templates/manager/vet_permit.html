@@ -40,7 +40,10 @@ fetch("http://localhost:9001/api/v1/manager/permit", {
         'Authorization': `${token}`
     }
 })
-.then(response => response.text())
+.then(response =>{
+	fetchResponseCheck(response);
+	return response.text();
+})
 .then(data => {
 	const objs = JSON.parse(data);
 	//console.log(objs);

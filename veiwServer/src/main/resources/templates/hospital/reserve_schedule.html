@@ -240,7 +240,10 @@
                 'Authorization': `${token}`
             }
         })
-        .then(response => response.json())
+        .then(response =>{
+        	fetchResponseCheck(response);
+        	return response.json();
+        })
         .then(data => {
         	//console.log("data ", data);
             data.forEach(unavTime => {
