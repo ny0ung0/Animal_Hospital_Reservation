@@ -36,6 +36,7 @@
 
 
 <script>
+
 ready();
 	function ready(){
 		const favList = document.querySelector("#favList");
@@ -43,7 +44,7 @@ ready();
 		const xhttp = new XMLHttpRequest();
 		xhttp.onload = function() {
 			//alert(this.responseText);
-			tokenExpired(this);
+			responseCheck(this);
 			if(this.status ==200){
 			const list = JSON.parse(this.responseText);
 			list.forEach(vet =>{

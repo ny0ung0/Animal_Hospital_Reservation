@@ -235,11 +235,13 @@ ready();
     var cnt = 1;
     var reservList = document.querySelector("#tbody");
     reservList.innerHTML=` `;
-    
+   
     for(let i=0 ;i < waitingList.length;i++ ){
        let waiting = waitingList[i];
        for(let i=1 ; i<4; i++){
-    	   if(waiting.reservation_datetime[i] < 10){
+    	  
+    	   if(waiting.reservation_datetime[i] < 10 && !waiting.reservation_datetime[i].toString().startsWith("0")){
+    		  
         	   waiting.reservation_datetime[i] ="0"+waiting.reservation_datetime[i];
            }
        }
@@ -273,7 +275,8 @@ ready();
     for(let i=0 ;i < confirmedList.length;i++ ){
        let reservation = confirmedList[i];
        for(let i=1 ; i<4; i++){
-    	   if(reservation.reservation_datetime[i] < 10){
+    	   if(reservation.reservation_datetime[i] < 10 && !reservation.reservation_datetime[i].toString().startsWith("0")){
+    		   reservation.reservation_datetime[i] ="";
     		   reservation.reservation_datetime[i] ="0"+reservation.reservation_datetime[i];
            }
        }
@@ -305,7 +308,7 @@ ready();
     for(let i=0 ;i < completedList.length;i++ ){
        let reservation = completedList[i];
        for(let i=1 ; i<4; i++){
-    	   if(reservation.reservation_datetime[i] < 10){
+    	   if(reservation.reservation_datetime[i] < 10 && !reservation.reservation_datetime[i].toString().startsWith("0")){
     		   reservation.reservation_datetime[i] ="0"+reservation.reservation_datetime[i];
            }
        }

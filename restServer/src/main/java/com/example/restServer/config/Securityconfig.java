@@ -25,7 +25,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @Configuration
 @EnableWebSecurity
-public class Securityconfig {
+public class Securityconfig  {
 	
 	private final AuthenticationConfiguration authenticationConfiguration;
 	//JWTUtil 주입
@@ -95,11 +95,11 @@ public class Securityconfig {
 		http
 			.authorizeHttpRequests(auth -> auth
 					.requestMatchers("/", "/login", "/images/**","api/v1/common/**",  "/api/v1/near-vet-list", "/api/v1/vet-list","/api/v1/fcm/**").permitAll()
-					//.requestMatchers("/v3/**","/swagger-ui/**").permitAll()
-					//.requestMatchers("/api/v1/hospital/**").hasRole("HOSPITAL")
-					//.requestMatchers("api/v1/user/**").hasRole("USER")
-					//.requestMatchers("/api/v1/manager/**").hasRole("ADMIN")
-					.anyRequest().permitAll() );
+					.requestMatchers("/v3/**","/swagger-ui/**").permitAll()
+					.requestMatchers("/api/v1/hospital/**").hasRole("HOSPITAL")
+					.requestMatchers("api/v1/user/**").hasRole("USER")
+					.requestMatchers("/api/v1/manager/**").hasRole("ADMIN")
+					.anyRequest().authenticated() );
 			
 		//세션 설정 : Stateless
 		http

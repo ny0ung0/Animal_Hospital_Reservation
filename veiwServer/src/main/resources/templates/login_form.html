@@ -62,7 +62,7 @@
 			xhttp.onload = function() {
 				 if (this.status === 200) {
 	                   if(!(this.getResponseHeader("role") =="ROLE_WAIT")){
-						 	alert("로그인 성공");
+						 	//alert("로그인 성공");
 		                    const token = this.getResponseHeader("Authorization");
 		                    if (token) {
 		                        localStorage.setItem("token", token);
