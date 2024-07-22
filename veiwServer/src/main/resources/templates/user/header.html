@@ -212,44 +212,59 @@
 	    closeMobileMenu(); // 클릭 시 모바일 메뉴 닫기
 	});
 	
-	
-	 function responseCheck(response){
-  		 const msg =response.getResponseHeader("msg");
-  		 if(msg && msg=="tokenExpired"){
-  				alert("로그인 시간이 만료되었습니다.다시 로그인 해주세요.");
-  				 localStorage.clear();
-  				 window.location.href="/login_form";
-  			}
-  		 if(response.status ==401){
-  			 alert("사용자 정보 인증에 실패하였습니다.로그인 해주세요.");
-  			 window.location.href="/login_form";
-  		 }else if(response.status ==403){
-  			 alert("접근 가능한 페이지가 아닙니다.");
-  			 window.location.href="/";
-  		 }else if(response.status ==400){
-  			 alert("잘못된 접근입니다.")
-  			 window.location.href="/";
-  		 }
-    }
-	 
-	 function fetchResponseCheck(response){
-  		 const msg =response.headers.get("msg");
-  		 if(msg && msg=="tokenExpired"){
-  				alert("로그인 시간이 만료되었습니다.다시 로그인 해주세요.");
-  				 localStorage.clear();
-  				 window.location.href="/login_form";
-  			}
-  		 if(response.status ==401){
-  			 alert("사용자 정보 인증에 실패하였습니다.로그인 해주세요.");
-  			 window.location.href="/login_form";
-  		 }else if(response.status ==403){
-  			 alert("접근 가능한 페이지가 아닙니다.");
-  			 window.location.href="/";
-  		 }else if(response.status ==400){
-  			 alert("잘못된 접근입니다.")
-  			 window.location.href="/";
-  		 }
-    }
+    
+  	 function responseCheck(response){
+ 		 const msg =response.getResponseHeader("msg");
+ 		 if(msg && msg=="tokenExpired"){
+ 				alert("로그인 시간이 만료되었습니다.다시 로그인 해주세요.");
+ 				 localStorage.clear();
+ 				 window.location.href="/login_form";
+ 			}
+ 		 if(response.status ==401){
+ 			 alert("사용자 정보 인증에 실패하였습니다.로그인 해주세요.");
+ 			 window.location.href="/login_form";
+ 		 }else if(response.status ==403){
+ 			 alert("접근 가능한 페이지가 아닙니다.");
+ 			if(localStorage.getItem("role")=="ROLE_HOSPITAL"){
+				 window.location.href="/hospital";
+			 }else{
+	 			 window.location.href="/";
+				 }
+ 		 }else if(response.status ==400){
+ 			 alert("잘못된 접근입니다.")
+ 			if(localStorage.getItem("role")=="ROLE_HOSPITAL"){
+				 window.location.href="/hospital";
+			 }else{
+ 				 window.location.href="/";
+			 }
+ 		 }
+   }
+  	 function fetchResponseCheck(response){
+ 		 const msg =response.headers.get("msg");
+ 		 if(msg && msg=="tokenExpired"){
+ 				alert("로그인 시간이 만료되었습니다.다시 로그인 해주세요.");
+ 				 localStorage.clear();
+ 				 window.location.href="/login_form";
+ 			}
+ 		 if(response.status ==401){
+ 			 alert("사용자 정보 인증에 실패하였습니다.로그인 해주세요.");
+ 			 window.location.href="/login_form";
+ 		 }else if(response.status ==403){
+ 			 alert("접근 가능한 페이지가 아닙니다.");
+ 			 if(localStorage.getItem("role")=="ROLE_HOSPITAL"){
+ 				 window.location.href="/hospital";
+ 			 }else{
+	 			 window.location.href="/";
+			 }
+ 		 }else if(response.status ==400){
+ 			 alert("잘못된 접근입니다.")
+ 			if(localStorage.getItem("role")=="ROLE_HOSPITAL"){
+				 window.location.href="/hospital";
+			 }else{
+	 			 window.location.href="/";
+			 }
+ 		 }
+   }
 </script>
 </div>
 
