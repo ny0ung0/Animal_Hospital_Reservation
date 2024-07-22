@@ -16,13 +16,70 @@
 	.hidden {
 	    display: none;
 	}
+	
+	#userHeader, #hospitalHeader {
+        display: none;
+    }
+    
+
+    .card-body {
+        padding: 20px;
+    }
+    .form-group {
+        margin-bottom: 20px;
+    }
+    .form-group span, .form-group div {
+        display: block;
+        margin-bottom: 10px;
+    }
+    .fw-bold {
+        font-weight: bold;
+        font-size: 1.1rem;
+        color: #343a40;
+    }
+    .btn-primary, .btn-danger, .btn-success, .btn-secondary {
+        padding: 10px 20px;
+        font-size: 1rem;
+        border-radius: 5px;
+        transition: background-color 0.3s, color 0.3s;
+        margin : 5px;
+    }
+    .btn-primary:hover {
+        background-color: #0056b3;
+        color: #ffffff;
+    }
+    .btn-danger:hover {
+        background-color: #ff4d4d;
+        color: #ffffff;
+    }
+    .btn-success:hover {
+        background-color: #218838;
+        color: #ffffff;
+    }
+    .btn-secondary:hover {
+        background-color: #6c757d;
+        color: #ffffff;
+    }
+
+    textarea.form-control {
+        resize: none;
+    }
 </style>
 <body class="d-flex flex-column h-100">
-<div th:replace="~{user/header :: header}"></div>
+
+
+<template id="userHeaderTemplate">
+    <div id="userHeader" th:replace="~{user/header :: header}"></div>
+</template>
+<template id="hospitalHeaderTemplate">
+    <div id="hospitalHeader" th:replace="~{hospital/header :: header}"></div>
+</template>
+<div id="headerContainer"></div>
+
 <div class="container-xl">
 
 
-<h1 class="mt-3 mt-md-5 mb-3 mb-md-3">문의 상세페이지</h1>
+<h1 class="mt-3 mt-md-5 mb-3 mb-md-3">내 문의내역</h1>
 <hr>
 
  <div class="container mt-5">
@@ -41,6 +98,7 @@
                     <div class="qnatitle fw-bold">문의 내용</div>
                     <div id="inquiry-content" class="mb-3"></div>
                 </div>
+                <hr>
                 <div class="form-group" id="replyContent">
                     <div class="replytitle fw-bold">문의 답변</div>
                     <div id="reply" class="mb-3"></div>
@@ -84,9 +142,42 @@
 </div>
 <div th:replace="~{user/footer :: footer}"></div>
 <script th:inline="javascript">
+var role = localStorage.getItem('role');
+var headerContainer = document.getElementById('headerContainer');
+var userHeaderTemplate = document.getElementById('userHeaderTemplate').content;
+var hospitalHeaderTemplate = document.getElementById('hospitalHeaderTemplate').content;
+
+if (role === 'ROLE_USER') {
+    headerContainer.appendChild(userHeaderTemplate.cloneNode(true));
+} else if (role === 'ROLE_HOSPITAL') {
+    headerContainer.appendChild(hospitalHeaderTemplate.cloneNode(true));
+} else {
+    headerContainer.appendChild(userHeaderTemplate.cloneNode(true));
+}
+
+setTimeout(function() {
+    if (role === 'ROLE_USER') {
+        var userHeader = document.getElementById('userHeader');
+        if (userHeader) {
+            userHeader.style.display = 'block';
+        }
+    } else if (role === 'ROLE_HOSPITAL') {
+        var hospitalHeader = document.getElementById('hospitalHeader');
+        if (hospitalHeader) {
+            hospitalHeader.style.display = 'block';
+        }
+    } else {
+        var defaultUserHeader = document.getElementById('userHeader');
+        if (defaultUserHeader) {
+            defaultUserHeader.style.display = 'block';
+        }
+    }
+}, 100);
+
+
 const token = localStorage.getItem("token");
 const MemberId = localStorage.getItem("MemberId");
-const role = localStorage.getItem("role");
+//const role = localStorage.getItem("role");
 
 
 
@@ -121,6 +212,9 @@ $.ajax({
     },
     error: function(error) {
         console.error('Error:', error);
+    },
+    complete: function(jqXHR, textStatus) {
+        responseCheck(jqXHR);
     }
 });
 
@@ -146,7 +240,8 @@ $('#saveBtn').on('click', function() {
 
     $('#inquiry-title').removeClass('hidden');
     $('#inquiry-content').removeClass('hidden');
-    $('#edit-btn').removeClass('hidden');
+    $('#editBtn').removeClass('hidden');
+    $('#deleteBtn').removeClass('hidden');
     $('#edit-form').addClass('hidden');
     
     
@@ -171,7 +266,7 @@ $('#saveBtn').on('click', function() {
             if (xhr.status === 200) {
                 console.log("문의 수정 성공!");
                 alert("문의가 성공적으로 수정되었습니다.");
-                window.location.href = "/";
+                
             } else {
                 console.error("문의 수정 실패");
                 alert("문의 수정에 실패했습니다.");
@@ -180,6 +275,9 @@ $('#saveBtn').on('click', function() {
         error: function(xhr, textStatus, errorThrown) {
             console.error("AJAX 요청 실패");
             alert("문의 수정 중 오류가 발생했습니다.");
+        },
+        complete: function(jqXHR, textStatus) {
+            responseCheck(jqXHR);
         }
     });
     
@@ -210,7 +308,10 @@ $('#deleteBtn').on('click', function() {
 		    error: function(xhr, textStatus, errorThrown) {
 		        console.error("AJAX 요청 실패");
 		        alert("문의 삭제 중 오류가 발생했습니다.");
-		    }
+		    },
+	        complete: function(jqXHR, textStatus) {
+	            responseCheck(jqXHR);
+	        }
 		});
 	} else {
         // 사용자가 취소 버튼을 누른 경우
@@ -246,9 +347,12 @@ function replySave(){
 	    },
 		body: JSON.stringify(updateData) 
 	})
-	.then(response => response.text())
 	.then(data => {
 		location.reload();
+	})
+	.then(response =>{
+		fetchResponseCheck(response);
+		return response.text();
 	})
 	.catch(error => console.log(error));
 }

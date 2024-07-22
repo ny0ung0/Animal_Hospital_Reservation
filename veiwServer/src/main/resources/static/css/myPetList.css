@@ -1,21 +1,80 @@
 @charset "UTF-8";
 
+/* 전체 컨테이너 스타일링 */
+.container-xl {
+    width: 100%;
+    margin: 0 auto; /* 중앙 정렬 */
+}
+
+
+/* 목록 스타일링 */
+#petList {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px; /* 항목 간의 간격 */
+    justify-content : center;
+}
+
+/* 각 반려동물 항목 스타일링 */
 .pet-item {
-    border: 1px solid #ccc;
-    padding: 15px;
-    margin-bottom: 20px;
-    border-radius: 5px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    position: relative; /* 상대적 위치 지정 */
+	
+    border: 1px solid #ddd; /* 테두리 스타일 */
+    border-radius: 8px; /* 둥근 모서리 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
+    padding: 10px; /* 내부 여백 */
+    background-color: #FBF5EF; /* 배경 색상 */
+    text-align: center; /* 가운데 정렬 */
 }
+
+/* 이미지 스타일링 */
 .pet-item img {
-    max-width: 100%;
-    height: auto;
-    border-radius: 5px;
-    margin-bottom: 10px;
+    border-radius: 5px; /* 이미지 둥근 모서리 */
+    margin-bottom: 10px; /* 이미지와 텍스트 간의 간격 */
 }
+
+/* 버튼 그룹 스타일링 */
 .btn-edit-delete {
-    position: absolute;
-    top: 10px;
-    right: 10px;
+    margin-bottom: 10px; /* 버튼 그룹과 내용 간의 간격 */
+    
 }
+
+/* 버튼 스타일링 */
+.btn-edit-delete .btn {
+    margin: 0 5px; /* 버튼 간의 간격 */
+}
+
+/* 링크 버튼 스타일링 */
+a.btn-primary {
+	width : 50px;
+    display: block;
+    width: fit-content;
+    margin: 50px auto;
+    background-color: #4C5CB3;
+    color: #fff;
+    padding: 10px 20px;
+    text-align: center;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: 0.3s, box-shadow 0.3s;
+}
+
+a.btn-primary:hover {
+    background-color: #F3E2A9;
+    color: black;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+
+/* 이미지 스타일링 */
+.pet-item img {
+    width: 100%;
+    height: auto;
+    border-radius: 10px; /* 이미지 모서리 둥글게 */
+    transition: transform 0.3s; /* 애니메이션 효과 */
+}
+
+/* 이미지 호버 효과 */
+.pet-item:hover img {
+    transform: scale(1.2); /* 이미지를 살짝 확대 */
+}
+

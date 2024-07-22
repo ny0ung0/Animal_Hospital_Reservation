@@ -11,75 +11,138 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Jua&display=swap" rel="stylesheet">
 </head>
+<style>
+	#previewImage{
+		max-width : 250px;
+	}
+
+	.container-xl{
+		width : 1000px;
+	}
+	input[type=text],input[type=date] {
+		width: 800px;
+		height: 40px;
+	}
+	.btn-container {
+        display: flex;
+        justify-content: center; /* 버튼을 오른쪽으로 정렬 */
+        margin: 30px;
+        
+    }
+    
+    #regBtn {
+    background-color: #4C5CB3;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    color: #ffffff;
+    font-weight: bold;
+    transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+	}
+
+	#regBtn:hover {
+    background-color: #F3E2A9;
+    color: black;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+	}
+	
+	.petInfo{
+	display: flex;
+    flex-direction: column;
+    align-items: center; /* 가로 방향 가운데 정렬 */
+    justify-content: center; /* 세로 방향 가운데 정렬 */
+    width: 100%; /* 전체 너비 사용 */
+    margin: 0 auto;
+	}
+	
+	.form-select {
+        width: 300px; /* 부모 요소의 폭을 차지하도록 설정 */
+        
+    }
+    .col-md-6, .col-lg-3 {
+        width: 300px; /* 부모 요소의 너비를 전체로 설정 */
+        margin-right : 20px;
+    }
+      h2, h3, p, label, select, input {
+        font-weight: bold; /* 지정한 요소의 텍스트를 굵게 설정 */
+    }
+</style>
 <body class="d-flex flex-column h-100">
 <div th:replace="~{user/header :: header}"></div>
 <div class="container-xl">
 
 
-<h1 class="mt-3 mt-md-5 mb-3 mb-md-3">반려동물 등록하기</h1>
+<h1 class="mt-3 mt-md-5 mb-3 mb-md-3">🐾내 반려동물 등록</h1>
 <hr>
 
 
-<div class="container-sm text-center profileImg_box position-relative">
-    <img id="previewImage" src="/images/petpicture.png" alt="사진" class="img-fluid" style="max-width : 250px;" >
-    <input type="file" id="fileInput" name="photo" class="position-absolute" style="bottom: 0; right: 0;" onchange="previewFile()">
-</div>
 
-<div class="mb-3">
-    <label for="petname" class="form-label">반려동물 이름</label>
-    <input type="text" name="name" class="form-control" id="petname">
-</div>
+ <div class="container-sm text-center profileImg_box position-relative">
+	<p>반려동물의 사진을 등록해주세요!</p>
+    <img id="previewImage" src="/images/no_image2.jpg" alt="사진" class="img-fluid" ><br><br>
+    <input type="file" id="fileInput" name="photo" onchange="previewFile()">
+ </div>
 
-<div class="row">
-    <div class="col-md-6 col-lg-3 mb-3">
-        <label for="petBigType" class="form-label">반려동물 종류</label>
-        <select id="petBigType" class="form-select" name="bigtype">
-            <option value="">선택하세요</option>
-            <option value="강아지">강아지</option>
-            <option value="고양이">고양이</option>
-            <option value="기타">기타</option>
-        </select>
-    </div>
-    <div class="col-md-6 col-lg-3 mb-3">
-        <label for="petType" class="form-label">반려동물 품종</label>
-        <select id="petType" class="form-select" name="type">
-            <option value="">반려동물 종류를 먼저 선택하세요</option>
-        </select>
-    </div>
+	<div class="petInfo">
+		<div class="mb-3">
+		    <label for="petname" class="form-label">반려동물 이름</label>
+		    <input type="text" name="name" class="form-control" id="petname"  placeholder="ex)식빵이">
+		</div>
+		
+		<div class="row">
+		    <div class="col-md-6 col-lg-3 mb-3">
+		        <label for="petBigType" class="form-label">반려동물 종류</label>
+		        <select id="petBigType" class="form-select" name="bigtype">
+		            <option value="">선택하세요</option>
+		            <option value="강아지">강아지</option>
+		            <option value="고양이">고양이</option>
+		            <option value="기타">기타</option>
+		        </select>
+		    </div>
+		    <div class="col-md-6 col-lg-3 mb-3">
+		        <label for="petType" class="form-label">반려동물 품종</label>
+		        <select id="petType" class="form-select" name="type">
+		            <option value="">반려동물 종류를 먼저 선택하세요</option>
+		        </select>
+		    </div>
+		</div>
+		
+		        
+		<div class="mb-3">
+		    <label for="birth" class="form-label">생년월일</label>
+		    <input type="date" name="birthdate" class="form-control" id="birth">
+		</div>
+		<div class="mb-3">
+		    <label for="weight" class="form-label">체중 (숫자만 입력해주세요)</label>
+		    <input type="text" name="weight" class="form-control" id="weight" placeholder="ex)5">
+		</div>
+		<div class="mb-3">
+		    <label for="health" class="form-label">걱정되는 질병이 무엇인가요?</label>
+		    <input type="text" name="healthIssues" class="form-control" id="health" placeholder="ex)비만">
+		</div>
+		
+		<div class="mb-3">
+		    <label class="form-label">성별</label><br>
+		    <input type="radio" class="form-check-input" id="genderMale" name="gender" value="male" checked>
+		    <label class="form-check-label" for="genderMale">남자</label><br>
+		    <input type="radio" class="form-check-input" id="genderFemale" name="gender" value="female">
+		    <label class="form-check-label" for="genderFemale">여자</label>
+		</div>
+		
+		<div class="mb-3">
+		    <label class="form-label">중성화여부</label><br>
+		    <input type="radio" class="form-check-input" id="neutered" name="isNeutered" value="true" checked>
+		    <label class="form-check-label" for="neutered">완료</label><br>
+		    <input type="radio" class="form-check-input" id="no_neutered" name="isNeutered" value="false">
+		    <label class="form-check-label" for="no_neutered">미완료</label>
+		</div>
+	
+	</div>
+	
+<div class="btn-container">
+<button type="submit" id="regBtn">반려동물 등록하기🦴</button>
 </div>
-
-        
-<div class="mb-3">
-    <label for="birth" class="form-label">생년월일</label>
-    <input type="date" name="birthdate" class="form-control" id="birth">
-</div>
-<div class="mb-3">
-    <label for="weight" class="form-label">체중</label>
-    <input type="text" name="weight" class="form-control" id="weight">
-</div>
-<div class="mb-3">
-    <label for="health" class="form-label">걱정되는 질병</label>
-    <input type="text" name="healthIssues" class="form-control" id="health">
-</div>
-
-<div class="mb-3">
-    <label class="form-label">성별</label><br>
-    <input type="radio" class="form-check-input" id="genderMale" name="gender" value="male" checked>
-    <label class="form-check-label" for="genderMale">남자</label><br>
-    <input type="radio" class="form-check-input" id="genderFemale" name="gender" value="female">
-    <label class="form-check-label" for="genderFemale">여자</label>
-</div>
-
-<div class="mb-3">
-    <label class="form-label">중성화여부</label><br>
-    <input type="radio" class="form-check-input" id="neutered" name="isNeutered" value="true" checked>
-    <label class="form-check-label" for="neutered">완료</label><br>
-    <input type="radio" class="form-check-input" id="no_neutered" name="isNeutered" value="false">
-    <label class="form-check-label" for="no_neutered">미완료</label>
-</div>
-
-<button type="submit" class="btn btn-primary" id="regBtn">반려동물 등록하기</button>
-
 
 
 </div>
@@ -135,6 +198,7 @@ document.getElementById('petBigType').addEventListener('change', function() {
             <option value="도마뱀">도마뱀</option>
             <option value="뱀">뱀</option>
             <option value="거북이">거북이</option>
+            <option value="기타">기타</option>
         `;
     }
 
@@ -194,7 +258,10 @@ document.getElementById('regBtn').addEventListener('click', function() {
         error: function(xhr, status, error) {
             console.error("반려동물 등록 실패");
             alert("반려동물 등록에 실패했습니다.");
-        }
+        },
+        complete: function(jqXHR, textStatus) {
+            responseCheck(jqXHR);
+        } 
     });
 });
 </script>
