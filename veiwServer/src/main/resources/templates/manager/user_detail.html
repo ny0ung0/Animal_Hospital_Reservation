@@ -120,7 +120,10 @@ fetch("http://localhost:9001/api/v1/manager/point/" + memberId,{
         'Authorization': `${token}`
     }
 })
-.then(response => response.text())
+.then(response =>{
+	fetchResponseCheck(response);
+	return response.text();
+})
 .then(data => {
 	const pointList = JSON.parse(data);
 	console.log(pointList);
@@ -153,7 +156,10 @@ fetch("http://localhost:9001/api/v1/manager/point/total/" + memberId,{
         'Authorization': `${token}`
     }
 })
-.then(response => response.text())
+.then(response =>{
+	fetchResponseCheck(response);
+	return response.text();
+})
 .then(data => {
 	//console.log(data);
 	let totalnum = 0;
@@ -181,7 +187,10 @@ function addPoint(){
 		},
 		body : sendData
 	})
-	.then(response => response.text())
+	.then(response =>{
+		fetchResponseCheck(response);
+		return response.text();
+	})
 	.then(data => {
 		console.log(data);
 		location.reload();

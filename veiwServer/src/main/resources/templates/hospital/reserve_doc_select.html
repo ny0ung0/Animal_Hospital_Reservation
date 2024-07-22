@@ -31,7 +31,10 @@ fetch("http://localhost:9001/api/v1/hospital/doctor", {
         'memberId' : memberId
     }
 })
-.then(response =>  response.json())
+.then(response =>{
+	fetchResponseCheck(response);
+	return response.json();
+})
 .then(data => {
 	console.log(data == "");
 	if(data == ""){

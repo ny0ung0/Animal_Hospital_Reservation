@@ -46,7 +46,10 @@ function allList(){
 	        'Authorization': `${token}`
 	    }
 	})
-	.then(response => response.text())
+	.then(response =>{
+		fetchResponseCheck(response);
+		return response.text();
+	})
 	.then(data => {
 		const objs = JSON.parse(data);
 		//console.log(objs);
@@ -112,7 +115,10 @@ document.querySelector("#searchBtn").addEventListener("click", function(){
 		        'Authorization': `${token}`
 		    }
 		})
-		.then(response => response.text())
+		.then(response =>{
+			fetchResponseCheck(response);
+			return response.text();
+		})
 		.then(data => {
 			const objs = JSON.parse(data);
 			document.getElementById("tbody").innerHTML = ""; // 이전 검색 결과를 초기화
