@@ -85,6 +85,7 @@
 		
 		const xhttp = new XMLHttpRequest();
 		xhttp.onload = function() {
+			responseCheck(this);
 			//alert(this.responseText);
 			var result = JSON.parse(this.responseText)[0];
 			frm.username.value=result.username;
@@ -148,6 +149,7 @@
 
 		const xhttp = new XMLHttpRequest();
 		xhttp.onload = function() {
+			responseCheck(this);
 			var result = this.responseText;
 			alert(this.responseText);
 			//document.getElementById("result").innerHTML = result;
@@ -226,6 +228,7 @@
 		
 		const xhttp = new XMLHttpRequest();
 		xhttp.onload = function() {
+			responseCheck(this);
 			//alert(this.responseText);
 			var result = this.responseText;
 			document.getElementById("nicknameResult").innerHTML = result;

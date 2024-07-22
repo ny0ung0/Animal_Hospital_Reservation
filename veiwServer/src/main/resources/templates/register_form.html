@@ -749,7 +749,15 @@
 	<script src="/js/address.js"></script>
 	<script>
 	readyAddress();
-	
+	let loginRole =localStorage.getItem("role");
+	if(loginRole){
+		alert("이미 로그인 상태입니다.");
+		if(loginRole=="ROLE_HOSPITAL"){
+		window.location.href="/hospital";
+		}else{
+			window.location.href="/";
+		}
+	}
 	//병원,사용자 탭
 	 function showUser() {
             document.getElementById("user").style.display = "block";

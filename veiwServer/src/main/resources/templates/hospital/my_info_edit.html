@@ -696,6 +696,7 @@
         const frm = document.querySelector("#frmEditHospital");
         const xhttp = new XMLHttpRequest();
         xhttp.onload = function() {
+        	responseCheck(this);
         	let doctors = JSON.parse(this.responseText);
             
             //의사관련
@@ -811,6 +812,7 @@
      }
         const xhttp = new XMLHttpRequest();
         xhttp.onload = function() {
+        	responseCheck(this);
             var result = this.responseText;
             alert(this.responseText);
         }
