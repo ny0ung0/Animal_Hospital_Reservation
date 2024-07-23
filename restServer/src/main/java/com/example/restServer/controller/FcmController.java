@@ -1,13 +1,17 @@
 package com.example.restServer.controller;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -89,4 +93,31 @@ public class FcmController {
 		System.out.println(fcmSendDto.toString());
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
+	
+	@GetMapping("/notifyList/{memberId}")
+	public List<Notification> getMynotifyList(@PathVariable(value = "memberId") Long memberId) {
+		
+		return notificationRepository.findByReceiverIdAndIsReadFalse(memberId);
+	}
+	
+	@GetMapping("/notifyCount/{memberId}")
+    public long getNotificationCount(@PathVariable(value = "memberId") Long memberId) {
+		
+        return notificationRepository.countByReceiver(memberId);
+    }
+	
+	@PutMapping("/notifyRead/{notificationId}")
+    public ResponseEntity<String> markNotificationAsRead(@PathVariable(value = "notificationId") Long notificationId) {
+		Optional<Notification> notificationOpt = notificationRepository.findById(notificationId);
+        if (notificationOpt.isPresent()) {
+            Notification notification = notificationOpt.get();
+            notification.setIsRead(true);
+            notificationRepository.save(notification);
+            return ResponseEntity.ok("Notification marked as read.");
+        } else {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Not authorized to read this notification.");
+        }
+    }
+	
+	
 }

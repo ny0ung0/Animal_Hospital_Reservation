@@ -1,6 +1,10 @@
 <header class="border-bottom" th:fragment="header">
 	<div class="d-flex bg-hospital-sub p-2 px-3">
 		<div class="ms-auto d-flex">
+		<div class="dropdown" id="notificationList" style="display: none;">
+		<button type="button" id="notiBell" class="navbar-brand me-4 btn position-relative" onclick="toggleIframe()" data-bs-toggle="dropdown" data-bs-auto-close="false" aria-expanded="false">🔔 알람<span	class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="notifycount" style="display: none;"></span></button>
+		<div id="downList" class="dropdown-menu p-0"></div>
+		</div>
 		<a id="chat" href="/hospital/chatList" class="navbar-brand me-4" style="display:none;">💬 챗팅</a>
 		<a id="login-link" class="navbar-brand" href="/login_form">로그인</a>
 		 <a id="logout-link" class="navbar-brand" href="#" onclick="logout()" style="display: none;">로그아웃</a>
@@ -32,7 +36,7 @@
 			  </ul>
 			</div>
 		</li>
-        <li class="nav-item"><a href="/hospital/notification" class="nav-link fs-5">알림설정</a></li>
+        <li class="nav-item"><a href="/api/v1/common/notification" class="nav-link fs-5">알림설정</a></li>
         <li class="nav-item"><a href="/hospital/chatList" class="nav-link fs-5">문의채팅</a></li>
         <!-- <li class="nav-item"><a href="#" class="nav-link fs-5">광고계약</a></li> -->
         <li class="nav-item">
@@ -61,6 +65,7 @@
             
             document.addEventListener("DOMContentLoaded", function() {
                 const memberId = localStorage.getItem('MemberId');
+                const token = localStorage.getItem('token');
                 const loginLink = document.getElementById('login-link');
                 const registerLink = document.getElementById('register-link');
                 const logoutLink = document.getElementById('logout-link');
@@ -72,12 +77,14 @@
                     logoutLink.style.display = '';
                     bar.style.display = 'none';
                     chat.style.display = '';
+                    notificationList.style.display = '';
                 } else {
                     loginLink.style.display = '';
                     registerLink.style.display = '';
                     logoutLink.style.display = 'none';
                     bar.style.display = '';
                     chat.style.display = 'none';
+                    notificationList.style.display = 'none';
                 }
                 
              	// 현재 URL 가져오기
@@ -191,5 +198,64 @@
        			 }
         		 }
           }
+         	 
+          function toggleIframe() {
+              var iframeContainer = document.getElementById("downList");
+              if (iframeContainer.classList.contains("open")) {
+                  iframeContainer.classList.remove("open");
+                  setTimeout(() => {
+                      iframeContainer.innerHTML = '';
+                  }); // transition 시간이 지난 후 iframe 제거
+              } else {
+                  iframeContainer.classList.add("open");
+                  var iframe = document.createElement("iframe");
+                  iframe.src = "/api/v1/common/notifyframe";
+                  iframe.style.width = "250px";
+                  iframe.style.height = "300px";
+                  iframe.style.border = "none";
+                  iframeContainer.appendChild(iframe);
+              }
+          }
+          
+          
+        	  
+          function updateNotificationCount(count) {
+              const countBadge = document.getElementById('notifycount');
+              if (count > 0) {
+                  countBadge.textContent = count;
+                  countBadge.style.display = ''; // 배지 보이기
+              } else {
+                  countBadge.style.display = 'none'; // 배지 숨기기
+              }
+          }
+
+        		// Listen for messages from the iframe
+        		window.addEventListener('message', (event) => {
+        		    if (event.origin !== 'http://localhost:8093') return; // Validate origin
+        		    if (event.data && event.data.type === 'UPDATE_COUNT') {
+        		        updateNotificationCount(event.data.count);
+        		    }
+        		});
+
+        		// Fetch and update notification count on page load
+        		function fetchNotificationCount() {
+        		    const memberId = localStorage.getItem('MemberId');
+        		    const token = localStorage.getItem('Token');
+
+        		    fetch("http://localhost:9001/api/v1/fcm/notifyCount/" + memberId, {
+        		        method: "GET",
+        		        headers: {
+        		            'Authorization': token
+        		        }
+        		    })
+        		    .then(response => response.json())
+        		    .then(count => {
+        		        updateNotificationCount(count);
+        		    })
+        		    .catch(error => console.log(error));
+        		}
+
+        		// Initial fetch
+        		fetchNotificationCount();
         </script>
 </header>
