@@ -44,9 +44,10 @@
 <h1 class="mt-3 mt-md-5 mb-3 mb-md-3">병원예약 리스트</h1>
 <hr>
 <div class="btn-group btn-group-lg" role="group" aria-label="Basic example">
-  <button type="button" class="btn btn-main" id="waitBtn" onclick="wait()">대기중예약</button>
-  <button type="button" class="btn btn-outline-main" id="confirmBtn" onclick="confirm()">확정예약</button>
-  <button type="button" class="btn btn-main" id="completeBtn" onclick="complete()">완료된예약</button>
+  <button type="button" class="btn btn-main" id="waitBtn" onclick="waitListView()">대기중예약</button>
+  <button type="button" class="btn btn-outline-main" id="confirmBtn" onclick="confirmListView()">확정예약</button>
+  <button type="button" class="btn btn-main" id="completeBtn" onclick="completeListView()">완료된예약</button>
+  <button type="button" class="btn btn-main" id="cancelBtn" onclick="cancelListView()">취소된예약</button>
 </div>
 
 <table class="table table-hover manager-table align-middle">
@@ -161,6 +162,7 @@ var allList=[];
 var waitingList = [];
 var completedList = [];
 var confirmedList = [];
+var cancelList = [];
 let hospitalId='';
 ready();
   function ready(){
@@ -185,12 +187,25 @@ ready();
             case '확정':
                 confirmedList.push(reservation);
                 break;
+            case '취소':
+            	cancelList.push(reservation);
             
         }
-      console.log(waitingList);
-      console.log(completedList);
-      console.log(confirmedList);
+      //console.log(waitingList);
+      //console.log(completedList);
+      //console.log(confirmedList);
       });
+      if(confirmedList.length === 0){
+     	 reservList.innerHTML=`
+     	      <tr>
+     	        <td></td>
+     	        <td></td>
+     	        <td>해당하는 예약이 없습니다.</td>
+     	        <td></td>
+     	        <td></td>
+     	      </tr>`;
+     	 return;
+     }
       for(let i=0 ;i < confirmedList.length;i++ ){
        let reservation = confirmedList[i];
        for(let i=1 ; i<4; i++){
@@ -228,15 +243,26 @@ ready();
     xhttp.send();
   }
   
-  function wait(){
+  function waitListView(){
 	 
 	  document.querySelector("#waitBtn").className="btn btn-outline-main";
 	  document.querySelector("#confirmBtn").className="btn btn-main";
 	  document.querySelector("#completeBtn").className="btn btn-main";
+	  document.querySelector("#cancelBtn").className="btn btn-main";
     var cnt = 1;
     var reservList = document.querySelector("#tbody");
     reservList.innerHTML=` `;
-   
+    if(waitingList.length === 0){
+   	 reservList.innerHTML=`
+   	      <tr>
+   	        <td></td>
+   	        <td></td>
+   	        <td>해당하는 예약이 없습니다.</td>
+   	        <td></td>
+   	        <td></td>
+   	      </tr>`;
+   	 return;
+   }
     for(let i=0 ;i < waitingList.length;i++ ){
        let waiting = waitingList[i];
        for(let i=1 ; i<4; i++){
@@ -265,19 +291,31 @@ ready();
       </tr>`
     }
   }
-  function confirm(){
+  function confirmListView(){
 	  document.querySelector("#waitBtn").className="btn btn-main";
 	  document.querySelector("#confirmBtn").className="btn btn-outline-main";
 	  document.querySelector("#completeBtn").className="btn btn-main";
+	  document.querySelector("#cancelBtn").className="btn btn-main";
     var cnt = 1;
     var reservList = document.querySelector("#tbody");
     reservList.innerHTML=` `;
     
+    if(confirmedList.length === 0){
+    	 reservList.innerHTML=`
+    	      <tr>
+    	        <td></td>
+    	        <td></td>
+    	        <td>해당하는 예약이 없습니다.</td>
+    	        <td></td>
+    	        <td></td>
+    	      </tr>`;
+    	 return;
+    }
     for(let i=0 ;i < confirmedList.length;i++ ){
        let reservation = confirmedList[i];
        for(let i=1 ; i<4; i++){
     	   if(reservation.reservation_datetime[i] < 10 && !reservation.reservation_datetime[i].toString().startsWith("0")){
-    		   reservation.reservation_datetime[i] ="";
+    		   
     		   reservation.reservation_datetime[i] ="0"+reservation.reservation_datetime[i];
            }
        }
@@ -299,13 +337,25 @@ ready();
     }
   }
   
-  function complete(){
+  function completeListView(){
 	  document.querySelector("#waitBtn").className="btn btn-main";
 	  document.querySelector("#confirmBtn").className="btn btn-main";
 	  document.querySelector("#completeBtn").className="btn btn-outline-main";
+	  document.querySelector("#cancelBtn").className="btn btn-main";
     var cnt = 1;
     var reservList = document.querySelector("#tbody");
     reservList.innerHTML=` `;
+    if(completedList.length === 0){
+      	 reservList.innerHTML=`
+      	      <tr>
+      	        <td></td>
+      	        <td></td>
+      	        <td>해당하는 예약이 없습니다.</td>
+      	        <td></td>
+      	        <td></td>
+      	      </tr>`;
+      	 return;
+      }
     for(let i=0 ;i < completedList.length;i++ ){
        let reservation = completedList[i];
        for(let i=1 ; i<4; i++){
@@ -336,6 +386,51 @@ ready();
     }
   }
   
+  function cancelListView() {
+	  document.querySelector("#waitBtn").className="btn btn-main";
+	  document.querySelector("#confirmBtn").className="btn btn-main";
+	  document.querySelector("#completeBtn").className="btn btn-main";
+	  document.querySelector("#cancelBtn").className="btn btn-outline-main";
+    var cnt = 1;
+    var reservList = document.querySelector("#tbody");
+    reservList.innerHTML=` `;
+    if(cancelList.length === 0){
+     	 reservList.innerHTML=`
+     	      <tr>
+     	        <td></td>
+     	        <td></td>
+     	        <td>해당하는 예약이 없습니다.</td>
+     	        <td></td>
+     	        <td></td>
+     	      </tr>`;
+     	 return;
+     }
+    for(let i=0 ;i < cancelList.length;i++ ){
+       let reservation = cancelList[i];
+       for(let i=1 ; i<4; i++){
+    	   if(reservation.reservation_datetime[i] < 10 && !reservation.reservation_datetime[i].toString().startsWith("0")){
+    		   
+    		   reservation.reservation_datetime[i] ="0"+reservation.reservation_datetime[i];
+           }
+       }
+      var day =reservation.reservation_datetime[0]+'-'+ reservation.reservation_datetime[1]+'-' +reservation.reservation_datetime[2];
+      if(reservation.reservation_datetime[4]=='0'){
+        reservation.reservation_datetime[4] ='00';
+      }
+      var time = reservation.reservation_datetime[3]+':'+ reservation.reservation_datetime[4];
+      reservList.innerHTML +=`
+      <tr>
+        <td>${cnt++}</td>
+        <td><button type="button" class="btn btn-user-sub" data-bs-toggle="modal" data-bs-target="#detailInfo" onclick="detailInfo('cancel',${i})">
+        ${reservation.hospital_name}
+        </button></td>
+        <td>${day}</td>
+        <td>${time}</td>
+        <td>취소된 예약</td>
+      </tr>`
+    }
+  }
+  
   function detailInfo(status,i){
     //alert("디테일 함수 들어옴");
     let photo =document.querySelector("#photo");
@@ -352,8 +447,10 @@ ready();
       //alert(dto.photo);
     }else if(status =="complete"){
       dto=completedList[i];
-    }else{
+    }else if(status =="wait"){
       dto=waitingList[i];
+    }else{
+    	dto=cancelList[i];
     }
     photo.innerHTML=`<img src="/images/user/${dto.photo}" width="200px" height="200px">`;
     pet_name.innerHTML=`${dto.pet_name}`;
