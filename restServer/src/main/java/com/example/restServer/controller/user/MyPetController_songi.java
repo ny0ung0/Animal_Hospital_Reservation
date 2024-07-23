@@ -1,6 +1,7 @@
 package com.example.restServer.controller.user;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -205,5 +206,42 @@ public class MyPetController_songi {
 		return ResponseEntity.ok("삭제 완료"); 
 		
 	}
+	
+	 @PutMapping("/petPhoto")
+	    public ResponseEntity<String> photoEdit(@RequestParam("petId") Long petId, @RequestParam("file") MultipartFile file, HttpServletRequest request) {
+	        String memberIdHeader = request.getHeader("MemberId");
+	        String authHeader = request.getHeader("Authorization");
+
+	        if (memberIdHeader == null || authHeader == null) {
+	            String errorMessage = "MemberId 또는 Authorization 헤더가 없습니다.";
+	            return ResponseEntity.badRequest().body(errorMessage);
+	        }
+
+	        try {
+	            Optional<Pet> optionalPet = petRepository.findById(petId);
+	            if (optionalPet.isEmpty()) {
+	                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Pet not found");
+	            }
+
+	            Pet pet = optionalPet.get();
+	            
+	            
+	            String imgOriginName = file.getOriginalFilename();
+	            String imgNewName = UUID.randomUUID().toString() + "_" + imgOriginName;
+	            System.out.println(imgOriginName + imgNewName);
+
+	            pet.setPhoto(imgNewName);
+
+	            File imgFile = new File(uploadPath + imgNewName);
+	            file.transferTo(imgFile);
+
+	            petRepository.save(pet);
+
+	            return ResponseEntity.ok("Photo updated successfully");
+
+	        } catch (IOException e) {
+	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update photo: " + e.getMessage());
+	        }
+	    }
 	
 }
