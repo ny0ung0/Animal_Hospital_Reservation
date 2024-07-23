@@ -5,7 +5,8 @@ function sendTokenToMessage(title, body) {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'MemberId': localStorage.getItem('MemberId')
+            'MemberId': localStorage.getItem('MemberId'),
+            'Authorization': localStorage.getItem('token')
         },
         body: JSON.stringify({ token: localStorage.getItem('fcm'), title: title, body:body })
     }).then(response => {
@@ -21,7 +22,8 @@ function sendTokenToMessageReceiver(title, body){
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'MemberId': localStorage.getItem('MemberId')
+            'MemberId': localStorage.getItem('MemberId'),
+            'Authorization': localStorage.getItem('token')
         },
         body: JSON.stringify({ title: title, body:body })
     }).then(response => {
