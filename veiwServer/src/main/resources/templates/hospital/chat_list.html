@@ -83,7 +83,10 @@ $(document).ready(function() {
         },
         error: function(xhr, status, error) {
             console.error('채팅목록 불러오기 에러발생', error);
-        }
+        },
+        complete: function(jqXHR, textStatus) {
+            responseCheck(jqXHR);
+        } 
     });
 });
 
