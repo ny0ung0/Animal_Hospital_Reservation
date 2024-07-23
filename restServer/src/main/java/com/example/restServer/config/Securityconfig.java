@@ -94,7 +94,7 @@ public class Securityconfig  {
 		
 		http
 			.authorizeHttpRequests(auth -> auth
-					.requestMatchers("/", "/login", "/notice/**", "/images/**","api/v1/common/**",  "/api/v1/near-vet-list", "/api/v1/vet-list","/api/v1/fcm/**").permitAll()
+					.requestMatchers("/", "/ws/**", "/login", "/notice/**", "/images/**","api/v1/common/**",  "/api/v1/near-vet-list", "/api/v1/vet-list","/api/v1/fcm/**").permitAll()
 					.requestMatchers("/v3/**","/swagger-ui/**").permitAll()
 					.requestMatchers("/api/v1/hospital/**").hasAnyRole("HOSPITAL", "ADMIN")
 					

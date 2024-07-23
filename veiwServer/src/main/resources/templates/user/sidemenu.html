@@ -1,0 +1,40 @@
+<link href="/css/userMyPage_SideBar.css" rel="stylesheet">
+
+<aside class="side-bar"  th:fragment="sidemenu">
+  <section class="side-bar__icon-box">
+    <section class="side-bar__icon-1">
+      <div id="sideBarTitle"><h3>My Page</h3></div>
+    </section>
+  </section>
+  <ul>
+    <li>
+      <a href="/user/my_info_edit"><i class="fa-solid fa-cat"></i>🐾 내정보수정</a>
+    </li>
+    <li>
+      <a href="#">🐾 반려동물 관리</a>
+       	<ul>
+       		<li class="smallMenu"><a href="/user/myPetList">반려동물 리스트</a></li>
+        	<li class="smallMenu"><a href="/user/myPetForm">반려동물 등록</a></li>
+		</ul>
+    </li>
+    <li>
+      <a href="/user/review_list">🐾 나의 병원 리뷰</a>
+    </li>
+    <li>
+      <a href="/user/fav_vet_list">🐾 즐겨찾기 내역</a>
+    </li>
+    <li>
+      <a href="#">🐾 포인트 관리</a>
+    </li>
+    <li>
+      <a href="#">🐾 내 문의</a>
+     	 <ul>
+     	 	<li class="smallMenu"><a href="/user/myQnaList">문의 내역</a></li>
+        	<li class="smallMenu"><a href="/qnaForm">문의 등록</a></li>
+		</ul>
+    </li>
+  </ul>
+</aside>
+
+
+  
