@@ -147,7 +147,10 @@
                 },
                 error: function(xhr, status, error) {
                     console.error('채팅내역 불러오기 에러발생', error);
-                }
+                },
+                complete: function(jqXHR, textStatus) {
+                    responseCheck(jqXHR);
+                } 
             });
         });
     
