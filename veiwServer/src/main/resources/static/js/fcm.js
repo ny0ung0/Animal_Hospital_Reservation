@@ -50,7 +50,8 @@ function sendTokenToServer(token) {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'MemberId': localStorage.getItem('MemberId')
+            'MemberId': localStorage.getItem('MemberId'),
+            'Authorization': localStorage.getItem('token')
         },
         body: JSON.stringify({ token: token})
     }).then(response => {
