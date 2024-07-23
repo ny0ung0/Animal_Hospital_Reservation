@@ -64,6 +64,7 @@
 .side-bar {
   flex: 0 0 var(--side-bar-width);
   position: relative;
+  z-index: 999;
 }
 
 .side-bar-image-container {
@@ -71,7 +72,7 @@
   top: 0px; /* 이미지가 사이드바 상단에 맞도록 조정 */
   left: calc(var(--side-bar-width) - 80px); /* 사이드바 너비만큼 이동 */
   transform: translateX(100%);
-
+	
 }
 
 .side-bar-image {
