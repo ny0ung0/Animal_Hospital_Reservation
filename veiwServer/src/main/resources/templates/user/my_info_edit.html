@@ -11,6 +11,8 @@
 	integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
 	crossorigin="anonymous">
 <link href="/css/style.css" rel="stylesheet">
+<link rel="stylesheet" href="/css/userMyPage_SideBar.css">
+<link rel="stylesheet" href="/css/mypage_SideBar.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link
@@ -20,7 +22,11 @@
 </head>
 <body class="d-flex flex-column h-100">
 	<div th:replace="~{user/header :: header}"></div>
-	<div class="container-xl">
+	<div class="d-flex flex-grow-1">
+	<aside class="side-bar" th:replace="~{user/sidemenu :: sidemenu}"></aside>
+
+	<div class="main-content container-xl">
+
 		<h2 class="mt-5 mb-3">회원 정보 수정</h2>
 
 		<form id="frmEditUser">
@@ -66,6 +72,7 @@
 			<input type="button" value="수정하기" class="btn btn-main" onclick="editUser()">
 			
 		</form>
+	</div>
 	</div>
 
 	<div th:replace="~{hospital/footer :: footer}"></div>

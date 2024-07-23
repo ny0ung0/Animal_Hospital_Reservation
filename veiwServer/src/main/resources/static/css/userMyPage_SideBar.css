@@ -1,0 +1,60 @@
+@charset "UTF-8";
+
+:root {
+  --side-bar-width: 280px;
+  --side-bar-height: 85vh;
+  --side-bar-text-color: #fff; /* 텍스트 색상 */
+  --side-bar-hover-text-color: #fff; /* 호버 시 텍스트 색상 */
+  --side-bar-box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 그림자 */
+}
+
+.side-bar {
+  font-family: "Jua", sans-serif;
+  background-color: var(--side-bar-bg-color);
+  width: var(--side-bar-width);
+  min-height: var(--side-bar-height);
+  margin-top: calc((100vh - var(--side-bar-height)) / 2);
+  border-radius: 20px;
+  transform: translate(calc(var(--side-bar-width) * -0.8), 0);
+  transition: .5s;
+  box-shadow: var(--side-bar-box-shadow);
+  color: var(--side-bar-text-color);
+  height : 100px;
+  padding : 10px;
+  padding-top : 30px;
+}
+
+.side-bar li {
+  list-style-type: none;
+}
+
+.side-bar ul > li > a {
+  display: block;
+  color: black;
+  font-size: 1.1rem;
+  padding: 20px 10px;
+  text-decoration: none; /* 밑줄 제거 */
+  
+}
+
+.side-bar ul > li > a:hover {
+  background-color:  #444;
+  color: var(--side-bar-hover-text-color);
+}
+
+.side-bar:hover {
+  transform: translate(-10px, 0);
+}
+
+#sideBarTitle {
+  font-family: "Jua", sans-serif;
+  margin-left: 50px;
+  color: #F5DA81;
+  font-size: 1.5rem;
+}
+
+
+.side-bar ul > li .smallMenu > a {
+  font-size: 1.1rem; /* 작은 메뉴 폰트 크기 */
+  margin-left : 20px;
+}
