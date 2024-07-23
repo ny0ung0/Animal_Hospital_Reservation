@@ -2,15 +2,6 @@
 
 
 
-
-.main-content {
-    flex: 1;
-    padding: 10px;
-}
-.container-xl {
-    max-width: 100%;
-}
-
 /* 반응형 디자인 */
 @media (max-width: 768px) {
     .d-flex {
