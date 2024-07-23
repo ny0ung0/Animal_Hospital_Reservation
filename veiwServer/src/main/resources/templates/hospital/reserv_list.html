@@ -72,7 +72,7 @@
 <div th:replace="~{hospital/footer :: footer}"></div>
 <script type="text/javascript">
 function notification(reservationId){
-    window.location.href = `/hospital/notification?id=${reservationId}`;
+    window.location.href = `/api/v1/common/notification?id=${reservationId}`;
 }
 document.addEventListener('DOMContentLoaded', function() {
     const memberId = localStorage.getItem("MemberId");
