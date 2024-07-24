@@ -93,85 +93,116 @@
 
 
 
+#chatRoom{
+	margin-bottom : 100px;
+	
+}
 
 
 
-
-
-
-
-
+#chat-container{
+	max-width : 100%;
+	
+	display : flex;
+	flex-direction : column;
+}
 
 
 #chat-box {
-    height: 400px;
+	background-color : #F2F2F2;
+    height: 550px;
     overflow-y: scroll;
     border: 1.2px solid #ddd;
     padding: 10px;
     display: flex;
-    flex-direction: row;
-}
-
-.message-container {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-}
-
-.sent-container {
-    justify-content: flex-end;
-    display: flex;
     flex-direction: column;
-    width: 50%;
+    overflow-y: auto;
 }
 
-.received-container {
-    justify-content: flex-start;
-    display: flex;
-    flex-direction: column;
-    width: 50%;
-}
+ #chat-box::-webkit-scrollbar {
+    width: 12px;
+ }
+ #chat-box::-webkit-scrollbar-thumb {
+   background-color: #A9A9F5;
+   border-radius: 10px;
+   background-clip: padding-box;
+   border: 2px solid transparent;
+ }
+ #chat-box::-webkit-scrollbar-track {
+   background-color: #F2EFFB;
+   border-radius: 10px;
+   box-shadow: inset 0px 0px 2px grey;
+ }
+  
+
 
 .messageBox {
     display: flex;
     flex-direction: row;
     margin : 10px;
-
+    
 }
 
 .messageBox.sentBox{
 	margin-right : 0;
-/* 	justify-content : flex-end; */
+
 	display : flex;
 	flex-direction : row-reverse;
+	
+}
+
+.messageBox.receivedBox{
+	margin-left : 0;
+	justify-content : flex-start;
+	display : flex;
+	
 }
 
 
 .text-message {
-    padding: 10px;
-    border-radius: 10px;
-    max-width: 60%;
+    font-family: "Jua", sans-serif;
+    padding: 15px;
+    border-radius: 25px; /* 말풍선의 곡선 조정 */
     word-wrap: break-word;
     position: relative;
+    font-size: 1em;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2); /* 연한 회색 그림자 */
     
 }
 
+/* 말풍선 꼬리 추가 */
+.text-message::after {
+    content: '';
+    position: absolute;
+    bottom: -10px; /* 꼬리의 위치 조정 */
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+}
+
 .text-message.receivedMsg {
-    background-color: #dcf8c6;
+    background-color: #FBF8EF;
     text-align: left;
     margin-left: 0;
+    border-top-left-radius: 0; /* 말풍선 왼쪽 상단을 각지게 */
+    
 }
 
 .text-message.sentMsg {
-    background-color: #F5ECCE;
+    background-color: #A9D0F5;
     text-align: right;
     margin-right: 0;
+    border-top-right-radius: 0; /* 말풍선 오른쪽 상단을 각지게 */
+   
 }
 
 .meta-container {
     display: flex;
     flex-direction: column;
     margin: 0 10px;
+    align-items : flex-end;
+    justify-content : center;
 }
 
 .timestamp {
@@ -183,17 +214,51 @@
     font-size: 0.6em;
     color: red;
 }
-
-#inputBox {
+#inputBox{
+	display : flex;
+	flex-direction : row;
+	align-items : center;
+	justify-content : center;
+	margin-top: 30px;
+    margin-bottom: 10px;
+     align-items: stretch;
+}
+#inputMsg {
     display: flex;
     flex-direction: row;
     align-items: stretch;
-    margin-top: 30px;
-    margin-bottom: 10px;
+   
 }
 
 #inputBox button {
-    width: 100px;
+    width: 60px;
+    margin-left : 20px;
+}
+ 
+ 
+ 
+ .receiveImage{
+ 	width : 50px;
+ 	height : 50px;
+ }
+ 
+ 
+ 
+ 
+#chatList{
+	margin-top:110px;
+	margin-right : 20px;
+	text-align : center;
+} 
+ 
+.chatListItem {
+    border-radius: 0 !important; /* 각지게 */
+    transition: border-color 0.3s ease; /* 마우스오버 시 애니메이션 */
 }
 
+.chatListItem:hover {
+    border-color: #007bff; /* 테두리 색상 (파란색) */
+    border-width: 2px;
+    border-style: solid;
+}
 
