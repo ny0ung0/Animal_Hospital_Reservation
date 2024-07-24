@@ -73,8 +73,10 @@ ready();
 			responseCheck(this);
 			//alert(this.responseText);
 			const list = JSON.parse(this.responseText);
+			var check = false;
 			list.forEach(review =>{				
 				if(review.rating !=null){	
+					check =true;
 					var day =review.reservation_datetime[0]+'-'+ review.reservation_datetime[1]+'-' +review.reservation_datetime[2];
 				      if(review.reservation_datetime[4]=='0'){
 				    	  review.reservation_datetime[4] ='00';
@@ -115,7 +117,9 @@ ready();
 				cnt++;
 				}
 				});
-			
+			if(!check){
+				reviewList.innerHTML = `작성한 리뷰가 없습니다.`;
+			}
 			
 		}
 		xhttp.open("get", "http://localhost:9001/api/v1/user/reservationList/"+localStorage.getItem("MemberId"));

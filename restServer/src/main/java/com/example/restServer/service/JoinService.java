@@ -103,7 +103,7 @@ public class JoinService {
 				//board.setThumbnailName(thumbnailSaveName);
 				
 				//File thumbfile = new File(uploadPath + thumbnailSaveName);
-				File ufile = new File(uploadPath + newName);
+				//File ufile = new File(uploadPath + newName);
 				
 				//Thumbnails.of(ufile).size(100,100).toFile(thumbfile);
 				System.out.println(joinHospitalDto);
