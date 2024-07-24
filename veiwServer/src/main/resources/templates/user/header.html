@@ -5,6 +5,10 @@
 			<a href="#" onclick="openMobileMenu()" class="navbar-brand">메뉴</a>
 		</div>
 		<div class="ms-auto d-flex">
+		<div class="dropdown" id="notificationList" style="display: none;">
+		<button type="button" id="notiBell" class="navbar-brand me-4 btn position-relative" onclick="toggleIframe()" data-bs-toggle="dropdown" data-bs-auto-close="false" aria-expanded="false">🔔 알람<span	class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="notifycount" style="display: none;"></span></button>
+		<div id="downList" class="dropdown-menu p-0"></div>
+		</div>
 		<a id="chat" href="/user/chatList" class="navbar-brand me-4" style="display:none;">💬 챗팅</a>
 		<a id="login-link" class="navbar-brand" href="/login_form">로그인</a>
 		<div id="mypage-link" class="navbar-brand" style="display: none;">
@@ -119,6 +123,7 @@
             mypageLink.style.display = '';
             //bar.style.display = 'none';
             chat.style.display = '';
+            notificationList.style.display = '';
         } else {
             loginLink.style.display = '';
             registerLink.style.display = '';
@@ -126,6 +131,7 @@
             mypageLink.style.display = 'none';
             bar.style.display = '';
             chat.style.display = 'none';
+            notificationList.style.display = 'none';
         }
         
         if (role === null) {
@@ -265,6 +271,65 @@
 			 }
  		 }
    }
+  	 
+  	function toggleIframe() {
+        var iframeContainer = document.getElementById("downList");
+        if (iframeContainer.classList.contains("open")) {
+            iframeContainer.classList.remove("open");
+            setTimeout(() => {
+                iframeContainer.innerHTML = '';
+            }); // transition 시간이 지난 후 iframe 제거
+        } else {
+            iframeContainer.classList.add("open");
+            var iframe = document.createElement("iframe");
+            iframe.src = "/api/v1/common/notifyframe";
+            iframe.style.width = "250px";
+            iframe.style.height = "300px";
+            iframe.style.border = "none";
+            iframeContainer.appendChild(iframe);
+        }
+    }
+    
+    
+  	  
+    function updateNotificationCount(count) {
+        const countBadge = document.getElementById('notifycount');
+        if (count > 0) {
+            countBadge.textContent = count;
+            countBadge.style.display = ''; // 배지 보이기
+        } else {
+            countBadge.style.display = 'none'; // 배지 숨기기
+        }
+    }
+
+  		// Listen for messages from the iframe
+  		window.addEventListener('message', (event) => {
+  		    if (event.origin !== 'http://localhost:8093') return; // Validate origin
+  		    if (event.data && event.data.type === 'UPDATE_COUNT') {
+  		        updateNotificationCount(event.data.count);
+  		    }
+  		});
+
+  		// Fetch and update notification count on page load
+  		function fetchNotificationCount() {
+  		    const memberId = localStorage.getItem('MemberId');
+  		    const token = localStorage.getItem('Token');
+
+  		    fetch("http://localhost:9001/api/v1/fcm/notifyCount/" + memberId, {
+  		        method: "GET",
+  		        headers: {
+  		            'Authorization': token
+  		        }
+  		    })
+  		    .then(response => response.json())
+  		    .then(count => {
+  		        updateNotificationCount(count);
+  		    })
+  		    .catch(error => console.log(error));
+  		}
+
+  		// Initial fetch
+  		fetchNotificationCount();
 </script>
 </div>
 
