@@ -16,28 +16,30 @@
 
 <body class="d-flex flex-column h-100">
 <div th:replace="~{user/header :: header}"></div>
-<div class="container-xl">
-    <h1 class="mt-3 mt-md-5 mb-3 mb-md-3">채팅방</h1>
-    <hr>
-    <div class="container mt-5">
-          <div id="chat-box" class="d-flex flex-row">
-              <div class="received-container"></div>
-              <div class="sent-container"></div>
-          </div>
-          <form id="chat-form">
-              <div id="inputBox" class="form-group">
-                  <input type="text" id="message" class="form-control" placeholder="메시지를 입력하세요...">
-                  <div class="input-group-append">
-                      <button type="submit" class="btn btn-outline-secondary">Send</button>
-                  </div>
-              </div>
-          </form>
-      </div>
+
+<div class="container-xl d-flex flex-row">
+    <div id="chatList" class="col-md-4 list-group"></div>
+    <div id="chatRoom" class="col-md-8">
+        <h1 id="hospitalName" class="mt-3 mt-md-5 mb-3 mb-md-3">00동물병원 채팅방</h1>
+        <hr>
+        <div id="chat-container" class="d-flex flex-column">
+            <div id="chat-box">
+            </div>
+            <form id="chat-form">
+                <div id="inputBox" class="form-group">
+                    <input type="text" id="inputMsg" class="form-control" placeholder="메시지를 입력하세요...">
+                    <div class="input-group-append">
+                        <button type="submit" class="btn btn-outline-secondary">💬</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
 
 <div th:replace="~{user/footer :: footer}"></div>
-
+<script src="https://momentjs.com/downloads/moment.js"></script>
 <script th:inline="javascript">
     const chatRoomId = "[[${chatRoomId}]]";
     const token = localStorage.getItem("token");
@@ -46,7 +48,7 @@
 
     console.log("병원 id 출력 : " + receiver);
     console.log("챗룸 id 출력 : " + chatRoomId);
-
+	
 
     //const isNewChat = !chatRoomId || chatRoomId === "null";
 
@@ -65,17 +67,20 @@
                     'MemberId': MemberId
                 },
                 success: function(response) {
-                    const receivedContainer = $('.received-container');
-                    const sentContainer = $('.sent-container');
-                    receivedContainer.empty();
-                    sentContainer.empty();
-
+//                     const receivedContainer = $('.received-container');
+//                     const sentContainer = $('.sent-container');
+//                     receivedContainer.empty();
+//                     sentContainer.empty();
+					const hospitalName = response[0].chatRoom.hospital.hospitalName;
+                    $('#hospitalName').text(hospitalName);
+					const chatBox = $('#chat-box');
+					
                     // 메시지들을 날짜 순으로 정렬
                     response.sort((a, b) => {
-                        const dateA = new Date(a.sendDate[0], a.sendDate[1] - 1, a.sendDate[2], a.sendDate[3], a.sendDate[4], a.sendDate[5], a.sendDate[6] / 1000);
-                        const dateB = new Date(b.sendDate[0], b.sendDate[1] - 1, b.sendDate[2], b.sendDate[3], b.sendDate[4], b.sendDate[5], b.sendDate[6] / 1000);
-                        return dateA - dateB;
-                    });
+		                const dateA = new Date(a.sendDate[0], a.sendDate[1] - 1, a.sendDate[2], a.sendDate[3], a.sendDate[4], a.sendDate[5], a.sendDate[6] / 1000);
+		                const dateB = new Date(b.sendDate[0], b.sendDate[1] - 1, b.sendDate[2], b.sendDate[3], b.sendDate[4], b.sendDate[5], b.sendDate[6] / 1000);
+		                return dateA - dateB; // 오래된 것이 위로 오도록 오름차순 정렬
+		            });
 					
                     let finalReceiver = null;
                     const chatRoomInfo = response[0]; 
@@ -92,30 +97,64 @@
                         if (chat.message === "채팅이 연결되었습니다.") {
                             return;
                         }
-
+						
+                                                
                         const messageBox = $('<div class="messageBox"></div>');
-                        const messageElement = $('<div class="text-message"></div>');
                         const metaContainer = $('<div class="meta-container"></div>');
+                        const messageElement = $('<div class="text-message"></div>');
                         const timestampElement = $('<div class="timestamp"></div>');
                         const isReadElement = $('<div class="is-read"></div>');
+                        
+                        const receiveImage = $('<img src="/images/chat_cat2-removebg-preview.png" class="receiveImage">');
 
-                        const sendDate = chat.sendDate;
-                        const localDate = new Date(
-                            sendDate[0], sendDate[1] - 1, sendDate[2], sendDate[3], sendDate[4], sendDate[5], sendDate[6] / 1000
-                        );
+                        var sendDateArray = chat.sendDate;
 
-                        const timestamp = !isNaN(localDate) ? localDate.toLocaleString('ko-KR') : 'Invalid Date';
-                        timestampElement.text(timestamp);
 
+                        var sendDate = sendDateArray ? new Date(
+                            sendDateArray[0],       // Year
+                            sendDateArray[1] - 1,   // Month (0-based)
+                            sendDateArray[2],       // Day
+                            sendDateArray[3],       // Hour
+                            sendDateArray[4],       // Minute
+                            sendDateArray[5]        // Second
+
+                        ) : null;
+
+                        if (sendDate) {
+                            var year = sendDate.getFullYear();
+                            var month = ('0' + (sendDate.getMonth() + 1)).slice(-2); // 월은 0 기반이므로 +1
+                            var day = ('0' + sendDate.getDate()).slice(-2);
+                            var hours = sendDate.getHours();
+                            var minutes = ('0' + sendDate.getMinutes()).slice(-2);
+                            var seconds = ('0' + sendDate.getSeconds()).slice(-2);
+
+                            // AM 또는 PM 결정
+                            var ampm = hours >= 12 ? 'PM' : 'AM';
+                            hours = hours % 12;
+                            hours = hours ? hours : 12; // 0시를 12시로 변경
+
+                            // 날짜 문자열 포맷팅
+                            var formattedDate = year + '-' + month + '-' + day + ' ' +
+                                                ampm + ' ' +
+                                                ('0' + hours).slice(-2) + ':' + minutes + ':' + seconds;
+                        } else {
+                            var formattedDate = ''; 
+                        }
+
+     
+                        timestampElement.text(formattedDate);
+
+ 
                         if (chat.isRead === false) {
-                            isReadElement.text("읽지않음");
+                            isReadElement.text("1");
                         }else{
-                        	isReadElement.text("읽음");
+                        	isReadElement.text(" ");
                         }
                         
 
                         metaContainer.append(timestampElement);
                         metaContainer.append(isReadElement);
+                        
                         messageElement.text(chat.message);
 
                         //receiver = chat.receiver.id; // AJAX 응답에서 receiver를 설정합니다.
@@ -127,13 +166,15 @@
                             messageBox.addClass('sentBox');
                             messageBox.append(messageElement);
                             messageBox.append(metaContainer);
-                            sentContainer.append(messageBox);
+                            chatBox.append(messageBox);
                         } else if (receiver != MemberId) {
                             messageElement.addClass('receivedMsg');
                             messageBox.addClass('receivedBox');
+                            messageBox.append(receiveImage);
                             messageBox.append(messageElement);
                             messageBox.append(metaContainer);
-                            receivedContainer.append(messageBox);
+                            
+                            chatBox.append(messageBox);
                         }
                     });
 
@@ -150,7 +191,67 @@
                 } 
             });
         });
+        
+        $.ajax({
+            url: 'http://localhost:9001/chatList',
+            type: 'GET',
+            headers: {
+                'Authorization': token,
+                'MemberId': MemberId
+            },
+            success: function(response) {
+                console.log(response);
+                var chatList = $("#chatList");
+                chatList.empty();  // 기존 내용을 비웁니다.
+
+                if (response.length > 0) {
+                    // lastMessageSendDate를 기준으로 정렬 (최신순)
+                    response.sort((a, b) => {
+                        return new Date(b.lastMessageSendDate) - new Date(a.lastMessageSendDate);
+                    });
+
+                    for (var i = 0; i < response.length; i++) {
+                        var chat = response[i];
+
+                        // moment.js를 사용하여 날짜 형식을 변환합니다.
+                        var formattedDate = moment(chat.lastMessageSendDate).format('YYYY-MM-DD A hh:mm');
+
+                        var listItem = `
+                            <div class="chatListItem list-group-item list-group-item-action">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <span class="mb-1">🏥 ${chat.hospitalName}</span>
+                                    <small class="text-muted">마지막 채팅시간 <br> ${formattedDate}</small>
+                                </div>
+                                <span class="mb-1" style="text-align: left; display: block;">${chat.lastMessage}</span>
+                                <button class="btn btn-outline-primary" onclick="chatLink(${chat.chatRoomId})">채팅하기</button>
+                            </div>
+                        `;
+                        chatList.append(listItem);
+                    }
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('채팅목록 불러오기 에러발생', error);
+            },
+            complete: function(jqXHR, textStatus) {
+                responseCheck(jqXHR);
+            } 
+        });
     }
+    
+    
+    function chatLink(chatRoomId) {
+  
+        localStorage.setItem('refreshNeeded', 'true');
+        window.location.href = '/user/chat/' + chatRoomId;
+    }
+    document.addEventListener('DOMContentLoaded', (event) => {
+    
+        if (localStorage.getItem('refreshNeeded') === 'true') {
+            localStorage.removeItem('refreshNeeded');
+            location.reload();
+        }
+    });
 
     function connectWebSocket(receiver) {
         const sender = localStorage.getItem('MemberId');
@@ -169,21 +270,14 @@
         };
 
         socket.onmessage = function(event) {
+            const chatBox = $('#chat-box');
+            
             const message = JSON.parse(event.data);
-            const messageBox = document.createElement('div');
-            messageBox.className = 'messageBox';
-
-            const messageElement = document.createElement('div');
-            messageElement.className = 'text-message';
-
-            const metaContainer = document.createElement('div');
-            metaContainer.className = 'meta-container';
-
-            const timestampElement = document.createElement('div');
-            timestampElement.className = 'timestamp';
-
-            const isReadElement = document.createElement('div');
-            isReadElement.className = 'is-read';
+            const messageBox = $('<div class="messageBox"></div>');
+            const messageElement = $('<div class="text-message"></div>');
+            const metaContainer = $('<div class="meta-container"></div>');
+            const timestampElement = $('<div class="timestamp"></div>');
+            const isReadElement = $('<div class="is-read"></div>');
 
             const sendDate = message.sendDate;
             const localDate = new Date(
@@ -191,34 +285,31 @@
             );
 
             const timestamp = !isNaN(localDate) ? localDate.toLocaleString('ko-KR') : 'Invalid Date';
-            timestampElement.innerText = timestamp;
+            timestampElement.text(timestamp);
 
-            messageElement.innerText = message.message;
-            metaContainer.appendChild(timestampElement);
+            messageElement.text(message.message);
+            metaContainer.append(timestampElement);
 
             if (message.isRead === false) {
-                isReadElement.innerText = "읽지않음";
-                metaContainer.appendChild(isReadElement);
+                isReadElement.text("1");
+                metaContainer.append(isReadElement);
             }
-
-            const sentContainer = document.querySelector('.sent-container');
-            const receivedContainer = document.querySelector('.received-container');
 
             if (message.sender.id == sender) {
-                messageElement.classList.add('sentMsg');
-                messageBox.classList.add('sentBox');
-                sentContainer.appendChild(messageBox);
+                messageElement.addClass('sentMsg');
+                messageBox.addClass('sentBox');
+                messageBox.append(messageElement);
+                messageBox.append(metaContainer);
+                chatBox.append(messageBox);  // jQuery append 사용
             } else {
-                messageElement.classList.add('receivedMsg');
-                messageBox.classList.add('receivedBox');
-                receivedContainer.appendChild(messageBox);
+                messageElement.addClass('receivedMsg');
+                messageBox.addClass('receivedBox');
+                messageBox.append(messageElement);
+                messageBox.append(metaContainer);
+                chatBox.append(messageBox);  // jQuery append 사용
             }
 
-            messageBox.appendChild(messageElement);
-            messageBox.appendChild(metaContainer);
-
-            document.getElementById('chat-box').scrollTop = document.getElementById('chat-box').scrollHeight;
-            console.log(message.sender.id + " : " + message.message);
+            chatBox.scrollTop(chatBox.prop("scrollHeight"));
         };
 
         socket.onclose = function() {
@@ -227,14 +318,14 @@
 
         document.getElementById('chat-form').addEventListener('submit', function(event) {
             event.preventDefault();
-            const message = document.getElementById('message').value;
+            const message = document.getElementById('inputMsg').value;
             socket.send(JSON.stringify({
                 type: 'message',
                 sender: sender,
                 receiver: receiver,
                 message: message
             }));
-            document.getElementById('message').value = '';
+            document.getElementById('inputMsg').value = '';
         });
     }
 </script>
