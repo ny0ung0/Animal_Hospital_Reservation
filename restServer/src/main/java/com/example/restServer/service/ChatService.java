@@ -167,6 +167,11 @@ public class ChatService {
         }
 	}
 	
+	//읽음표시 처리
+	/*
+	 * public void messagesAsRead(Long chatRoomId, Long memberId) {
+	 * chatRepo.messagesAsRead(chatRoomId, memberId); }
+	 */
 	
 	
 }

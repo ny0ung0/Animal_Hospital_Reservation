@@ -3,6 +3,7 @@ package com.example.restServer.repository;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -36,4 +37,9 @@ public interface ChatRepository extends JpaRepository<Chat, Long> {
 	//header의 memberId에 따라 채팅방 리스트 불러오기
 	
 	
+	
+//	@Modifying
+//    @Query("UPDATE Chat c SET c.isRead = true WHERE c.chatRoomID = :chatRoomId AND c.receiver.id = :memberId AND c.isRead = false")
+//    void messagesAsRead(@Param("chatRoomId") Long chatRoomId, @Param("memberId") Long memberId);
+//	
 }
