@@ -64,54 +64,69 @@ const MemberId = localStorage.getItem("MemberId");
 $(document).ready(function() {
 
 	console.log("memId 출력 : " + MemberId);
-    $.ajax({
-        url: 'http://localhost:9001/user/mypage/myPet',
-        type: 'GET',
-        dataType: 'json',
-        headers: {
-            'Authorization': token,
-            'MemberId': MemberId
-        },
-        success: function(response) {
-            if (response.length > 0) {
-                var petListContainer = $("#petList");
-                for (var i = 0; i < response.length; i++) {
-                    var pet = response[i];
-                    var petItem = `
-                        <div class="col-md-6 col-lg-4">
-                            <div class="pet-item">
+	$.ajax({
+	    url: 'http://localhost:9001/user/mypage/myPet',
+	    type: 'GET',
+	    dataType: 'json',
+	    headers: {
+	        'Authorization': token,
+	        'MemberId': MemberId
+	    },
+	    success: function(response) {
+	        var petListContainer = $("#petList");
+	        petListContainer.empty(); // 기존 목록을 비웁니다
 
-                                <img src="/images/user/${pet.photo}" class="img-fluid" id="petImg${i}" style="width: 400px; height : 300px;" data-pet-id="${pet.id}" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                                <ul class="list-unstyled mb-0">
-                                    <li><strong>이름:</strong> <span id="petName${i}">${pet.name}</span></li>
-                                    <li><strong>종류:</strong> <span id="petType${i}">${pet.type}</span></li>
-                                </ul>
-                                <div class="btn-edit-delete">
-	                                <button type="button" class="btn btn-sm btn-outline-primary" onclick="edit(${pet.id})">수정</button>
-	                                <button type="button" class="btn btn-sm btn-outline-danger" onclick="deletePet(${pet.id})">삭제</button>
+	        if (response.length > 0) {
+	            var hasPets = false; // 반려동물이 있는지 확인할 플래그
+	            
+	            for (var i = 0; i < response.length; i++) {
+	                var pet = response[i];
+	                
+	                // 상태가 "삭제"인 경우 리스트에 추가하지 않음
+	                if (pet.status !== "삭제") {
+	                    hasPets = true; // 반려동물이 있는 경우 플래그를 true로 설정
+	                    
+	                    var petItem = `
+	                        <div class="col-md-6 col-lg-4">
+	                            <div class="pet-item">
+	                                <img src="/images/user/${pet.photo}" class="img-fluid" id="petImg${i}" style="width: 400px; height : 300px;" data-pet-id="${pet.id}" data-bs-toggle="modal" data-bs-target="#exampleModal">
+	                                <ul class="list-unstyled mb-0">
+	                                    <li><strong>이름:</strong> <span id="petName${i}">${pet.name}</span></li>
+	                                    <li><strong>종류:</strong> <span id="petType${i}">${pet.type}</span></li>
+	                                </ul>
+	                                <div class="btn-edit-delete">
+	                                    <button type="button" class="btn btn-sm btn-outline-primary" onclick="edit(${pet.id})">수정</button>
+	                                    <button type="button" class="btn btn-sm btn-outline-danger" onclick="deletePet(${pet.id})">삭제</button>
+	                                </div>
 	                            </div>
-                            </div>
-                        </div>
-                    `;
-                    petListContainer.append(petItem);
-                }
-            }else{
-            	$("#petList").html("나의 반려동물이 없습니다. 반려동물을 등록해보세요!");
-            }
-            
-            $('.pet-item img').on('click', function() {
-                var petId = $(this).data('pet-id');
-                // 클릭한 이미지의 petId를 저장하거나 모달에서 사용할 수 있도록 설정
-                $('#exampleModal').data('pet-id', petId);
-            });
-        },
-        error: function(xhr, status, error) {
-            console.error('Error fetching pet data:', error);
-        },
-        complete: function(jqXHR, textStatus) {
-            responseCheck(jqXHR);
-        } 
-    });
+	                        </div>
+	                    `;
+	                    petListContainer.append(petItem);
+	                }
+	            }
+	            
+	            if (!hasPets) {
+	                petListContainer.html("<img src='/images/cute.png' style='width:160px; height:160px; margin : 0 auto;'>");
+	                petListContainer.append("나의 반려동물이 없습니다. 반려동물을 등록해보세요!");
+	            }
+	        } else {
+	            petListContainer.html("<img src='/images/cute.png' style='width:160px; height:160px; margin : 0 auto;'>");
+	            petListContainer.append("나의 반려동물이 없습니다. 반려동물을 등록해보세요!");
+	        }
+	        
+	        $('.pet-item img').on('click', function() {
+	            var petId = $(this).data('pet-id');
+	            // 클릭한 이미지의 petId를 저장하거나 모달에서 사용할 수 있도록 설정
+	            $('#exampleModal').data('pet-id', petId);
+	        });
+	    },
+	    error: function(xhr, status, error) {
+	        console.error('Error fetching pet data:', error);
+	    },
+	    complete: function(jqXHR, textStatus) {
+	        responseCheck(jqXHR);
+	    } 
+	});
 });
 
 function edit(id) {
@@ -119,25 +134,27 @@ function edit(id) {
 }
 
 function deletePet(id) {
-        
-    $.ajax({
-        url: 'http://localhost:9001/user/mypage/myPet/'+id,
-        type: 'DELETE',
-        headers: {
-            'Authorization': token,
-            'MemberId': MemberId
-        },
-        success: function(response) {
-            alert(response);
-            window.location.reload();
-        },
-        error: function(xhr, status, error) {
-            alert("삭제 실패")
-        },
-        complete: function(jqXHR, textStatus) {
-            responseCheck(jqXHR);
-        } 
-    });
+	const result =confirm("해당 반려동물을 삭제하시겠습니까??");
+	if(result){
+	    $.ajax({
+	        url: 'http://localhost:9001/user/mypage/myPetDelete/'+id,
+	        type: 'PUT',
+	        headers: {
+	            'Authorization': token,
+	            'MemberId': MemberId
+	        },
+	        success: function(response) {
+	            alert(response);
+	            window.location.reload();
+	        },
+	        error: function(xhr, status, error) {
+	            alert("삭제에 실패하였습니다.")
+	        },
+	        complete: function(jqXHR, textStatus) {
+	            responseCheck(jqXHR);
+	        } 
+	    });
+	}
 }
 
 

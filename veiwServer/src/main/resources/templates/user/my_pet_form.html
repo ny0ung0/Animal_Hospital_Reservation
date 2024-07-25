@@ -67,6 +67,8 @@
       h2, h3, p, label, select, input {
         font-weight: bold; /* 지정한 요소의 텍스트를 굵게 설정 */
     }
+    
+    
 </style>
 <body class="d-flex flex-column h-100">
 <div th:replace="~{user/header :: header}"></div>
@@ -125,27 +127,33 @@
 		    <input type="text" name="healthIssues" class="form-control" id="health" placeholder="ex)비만">
 		</div>
 		
-		<div class="mb-3">
+		<div class="radioBox mb-3">
 		    <label class="form-label">성별</label><br>
-		    <input type="radio" class="form-check-input" id="genderMale" name="gender" value="male" checked>
-		    <label class="form-check-label" for="genderMale">남자</label><br>
-		    <input type="radio" class="form-check-input" id="genderFemale" name="gender" value="female">
-		    <label class="form-check-label" for="genderFemale">여자</label>
-		</div>
+		    <div class="form-check">
+		        <input type="radio" class="form-check-input" id="genderMale" name="gender" value="male" checked>
+		        <label class="form-check-label" for="genderMale">남자</label>
+		    </div>
+		    <div class="form-check">
+		        <input type="radio" class="form-check-input" id="genderFemale" name="gender" value="female">
+		        <label class="form-check-label" for="genderFemale">여자</label>
+		    </div>
 		
-		<div class="mb-3">
 		    <label class="form-label">중성화여부</label><br>
-		    <input type="radio" class="form-check-input" id="neutered" name="isNeutered" value="true" checked>
-		    <label class="form-check-label" for="neutered">완료</label><br>
-		    <input type="radio" class="form-check-input" id="no_neutered" name="isNeutered" value="false">
-		    <label class="form-check-label" for="no_neutered">미완료</label>
+		    <div class="form-check">
+		        <input type="radio" class="form-check-input" id="neutered" name="isNeutered" value="true" checked>
+		        <label class="form-check-label" for="neutered">완료</label>
+		    </div>
+		    <div class="form-check">
+		        <input type="radio" class="form-check-input" id="no_neutered" name="isNeutered" value="false">
+		        <label class="form-check-label" for="no_neutered">미완료</label>
+		    </div>
 		</div>
 	
 	</div>
 	
-<div class="btn-container">
-<button type="submit" id="regBtn">반려동물 등록하기🦴</button>
-</div>
+	<div class="btn-container">
+		<button type="submit" id="regBtn">반려동물 등록하기🦴</button>
+	</div>
 
 </div>
 </div>
@@ -154,6 +162,21 @@
 const token = localStorage.getItem("token");
 const MemberId = localStorage.getItem("MemberId");
 
+const defaultImageURL = '/images/logo_user.png';
+
+function getImageDataURL(url, callback) {
+    const xhr = new XMLHttpRequest();
+    xhr.onload = function() {
+        const reader = new FileReader();
+        reader.onloadend = function() {
+            callback(reader.result);
+        };
+        reader.readAsDataURL(xhr.response);
+    };
+    xhr.open('GET', url);
+    xhr.responseType = 'blob';
+    xhr.send();
+}
 
 document.getElementById('petBigType').addEventListener('change', function() {
     const petType = document.getElementById('petType');
@@ -226,23 +249,65 @@ function previewFile() {
 }
 
 document.getElementById('regBtn').addEventListener('click', function() {
-    const formData = new FormData();
+    const name = document.getElementById('petname').value;
+    const bigtype = document.getElementById('petBigType').value;
+    const type = document.getElementById('petType').value;
+    const birthdate = document.getElementById('birth').value;
+    const weight = document.getElementById('weight').value;
+    const healthIssues = document.getElementById('health').value;
+    const gender = document.querySelector('input[name="gender"]:checked');
+    const isNeutered = document.querySelector('input[name="isNeutered"]:checked');
     const fileInput = document.querySelector('input[name="photo"]');
     const file = fileInput.files[0];
+    
+    // 유효성 검사
+    if (!name || !bigtype || !type || !birthdate || !weight || !healthIssues || !gender || !isNeutered) {
+        alert("모든 필드를 올바르게 입력해 주세요.");
+        return;
+    }
+
+    const formData = new FormData();
 
     if (file) {
         formData.append('photo', file);
+    } else {
+        // 기본 이미지를 Data URL로 변환 후 Blob으로 생성
+        getImageDataURL(defaultImageURL, function(dataURL) {
+            const blob = dataURLtoBlob(dataURL);
+            formData.append('photo', blob, 'default-image.jpg');
+            
+            // 나머지 데이터 추가
+            formData.append('name', name);
+            formData.append('bigtype', bigtype);
+            formData.append('type', type);
+            formData.append('birthdate', birthdate);
+            formData.append('weight', weight);
+            formData.append('healthIssues', healthIssues);
+            formData.append('gender', gender.value);
+            formData.append('isNeutered', isNeutered.value);
+
+            // AJAX 요청
+            sendFormData(formData);
+        });
+        return;
     }
 
-    formData.append('name', document.querySelector('input[name="name"]').value);
-    formData.append('bigtype', document.querySelector('select[name="bigtype"]').value);
-    formData.append('type', document.querySelector('select[name="type"]').value);
-    formData.append('birthdate', document.querySelector('input[name="birthdate"]').value);
-    formData.append('weight', document.querySelector('input[name="weight"]').value);
-    formData.append('healthIssues', document.querySelector('input[name="healthIssues"]').value);
-    formData.append('gender', document.querySelector('input[name="gender"]:checked').value);
-    formData.append('isNeutered', document.querySelector('input[name="isNeutered"]:checked').value);
+    // 나머지 데이터 추가
+    formData.append('name', name);
+    formData.append('bigtype', bigtype);
+    formData.append('type', type);
+    formData.append('birthdate', birthdate);
+    formData.append('weight', weight);
+    formData.append('healthIssues', healthIssues);
+    formData.append('gender', gender.value);
+    formData.append('isNeutered', isNeutered.value);
 
+    // AJAX 요청
+    sendFormData(formData);
+});
+
+
+function sendFormData(formData) {
     $.ajax({
         url: "http://localhost:9001/user/mypage/myPet",
         type: "POST",
@@ -266,7 +331,21 @@ document.getElementById('regBtn').addEventListener('click', function() {
             responseCheck(jqXHR);
         } 
     });
-});
+}
+
+function dataURLtoBlob(dataURL) {
+    const [header, data] = dataURL.split(',');
+    const mime = header.split(':')[1].split(';')[0];
+    const binary = atob(data);
+    const array = [];
+
+    for (let i = 0; i < binary.length; i++) {
+        array.push(binary.charCodeAt(i));
+    }
+
+    return new Blob([new Uint8Array(array)], { type: mime });
+}
+
 </script>
 <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>

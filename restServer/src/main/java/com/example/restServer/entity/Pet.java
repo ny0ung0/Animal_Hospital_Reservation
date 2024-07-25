@@ -2,6 +2,7 @@ package com.example.restServer.entity;
 
 import java.util.Date;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -37,6 +38,9 @@ public class Pet extends BaseEntity {
     private Boolean isNeutered;
     private Double weight;
     private String healthIssues;
-
-    // Getters and Setters
+    
+    @Column(nullable = true)
+    private String status;
+    
+    
 }

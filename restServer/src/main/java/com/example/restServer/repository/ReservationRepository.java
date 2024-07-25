@@ -49,4 +49,8 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 
 	List<Reservation> findByDoctorIdAndReservationDatetime(Long doctorId, LocalDateTime reservationDatetime);
 	
+	
+	void deleteByPetId(Long petId);
+	
+	
 }
