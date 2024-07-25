@@ -40,4 +40,9 @@ public class HospitalController_jisun {
 		return "/hospital/reserve_schedule";
 	}
 	
+	@RequestMapping("/customerList")
+	public String customerList() {
+		return "/hospital/customer_list";
+	}
+	
 }
