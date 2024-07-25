@@ -177,6 +177,7 @@ function showDates(startTime, endTime, lunchStart, lunchEnd){
         	selectedTime = timeString;
         	if (selectedSlot) {
                 selectedSlot.style.backgroundColor = ""; 
+                selectedSlot.style.color = "black"; 
             }
             e.target.style.backgroundColor = "#4C5CB3";
             e.target.style.color = "white";
