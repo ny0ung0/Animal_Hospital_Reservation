@@ -29,7 +29,7 @@
 		<div id="tab" class="d-flex">
 			<button id ="btnUser" class="btn btn-main" onclick="showUser()">반려인</button>
 			<button id ="btnHospital" class="btn btn-outline-main" onclick="showHospital()">동물병원</button>
-		</div>
+		</div><br>
 
 		<form id="frmUser">
 
@@ -41,7 +41,7 @@
 							class="btn btn-main ms-auto" onclick="checkUsername(event)"
 							value="중복체크">
 					</div>
-					<input type="text" name="username" id="username"
+					<input type="text" name="username" id="username" oninput="usernameCheckReset()"
 						class="form-control">
 				</div>
 				<div id="usernameResult"></div>
@@ -784,12 +784,18 @@
 		//유저네임 중복확인
 		function checkUsername(event){
 			event.preventDefault();
-			const username = document.querySelector("#username");
+			const username = document.querySelector("#username").value;
 			//alert(username.value);
-			if(username.value.length <3 ||username.value.length >12){
+			if(username.length <3 ||username.length >12){
 				alert("아이디를 3자 이상,12자 이하로 등록해주세요.");
 				return;
 			}
+			const usernamePattern = /^[A-Za-z\d]+$/;
+
+            if (!usernamePattern.test(username)) {
+                alert("아이디는 영어와 숫자만 포함할 수 있습니다.");
+                return;
+            }
 			
 			const xhttp = new XMLHttpRequest();
 			xhttp.onload = function() {
@@ -802,6 +808,13 @@
 
 			xhttp.send("username=" + username.value);
 		}
+		
+		//유저네임 다시 입력시 중복 확인 했어도 다시 하게끔 하는 함수
+		function usernameCheckReset(){
+			document.querySelector("#usernameResult").innerHTML=``;
+		}
+		
+		
 		//닉네임 중복확인 
 		function checkNickname(event){
 			event.preventDefault();
@@ -1093,7 +1106,7 @@
              var data = {
                  "b_no": [$("#business_number").val()] // 사업자번호 "xxxxxxx" 로 조회 시,
              };
-				alert($("#business_number").val());
+				//alert($("#business_number").val());
              $.ajax({
                  url: "https://api.odcloud.kr/api/nts-businessman/v1/status?serviceKey=pj1%2B669xKchgAcU3BhHK0bxmPPyBX9A%2FSmvsKpvuzhwIroogcKjl4B5qUfW3XYojSy0TgPWr6jrBOREJkxghlA%3D%3D",  // serviceKey 값을 YOUR_SERVICE_KEY에 입력
                  type: "POST",
