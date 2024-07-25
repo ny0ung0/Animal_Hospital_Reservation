@@ -22,8 +22,8 @@
                 <input type="text" name="username" id="username" class="form-control" readonly>
             </div>
             <div class="mb-3">
-                <input type="checkbox" id="passwordCheckBox" name="passwordCheckBox" onchange="togglePasswordCheckBox()">
-                <label class="form-label">비밀번호 변경</label>
+                <input type="checkbox" id="passwordCheckBox" onchange="togglePasswordCheckBox()">
+                <label class="form-label"  for="passwordCheckBox">비밀번호 변경</label>
                 <input type="password" name="passwordNew" class="form-control" disabled>
                 <input type="hidden" name="passwordOrigin">
                 <div>비밀번호는 5자 이상, 15자 이하, 영어, 숫자, 특수문자를 포함해야 합니다.</div>
@@ -799,10 +799,13 @@
         if (!hospitalValidateForm()) {
             return;
         }
+        const passwordChecked = document.querySelector("#passwordCheckBox").checked;
         const frm = document.querySelector("#frmEditHospital");
         const formData = new FormData(frm);
         const businessHours = gatherFormData();
         const memberId = localStorage.getItem("MemberId");
+        
+        formData.append('passwordCheckBox',passwordChecked);
         formData.append('businessHours', JSON.stringify(businessHours));
    		
    		formData.append('address', frm.address1.value + "//" + frm.address2.value + "//" + frm.detailAddress.value);
@@ -815,6 +818,7 @@
         	responseCheck(this);
             var result = this.responseText;
             alert(this.responseText);
+            window.location.href="/hospital/my_info_edit";
         }
         xhttp.open("put", "http://localhost:9001/api/v1/hospital/hospitalInfo");
         //xhttp.setRequestHeader("Content-type", "application/json");
@@ -881,7 +885,7 @@
     function togglePasswordCheckBox(){
         const isChecked = document.querySelector("#passwordCheckBox").checked;
         const passwordNew = document.querySelector('input[name=passwordNew]')
-        passwordNew.disabled = false;
+        passwordNew.disabled = !isChecked;
     }
 
     // 의사 추가

@@ -41,15 +41,24 @@
 							class="btn btn-main ms-auto" onclick="checkUsername(event)"
 							value="중복체크">
 					</div>
-					<input type="text" name="username" id="username" oninput="usernameCheckReset()"
+					<input type="text" name="username" id="username" oninput="usernameCheckReset()" placeholder="아이디는 영어,숫자만 가능합니다.(3자 이상, 12자 이하)"
 						class="form-control">
 				</div>
 				<div id="usernameResult"></div>
 			</div>
 			<div class="mb-3">
-				<label class="form-label">비밀번호</label> <input type="password"
-					name="password" class="form-control">
+				<div class="d-flex">
+				<label class="form-label">비밀번호</label> 
+				<input type="button" class="btn btn-main ms-auto" onclick="checkPassword()" value="비밀번호확인">
+				</div>
+				<input type="password"
+					name="password" id="password" class="form-control" oninput="passwordCheckReset()">
 				<div>비밀번호는 5자 이상, 15자 이하, 영어, 숫자, 특수문자를 포함해야 합니다.</div>
+				<br>
+				<label class="form-label">비밀번호 확인</label>
+				<input type="password"
+					name="password2" id="password2" class="form-control">
+					<div id="passwordResult"></div>
 			</div>
 			<div class="mb-3">
 				<label class="form-label">주소</label> <select id="address1"
@@ -81,7 +90,7 @@
 								onclick="checkNickname(event)">
 						</div>
 						<input type="text" name="nickname" id="nickname"
-							class="form-control">
+							class="form-control"  oninput="nicknameCheckReset()">
 					</div>
 				</div>
 				<input type="hidden" name="role" value="ROLE_USER"> <input
@@ -813,6 +822,20 @@
 		function usernameCheckReset(){
 			document.querySelector("#usernameResult").innerHTML=``;
 		}
+		//비밀번호 체크
+		function checkPassword(){
+			var password1 =document.querySelector("#password").value;
+			var password2 =document.querySelector("#password2").value;
+			if (password1 ==password2){
+				document.querySelector("#passwordResult").innerHTML =`입력하신 비밀번호가 서로 일치합니다.`;
+			}else{
+				document.querySelector("#passwordResult").innerHTML =`입력하신 비밀번호가 서로 다릅니다.`;
+			}
+		}
+		//비밀번호 다시 입력시 다시 체크하게 하는 함수
+		function passwordCheckReset(){
+			document.querySelector("#passwordResult").innerHTML=``;
+		}
 		
 		
 		//닉네임 중복확인 
@@ -835,6 +858,9 @@
 			xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");	
 
 			xhttp.send("nickname=" + nickname.value);
+		}
+		function nicknameCheckReset(){
+			document.querySelector("#nicknameResult").innerHTML=``;
 		}
 		//유저 회원가입
 		function joinUser() {
@@ -908,6 +934,7 @@
 	            }
 	            const usernameResult = document.getElementById("usernameResult").innerText;
 	            const nicknameResult = document.getElementById("nicknameResult").innerText;
+	            const passwordResult = document.querySelector("#passwordResult").innerText;
 
 	            if (!usernameResult.includes("사용가능")) {
 	                alert("아이디 중복 체크를 확인해 주세요.");
@@ -928,6 +955,11 @@
 	                return false;
 	            }
 	            const password = frm.password.value.trim();
+	            if(!passwordResult.includes("일치")){
+	            	alert("비밀번호 확인을 해주세요.");
+	            	document.querySelector("#password").focus();
+	            	return false;
+	            }
 	            if (!validatePassword(password)) {
 	                alert("비밀번호는 5자 이상 15자 이하의 길이여야 하며, 영어, 숫자, 특수문자를 포함해야 합니다.");
 	                frm.password.focus();
