@@ -190,6 +190,7 @@ function checkBookmark(e){
 	let filled = "http://localhost:8093/images/bookmark_fill.png"
 	let empty = "http://localhost:8093/images/bookmark.png"
 	let isBookmarked;
+	let changeBookMark;
 	
 	if(!localStorage.getItem("MemberId")){
 		alert("로그인한 회원만 이용 가능한 서비스입니다. 로그인 후 이용해주세요");
@@ -209,15 +210,18 @@ function checkBookmark(e){
 			e.target.src = empty;
 			//북마크 취소 db에 업데이트해주기
 			isBookmarked=false;
+			changeBookMark = true;
 		}
 	}else{
 		if(confirm("이 병원을 즐겨찾기 목록에 추가하시겠습니까?")){
 			e.target.src = filled;
 			//북마크 구독 db에 업데이트해주기
 			isBookmarked=true;
+			changeBookMark = true;
 		}
 	}
-	 const xhttp = new XMLHttpRequest();
+	if(changeBookMark){
+		const xhttp = new XMLHttpRequest();
 	  xhttp.onload = function() {
 		responseCheck(this);
 	     alert("성공적으로 즐겨찾기목록이 업데이트 되었습니다.")
@@ -227,6 +231,7 @@ function checkBookmark(e){
 	  xhttp.setRequestHeader("Authorization", localStorage.getItem("token"));
 	  xhttp.setRequestHeader("role", localStorage.getItem("role"));
 	  xhttp.send();
+	}
 }
 
 function makeReservation(e){
