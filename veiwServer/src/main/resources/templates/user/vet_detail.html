@@ -93,6 +93,15 @@
 	<script>
 		const id = "[[${id}]]";
 		console.log(id)
+		
+		function makeReservation(){
+			if(localStorage.getItem("MemberId") == null || localStorage.getItem("role") != "ROLE_USER"){
+				alert("로그인한 회원만 사용할 수 있는 기능입니다. 로그인 후 이용해주세요")
+			}else{
+				location.href="/user/reserv_form?id="+id;
+			}
+		}
+
 		document.querySelector("#hospital_id").setAttribute("data-id", id);
 		const xhttp = new XMLHttpRequest();
 		  xhttp.onload = function() {

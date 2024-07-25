@@ -10,6 +10,13 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Jua&display=swap" rel="stylesheet">
+
+<style>
+	.info_container{
+		text-align:center;
+		margin-top:50px;
+	}
+</style>
 </head>
 <body class="d-flex flex-column h-100">
 <div th:replace="~{hospital/header :: header}"></div>
@@ -31,17 +38,26 @@
 		<tbody id="myList">
 		</tbody>
 	</table>
+	<div class="info"></div>
 
 </div>
 <div th:replace="~{hospital/footer :: footer}"></div>
 
 
 <script>
+
+
 const xhttp = new XMLHttpRequest();
 xhttp.onload = function() {
   responseCheck(this);
   let data = JSON.parse(this.responseText)
-  console.log(data[0].createdAt)
+  console.log(data == null)
+  console.log(data.length == 0)
+  if(data.length == 0){
+	  let info = document.querySelector(".info");
+	  info.classList = "info_container";
+	  info.innerHTML = "내가 남긴 문의 내역이 없습니다.";
+  }
   
   for(let i = 0; i < data.length; i++){
 	  let listItem = document.createElement("tr");

@@ -71,7 +71,7 @@
 		<input class="point_container" type="text" name="points_used" placeholder="0">
 		</div>
 		<input class="btn btn-main" onclick=" return submitForm(event)" type="button" value="예약수정">
-		<button class="btn btn-user-sub" onclick="">문의채팅</button>
+		<input class="btn btn-main" onclick="goingBack()" type="button" value="뒤로">
 	</div>
 	<div th:replace="~{user/footer :: footer}"></div>
 	<script
@@ -98,6 +98,10 @@ xhttp.setRequestHeader("MemberId", localStorage.getItem("MemberId"));
 xhttp.setRequestHeader("Authorization", localStorage.getItem("token"));
 xhttp.setRequestHeader("role", localStorage.getItem("role"));
 xhttp.send();
+
+function goingBack(){
+	location.href="/user/reserv_list";
+}
 
 function loadReservationInfo(data){
 	let userInfo = data[0];
