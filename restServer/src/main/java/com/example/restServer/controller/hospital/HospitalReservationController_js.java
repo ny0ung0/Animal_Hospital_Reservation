@@ -226,8 +226,24 @@ public class HospitalReservationController_js {
 			unavailableTimeRepo.save(unavailableTime);
 		}
 		
-		return new ResponseEntity<>("아ㅏㅇ", HttpStatus.OK);
+		return new ResponseEntity<>("Ok", HttpStatus.OK);
 	}
+	
+	@GetMapping("/customer")
+	public ResponseEntity<Page<Reservation>> getCustomerList(@RequestParam(name = "page", defaultValue = "0") int page, HttpServletRequest request){
+		String memberIdHeader = request.getHeader("memberId");
+	    String authHeader = request.getHeader("Authorization");
+
+	    if (memberIdHeader == null || authHeader == null) {
+	        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+	    }
+	    int size = 10;
+	    Pageable pageable = PageRequest.of(page, size);
+	    Long memberId = Long.parseLong(memberIdHeader);
+	    Page<Reservation> list = reservationRepo.findByCustomerList(pageable, memberId);
+		return new ResponseEntity<>(list, HttpStatus.OK);
+	}
+	
 	
 	
 }
