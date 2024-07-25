@@ -98,7 +98,7 @@ public class Securityconfig  {
 					.requestMatchers("/v3/**","/swagger-ui/**").permitAll()
 					.requestMatchers("/api/v1/hospital/**").hasAnyRole("HOSPITAL", "ADMIN")
 					
-					.requestMatchers("api/v1/user/**","api/petgame/**").hasAnyRole("USER", "ADMIN")
+					.requestMatchers("/api/v1/user/**","api/petgame/**").hasAnyRole("USER", "ADMIN")
 					.requestMatchers("/api/v1/manager/**").hasRole("ADMIN")
 					.anyRequest().authenticated() );
 			
