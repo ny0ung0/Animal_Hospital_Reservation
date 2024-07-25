@@ -45,37 +45,52 @@ public class ChatHandler extends TextWebSocketHandler{
 	    
 	    // WebSocket에서 수신한 메시지를 JsonNode로 변환합니다.
         JsonNode jsonNode = objectMapper.readTree(message.getPayload());
-
-        // senderId와 receiverId를 추출합니다.
-        Long senderId = jsonNode.get("sender").asLong();
-        Long receiverId = jsonNode.get("receiver").asLong();
-        String chatMessage = jsonNode.get("message").asText();
-	    
         
-	    //Long receiverId = chatMessage.getReceiver();   
-	    //Long senderId = chatMessage.getSender();
         
-//        Member receiver = memberRepo.findById(receiverId).get();
-//	    Member sender = memberRepo.findById(senderId).get();
-	    
-	    
-	    // 2. ChatService를 사용하여 메시지를 데이터베이스에 저장하고 저장된 메시지를 반환합니다.
-	    Chat savedMessage = chatService.saveMessage(senderId, receiverId, chatMessage);
+        
+        if (jsonNode.has("type") && jsonNode.get("type").asText().equals("join")) {
+            Long senderId = jsonNode.get("sender").asLong();
+            Long receiverId = jsonNode.get("receiver").asLong();
+            
+            session.getAttributes().put("sender", senderId);
+            session.getAttributes().put("receiver", receiverId);
+            
+            System.out.println("User joined: sender=" + senderId + ", receiver=" + receiverId);
+        } else if (jsonNode.has("sender") && jsonNode.has("receiver") && jsonNode.has("message")) {
+            Long senderId = jsonNode.get("sender").asLong();
+            Long receiverId = jsonNode.get("receiver").asLong();
+            String chatMessage = jsonNode.get("message").asText();
 
-	    // 3. 모든 연결된 세션에 저장된 메시지를 전송합니다.
-	    for (WebSocketSession webSocketSession : list) {
-	        if (webSocketSession.isOpen()) {
-	            webSocketSession.sendMessage(new TextMessage(objectMapper.writeValueAsString(savedMessage)));
-	        }
-	    }
+            Chat savedMessage = chatService.saveMessage(senderId, receiverId, chatMessage);
+
+            for (WebSocketSession webSocketSession : list) {
+                if (webSocketSession.isOpen()) {
+                    webSocketSession.sendMessage(new TextMessage(objectMapper.writeValueAsString(savedMessage)));
+                }
+            }
+        } else {
+            System.err.println("Missing required fields in the message payload");
+            // 여기에서 예외를 던지거나, 클라이언트에 오류 메시지를 전송할 수 있습니다.
+        }
+
+        
+//        // senderId와 receiverId를 추출합니다.
+//        Long senderId = jsonNode.get("sender").asLong();
+//        Long receiverId = jsonNode.get("receiver").asLong();
+//        String chatMessage = jsonNode.get("message").asText();
+//	    
+//	    
+//	    // 2. ChatService를 사용하여 메시지를 데이터베이스에 저장하고 저장된 메시지를 반환합니다.
+//	    Chat savedMessage = chatService.saveMessage(senderId, receiverId, chatMessage);
+//
+//	    // 3. 모든 연결된 세션에 저장된 메시지를 전송합니다.
+//	    for (WebSocketSession webSocketSession : list) {
+//	        if (webSocketSession.isOpen()) {
+//	            webSocketSession.sendMessage(new TextMessage(objectMapper.writeValueAsString(savedMessage)));
+//	        }
+//	    }
 	    
 	    
-//        String payload = message.getPayload();
-//        log.info("payload : " + payload);
-//        //페이로드란 전송되는 데이터를 의미한다.
-//        for(WebSocketSession sess: list) {
-//            sess.sendMessage(message);
-//        }
     }
 	 
 	 
