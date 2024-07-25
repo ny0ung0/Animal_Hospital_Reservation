@@ -14,16 +14,16 @@ public interface SupportRepository extends JpaRepository<Support, Long> {
 	
 	public List<Support> findAllByCategory(String category);
 	
-	@Query(value = "SELECT * FROM support WHERE category = '불편신고' OR category = '기타문의'", nativeQuery = true)
+	@Query(value = "SELECT * FROM support WHERE category = '불편신고' OR category = '기타문의' order by created_at desc", nativeQuery = true)
 	public Page<Support> findAllByCategoryQna(Pageable pageable);
 
-	@Query(value = "SELECT * FROM support WHERE (category = '불편신고' OR category = '기타문의') AND title LIKE %:keyword%", nativeQuery = true)
+	@Query(value = "SELECT * FROM support WHERE (category = '불편신고' OR category = '기타문의') AND title LIKE %:keyword% order by created_at desc", nativeQuery = true)
 	public Page<Support> findAllByCategoryQnaByAllCategoryKeyword(Pageable pageable,@Param("keyword")String keyword);
 	
-	@Query(value = "SELECT * FROM support WHERE category =:category AND title LIKE %:keyword%", nativeQuery = true)
+	@Query(value = "SELECT * FROM support WHERE category =:category AND title LIKE %:keyword%  order by created_at desc", nativeQuery = true)
 	public Page<Support> findAllByCategoryQnaByCategoryKeyword(Pageable pageable,@Param("category")String category, @Param("keyword")String keyword);
 	
-	@Query(value = "SELECT * FROM support WHERE category =:category", nativeQuery = true)
+	@Query(value = "SELECT * FROM support WHERE category =:category  order by created_at desc", nativeQuery = true)
 	public Page<Support> findAllByCategoryQnaByCategory(Pageable pageable, @Param("category")String category);
 	
 	@Query(value="Select * from support where member_id=:userId;", nativeQuery = true)

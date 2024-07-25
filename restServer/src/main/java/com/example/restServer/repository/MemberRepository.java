@@ -22,13 +22,13 @@ public interface MemberRepository extends JpaRepository<Member,Long>{
 	@Query(value = "SELECT m.*, l.username, l.id AS login_id FROM member m JOIN login l ON m.id = l.member_id WHERE m.role='ROLE_WAIT' AND m.status='대기'", nativeQuery = true)
 	public List<IMemberLoginDto> findByStatusWaiting();
 	
-	@Query(value = "SELECT m.*, l.username, l.id AS login_id FROM member m JOIN login l ON m.id = l.member_id WHERE m.role='ROLE_USER' AND m.status = '승인'", nativeQuery = true)
+	@Query(value = "SELECT m.*, l.username, l.id AS login_id FROM member m JOIN login l ON m.id = l.member_id WHERE m.role='ROLE_USER' AND m.status = '승인' order by created_at DESC", nativeQuery = true)
 	public List<IMemberLoginDto> findAllUserAddUsername();
 	
-	@Query(value = "SELECT m.*, l.username, l.id AS login_id FROM member m JOIN login l ON m.id = l.member_id WHERE m.role='ROLE_HOSPITAL' AND m.status = '승인'", nativeQuery = true)
+	@Query(value = "SELECT m.*, l.username, l.id AS login_id FROM member m JOIN login l ON m.id = l.member_id WHERE m.role='ROLE_HOSPITAL' AND m.status = '승인'  order by created_at DESC", nativeQuery = true)
 	public List<IMemberLoginDto> findAllHospitalAddUsername();
 	
-	@Query(value = "SELECT m.*, l.username, l.id AS login_id FROM member m JOIN login l ON m.id = l.member_id WHERE m.status = '승인' AND m.id= :id", nativeQuery = true)
+	@Query(value = "SELECT m.*, l.username, l.id AS login_id FROM member m JOIN login l ON m.id = l.member_id WHERE m.status = '승인' AND m.id= :id  order by created_at DESC", nativeQuery = true)
 	public IMemberLoginDto findByIdAddUsername(@Param("id") Long id);
 	
 	
