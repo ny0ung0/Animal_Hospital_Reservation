@@ -225,7 +225,6 @@ function loadTimeslot(basicHours, vetAvailInfo) {
                 }
             }
         }
-console.log("타임슬롯뿌ㅡ리기")
         // 선생님의 availability 보여주기
         Object.keys(vetAvailInfo).forEach(key => {
 				

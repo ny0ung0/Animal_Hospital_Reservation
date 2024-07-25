@@ -35,6 +35,7 @@ function loadRegionList() {
                    if(activeCity === cname){
             			 activeCity = null;
             			 guMap.delete(cname);
+            			 citiesWithNoGu.clear();
             			 e.target.classList.remove('bg-primary');
             		}else{
             			 activeCity = cname;

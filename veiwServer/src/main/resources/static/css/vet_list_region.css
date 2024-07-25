@@ -36,6 +36,9 @@
     gap: 10px;
     margin: 15px auto;
 }
+.guContainer{
+	min-width:380px;
+}
 
 .cities, .guEl {
     cursor: pointer;
