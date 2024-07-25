@@ -27,8 +27,14 @@ function loadBasicInfo(data){
 	let vetInfo = data[2];
 	let vetNamesNIds = Object.keys(vetAvailInfo);
 	let basicHours = JSON.parse(vetInfo[Object.keys(vetInfo)[0]].businessHours);
+	console.log(userInfo.petList)
 	
-
+	//등록된 반려동물이 없을 시에 알림창 띄워주기
+	if(userInfo.petList.length == 0){
+		alert("등록된 반려동물이 없습니다. 반려동물을 먼저 등록해주세요");
+		location.href="/user/myPetForm";
+	}
+	
 	  //병원 이름 넣기
 	  document.querySelector("#vetName").setAttribute("value", Object.keys(vetInfo)[0]);
 	  //로그인한 사용자 이름 넣어주기
