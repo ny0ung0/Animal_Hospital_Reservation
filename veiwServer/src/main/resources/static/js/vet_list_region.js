@@ -195,6 +195,8 @@ function addHospitalToList(hospital) {
 					     '</div>';
 	document.querySelector(".vet_list").appendChild(listItem);
 	
+
+	
 	if(memVet[hospital["사업장명"]] != null && memVet[hospital["사업장명"]]["address"] == hospital["소재지전체주소"]){
 		listItem.querySelector("button").classList="btn btn-user-sub"
 		listItem.querySelector("button").setAttribute("data-id", memVet[hospital["사업장명"]]["id"])
@@ -207,7 +209,6 @@ function addHospitalToList(hospital) {
 		}
 	}
 }
-
 
 function resetFilter(){
 	vetContainer.innerHTML="";

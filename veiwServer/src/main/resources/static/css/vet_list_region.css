@@ -81,8 +81,8 @@
 }
 
 .vet-header {
+	position:relative;
     display: flex;
-    justify-content: space-between;
 }
 
 .vet-header .pin {
@@ -90,7 +90,9 @@
 }
 
 .vet-header .bookmark {
-    margin-left: auto;
+    position:absolute;
+    top:0;
+    right:0;
 }
 
 .vet-body {
@@ -98,11 +100,6 @@
 }
 
 
-
-.vet:hover {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    cursor: pointer;
-}
 .modal-header {
     background-color: #f8f9fa;
     border-bottom: 1px solid #dee2e6;
@@ -357,6 +354,7 @@
 .result-item div{
 	font-family: "Jua", sans-serif;
 }
+
 .result-item:hover {
     background-color: #E3C3FF;
 }

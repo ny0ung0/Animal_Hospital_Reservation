@@ -33,7 +33,8 @@ function showBusinessHour(basicHours) {
 
 // 모달에 해당 병원 상세정보 보여주기
 function showModal(e) {
-	
+	console.log("ccc");
+
 	//회원만 있는 병원 정보칸 가리기
 	document.querySelector(".modal-memVetInfo").style.display = "none";
 	
@@ -48,9 +49,9 @@ function showModal(e) {
 		phone = e.target.parentElement.querySelector(".phone").innerText;
 	} else {
 		//리스트의 버튼을 클릭하여 모달을 열 경우
-		hospitalName = e.target.parentElement.querySelector("button").innerText;
-		address = e.target.parentElement.parentElement.querySelector(".address").innerText;
-		phone = e.target.parentElement.parentElement.querySelector(".phone").innerText;
+		hospitalName = e.target.closest(".vet").querySelector("button").innerText;
+		address = e.target.closest(".vet").querySelector(".address").innerText;
+		phone = e.target.closest(".vet").querySelector(".phone").innerText;
 	}
 
 	// 기본 정보 설정
