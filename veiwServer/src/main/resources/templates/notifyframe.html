@@ -16,6 +16,7 @@
 const memberId = localStorage.getItem('MemberId');
 const token = localStorage.getItem('Token');
 const notificationId = '';
+const iframeContainer = document.getElementById("downList");
 function fetchNotifications() {
     fetch("http://localhost:9001/api/v1/fcm/notifyList/" + memberId, {
         method: "GET",
@@ -31,37 +32,46 @@ function fetchNotifications() {
 }
 
 function displayNotifications(notifications) {
-    const iframeContainer = document.getElementById("downList");
-    iframeContainer.innerHTML = ''; // 초기화
+    
+    
+	
+    if(notifications == 0){
+    	iframeContainer.innerHTML = '알림이 없습니다.';
+    }else{
+    	iframeContainer.innerHTML = ''; // 초기화
+    	notifications.forEach(notification => {
+            const card = document.createElement('div');
+            card.className = 'card border-light w-100 mb-3';
+            card.dataset.id = notification.id;
+	
+            const cardBody = document.createElement('div');
+            cardBody.className = 'card-body';
+    		
+            const cardTitle = document.createElement('p');
+            cardTitle.className = 'card-title ';
+            cardTitle.textContent = notification.title;
+            cardTitle.style.fontSize = '19px';
+            
+            const closeButton = document.createElement('button');
+            closeButton.className = 'btn';
+            closeButton.onclick = () => checkalarm(notification.id);
+            closeButton.innerHTML = '<i class="bi bi-x"></i>';
 
-    notifications.forEach(notification => {
-        const card = document.createElement('div');
-        card.className = 'card border-light w-100 mb-3';
-        card.dataset.id = notification.id;
+            const cardText = document.createElement('p');
+            cardText.className = 'card-text';
+            cardText.textContent = notification.content;
+            cardText.style.fontSize = '16px';
 
-        const cardBody = document.createElement('div');
-        cardBody.className = 'card-body';
-		
-        const cardTitle = document.createElement('h5');
-        cardTitle.className = 'card-title ';
-        cardTitle.textContent = notification.title;
+            cardBody.appendChild(cardTitle);
+            cardTitle.appendChild(closeButton);
+            cardBody.appendChild(cardText);
+            card.appendChild(cardBody);
 
-        const closeButton = document.createElement('button');
-        closeButton.className = 'btn';
-        closeButton.onclick = () => checkalarm(notification.id);
-        closeButton.innerHTML = '<i class="bi bi-x"></i>';
-
-        const cardText = document.createElement('p');
-        cardText.className = 'card-text';
-        cardText.textContent = notification.content;
-
-        cardBody.appendChild(cardTitle);
-        cardTitle.appendChild(closeButton);
-        cardBody.appendChild(cardText);
-        card.appendChild(cardBody);
-
-        iframeContainer.appendChild(card);
-    });
+            iframeContainer.appendChild(card);
+        });
+    }
+    
+    
 }
 
 function checkalarm(notificationId) {
@@ -94,6 +104,9 @@ function checkalarm(notificationId) {
         fetch(countRequest)
         .then(response => response.json())
         .then(count => {
+        	if(count == 0){
+        		iframeContainer.innerHTML = '알림이 없습니다.';
+        	}
             // 부모 페이지로 메시지 전송
             window.parent.postMessage({
                 type: 'UPDATE_COUNT',
