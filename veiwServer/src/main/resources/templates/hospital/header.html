@@ -158,6 +158,17 @@
             	        }
             	    });
         	    }
+            	
+            	if (currentPath.includes('/hospital/customerDetail')) {
+        	        const parentMenuLink = document.querySelector('a[href="/hospital/customerList"]');
+        	        dropdownItems.forEach(function (item) {
+            	        if (item.getAttribute('href') === parentMenuLink.getAttribute('href')) {
+            	            item.classList.add('active-pet');
+            	            // 부모 드롭다운 링크에도 active 클래스 추가
+            	            item.closest('.dropdown').querySelector('.dropdown-toggle').classList.add('active-pet');
+            	        }
+            	    });
+        	    }
                 
             }
             
