@@ -173,11 +173,12 @@ fetch("http://localhost:9001/api/v1/hospital/reservation/" + reservId, {
 .catch(error => console.log(error));
 function statusComplete(){
 	let status = "완료";
-	console.log(status);
+	username = petname = document.getElementById("username").innerText;
+	petname = document.getElementById("petName").innerText;
 	title='예약 알람';
-	body="진료가 완료되었습니다. 감사합니다 : )";
+	body=`${username}님 ${petname}의 진료가 완료되었습니다. 감사합니다. 😄`;
 	receiverId= userid;
-    sendTokenToMessageReceiver(title, body);
+    sendTokenToMessageReceiver(receiverId, title, body);
 	fetch("http://localhost:9001/api/v1/hospital/reservation/" + reservId + "/"+ status, {
 		method : "PUT",
 		headers: {
@@ -196,11 +197,11 @@ function statusComplete(){
 }
 function statusConfirmed(){
 	let status = "확정";
-	console.log(status);
+	username = petname = document.getElementById("username").innerText;
 	title='예약 알람';
-	body="예약 확정되었습니다.";
+	body=`${username}님 예약 확정되었습니다. 😃`;
 	receiverId= userid;
-    sendTokenToMessageReceiver(title, body);
+    sendTokenToMessageReceiver(receiverId, title, body);
 	fetch("http://localhost:9001/api/v1/hospital/reservation/" + reservId + "/"+ status, {
 		method : "PUT",
 		headers: {
@@ -221,11 +222,11 @@ function statusConfirmed(){
 
 function statusCancle(){
 	let status = "취소";
-	console.log(status);
+	username = petname = document.getElementById("username").innerText;
 	title='예약 알람';
-	body="예약이 거절되었습니다. 다시 예약 해주시기 바랍니다.";
+	body=`${username}님 예약이 거절되었습니다. 다시 예약 해주시기 바랍니다. 😥`;
 	receiverId= userid;
-    sendTokenToMessageReceiver(title, body);
+    sendTokenToMessageReceiver(receiverId, title, body);
 	fetch("http://localhost:9001/api/v1/hospital/reservation/" + reservId + "/"+ status, {
 		method : "PUT",
 		headers: {
