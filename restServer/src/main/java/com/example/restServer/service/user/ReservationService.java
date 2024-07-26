@@ -6,11 +6,14 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.locks.Lock;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.example.restServer.entity.Coupon;
 import com.example.restServer.entity.Doctor;
@@ -45,7 +48,34 @@ public class ReservationService {
     private UnavailableTimeRepository unavailableTimeRepo;
     @Autowired 
     private PointRepository pointRepo;
-    private final Lock reservationLock = new ReentrantLock();
+    private final Map<String, LockInfo> slotLocks = new ConcurrentHashMap<>();
+    private final long LOCK_EXPIRATION_TIME = TimeUnit.MINUTES.toMillis(30);
+
+    private static class LockInfo {
+        ReentrantLock lock = new ReentrantLock();
+        long timestamp = System.currentTimeMillis();
+    }
+
+    private ReentrantLock getLockForSlot(String doctorId, String date, String timeSlot) {
+        String key = getSlotKey(doctorId, date, timeSlot);
+        LockInfo lockInfo = slotLocks.computeIfAbsent(key, k -> new LockInfo());
+
+        // 락이 오래된 경우 제거
+        if (System.currentTimeMillis() - lockInfo.timestamp > LOCK_EXPIRATION_TIME) {
+            slotLocks.remove(key);
+            lockInfo = new LockInfo();
+            slotLocks.put(key, lockInfo);
+        }
+
+        lockInfo.timestamp = System.currentTimeMillis();
+        return lockInfo.lock;
+    }
+
+    // 메서드 내에서 호출
+    private String getSlotKey(String doctorId, String date, String timeSlot) {
+        return doctorId + "-" + date + "-" + timeSlot;
+    }
+    
 
     public Map<String, Object> getPetInfo(Long userId, Long hospitalId) {
         Member user = memRepo.findById(userId).get();
@@ -83,8 +113,9 @@ public class ReservationService {
         return map;
     }
 
-    public String makeReservation(Map<String, String> formData, Long userId) throws ParseException {
-        reservationLock.lock();
+    public String makeReservation(Map<String, String> formData, Long userId) throws ParseException, ResponseStatusException {
+    	ReentrantLock slotLock = getLockForSlot(formData.get("doctorId"), formData.get("date"), formData.get("time"));
+        slotLock.lock();
         try { 
             Date now = new Date();
             LocalDateTime dateTime = DateTimeUtil.parseDateTime(formData);
@@ -93,7 +124,7 @@ public class ReservationService {
             
              // 예약 중복 확인
             if (isDuplicateReservation(reservation)) {
-                throw new IllegalArgumentException("중복예약이 발생했습니다.");
+            	 throw new ResponseStatusException(HttpStatus.CONFLICT, "중복예약이 발생했습니다.");
             }
             
             reservRepo.save(reservation);
@@ -102,13 +133,15 @@ public class ReservationService {
             unavailableTimeRepo.save(unavailTime);
             return "success";
         } finally {
-            reservationLock.unlock();
+        	slotLock.unlock();
+        	System.out.println(slotLocks);
         }
     }
 
-    public String editReservation(Map<String, String> formData, Long userId) throws ParseException {
-        reservationLock.lock();
-        try {
+    public String editReservation(Map<String, String> formData, Long userId) throws ParseException,ResponseStatusException {
+    	ReentrantLock slotLock = getLockForSlot(formData.get("doctorId"), formData.get("date"), formData.get("time"));
+        slotLock.lock();
+    	try {
             Date now = new Date();
            
             Long reservId = Long.parseLong(formData.get("reservId"));
@@ -122,7 +155,7 @@ public class ReservationService {
             
             // 예약 중복 확인
             if (isDuplicateReservation(reservation)) {
-                throw new IllegalArgumentException("중복예약이 발생했습니다.");
+            	 throw new ResponseStatusException(HttpStatus.CONFLICT, "중복예약이 발생했습니다.");
             }
             reservRepo.save(reservation);
 
@@ -130,7 +163,7 @@ public class ReservationService {
             unavailableTimeRepo.save(unavailTime);
             return "success";
         } finally {
-            reservationLock.unlock();
+        	slotLock.unlock();
         }
     }
     

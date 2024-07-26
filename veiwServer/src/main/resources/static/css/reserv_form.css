@@ -5,6 +5,8 @@
 	color:gray;
 }
 
+
+
 body {
     font-family: 'Jua', 'Do Hyeon', sans-serif;
     background-color: #f5f5f5;
@@ -42,6 +44,10 @@ body {
 #time_slot span.disabled {
     background-color: #e0e0e0;
     cursor: not-allowed;
+}
+
+#time_slot span.original_reservation{
+	background-color:#84e3d0;
 }
 
 #time_slot span:hover:not(.disabled) {

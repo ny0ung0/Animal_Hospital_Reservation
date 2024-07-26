@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.example.restServer.entity.Reservation;
 import com.example.restServer.repository.ReservationRepository;
@@ -57,14 +58,21 @@ public class ReservationController_jia {
 	
 	@PostMapping("/reservation")
 	public ResponseEntity<String> makingReservation(@RequestBody Map<String, String> formData, HttpServletRequest request) throws ParseException{
-		Long userId = Long.parseLong(request.getHeader("MemberId"));
-		System.out.println(formData);
-		reservationService.makeReservation(formData, userId);
-		return ResponseEntity.ok("success");
+		try {
+			Long userId = Long.parseLong(request.getHeader("MemberId"));
+			String result = reservationService.makeReservation(formData, userId);
+			if(result.equals("success")) {
+				return ResponseEntity.ok(result);
+			}
+		}catch(ResponseStatusException ex) {
+			return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getReason());		
+		}
+		 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("알 수 없는 오류가 발생했습니다.");
 	}
 	
 	@GetMapping("/reservation/{id}")
 	public ResponseEntity<List<Map<String, Object>>> reservationInfo(@PathVariable("id") Long reservId, HttpServletRequest request) {
+		
 		Long userId = Long.parseLong(request.getHeader("MemberId"));
 		List<Map<String, Object>> basicList = this.vetList(reservRepo.findById(reservId).get().getHospital().getId(), request);
 		Map<String, Object> map = new HashMap<>();
@@ -79,10 +87,15 @@ public class ReservationController_jia {
 	
 	@PutMapping("/reservation")
 	public ResponseEntity<String> editReservation(@RequestBody Map<String, String> formData, HttpServletRequest request) throws ParseException{
+		try {
 		Long userId = Long.parseLong(request.getHeader("MemberId"));
-		reservationService.editReservation(formData, userId);
-		return ResponseEntity.ok("success");
-	}
-	
-
+		String result = reservationService.editReservation(formData, userId);
+			if(result.equals("success")) {
+				return ResponseEntity.ok(result);
+			}
+		}catch(ResponseStatusException ex) {
+			return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getReason());		
+		}
+		 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("알 수 없는 오류가 발생했습니다.");
+		}
 }
