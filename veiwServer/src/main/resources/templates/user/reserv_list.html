@@ -369,7 +369,7 @@ ready();
         reservation.reservation_datetime[4] ='00';
       }
       var time = reservation.reservation_datetime[3]+':'+ reservation.reservation_datetime[4];
-      var btn = `<button class="btn btn-user-sub" data-bs-toggle="modal" data-bs-target="#review" onclick="openReviewModal(${reservation.id},${reservation.hospital_id})">리뷰작성</button>`;
+      var btn = `<button class="btn btn-hospital-sub" data-bs-toggle="modal" data-bs-target="#review" onclick="openReviewModal(${reservation.id},${reservation.hospital_id})">리뷰작성</button>`;
       if(reservation.review !=null){
     	  
         btn = `<button class="btn btn-user-sub" data-bs-toggle="modal" data-bs-target="#reviewComplete" onclick="openReviewCompleteModal(${i})">리뷰확인</button>`;
@@ -567,7 +567,9 @@ ready();
   }
   
   function cancel(reservation_id){
-
+	  if (!confirm("예약을 취소하시겠습니까?")) {
+	        return; // 취소를 누르면 함수 실행 중단
+	    }
 	  const xhttp = new XMLHttpRequest();
 		xhttp.onload = function() {
 			responseCheck(this);
