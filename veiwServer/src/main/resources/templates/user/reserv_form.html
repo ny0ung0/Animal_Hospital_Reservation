@@ -129,13 +129,22 @@ function submitForm(e){
 	 const xhttp = new XMLHttpRequest();
 	  xhttp.onload = function() {
 		 responseCheck(this);
-	     alert("예약이 성공적으로 완료되었습니다");
-	     title='예약 알람';
-	     reservedate= document.querySelector("input[type=date]").value;
-	     body=` ${reservedate}일 예약이 들어왔습니다.`;
-	     receiverId=hosId;
-	     sendTokenToMessageReceiver(title, body);
-	     location.href="/user/reserv_list"
+	     if (this.status == 200) { 
+	        alert("예약이 성공적으로 완료되었습니다");
+	        let title = '예약 알람';
+	        let reservedate = document.querySelector("input[type=date]").value;
+	        let body = `${reservedate}일 예약이 들어왔습니다.`;
+	        let receiverId = hosId;
+	        sendTokenToMessageReceiver(title, body);
+	        location.href = "/user/reserv_list";
+	     }else if(this.status == 409){
+ 			 //배경색 다시 바꿔주기
+ 			 document.querySelector("span[value='" + selectedTime + "']").style.backgroundColor = ""; 
+ 			 document.querySelector("span[value='" + selectedTime + "']").style.color = "gray"; 
+ 			 document.querySelector("span[value='" + selectedTime + "']").style.pointerEvents = "none"; 
+ 			 document.querySelector("span[value='" + selectedTime + "']").classList.add("disabled");
+ 			 
+ 		 }
 	  }
 	  xhttp.open("POST", "http://localhost:9001/api/v1/user/reservation", true);
 	  xhttp.setRequestHeader("MemberId", localStorage.getItem("MemberId"));

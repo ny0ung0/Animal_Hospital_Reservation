@@ -258,6 +258,8 @@ const tokendeleteId = localStorage.getItem('token');
 			 }else{
  				 window.location.href="/";
 			 }
+ 		 }else if(response.status == 409){
+ 			 alert("선택하신 시간은 이미 예약이 완료되었습니다. 다른 시간을 선택해주세요.")
  		 }
    }
   	 function fetchResponseCheck(response){
