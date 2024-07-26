@@ -5,7 +5,6 @@ import java.text.SimpleDateFormat;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,11 +27,13 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.restServer.dto.UnavailableTimeDto;
 import com.example.restServer.entity.Doctor;
 import com.example.restServer.entity.Member;
+import com.example.restServer.entity.Pet;
 import com.example.restServer.entity.Point;
 import com.example.restServer.entity.Reservation;
 import com.example.restServer.entity.UnavailableTime;
 import com.example.restServer.repository.DoctorRepository;
 import com.example.restServer.repository.MemberRepository;
+import com.example.restServer.repository.PetRepository;
 import com.example.restServer.repository.PointRepository;
 import com.example.restServer.repository.ReservationRepository;
 import com.example.restServer.repository.UnavailableTimeRepository;
@@ -58,6 +59,9 @@ public class HospitalReservationController_js {
 	
 	@Autowired
 	UnavailableTimeRepository unavailableTimeRepo;
+	
+	@Autowired
+	PetRepository petRepo;
 	
 	@GetMapping("/reservation/status/{status}")
 	public ResponseEntity<Page<Reservation>> getWaitingReservation(@RequestParam(name = "page", defaultValue = "0") int page, HttpServletRequest request, @PathVariable("status")String status){
@@ -244,6 +248,28 @@ public class HospitalReservationController_js {
 		return new ResponseEntity<>(list, HttpStatus.OK);
 	}
 	
+	@GetMapping("/pet/{petId}")
+	public ResponseEntity<Pet> getPetDetail(@PathVariable("petId")Long petId){
+		Pet pet = petRepo.findById(petId).get();
+		return new ResponseEntity<>(pet, HttpStatus.OK);
+	}
 	
+	@GetMapping("/reservation/pet/{petId}")
+	public ResponseEntity<Page<Reservation>> getPetReservationList(@RequestParam(name = "page", defaultValue = "0") int page, HttpServletRequest request, @PathVariable("petId")Long petId){
+		System.out.println("동물별 예약 정보 가져오기");
+		
+		String memberIdHeader = request.getHeader("memberId");
+		String authHeader = request.getHeader("Authorization");
+		System.out.println("동물별 예약 정보 가져오기" + memberIdHeader + authHeader);
+		if(memberIdHeader == null || authHeader == null) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		int size = 6;
+		Pageable pageable = PageRequest.of(page, size);
+		Long hospitalId = Long.parseLong(memberIdHeader);
+		
+		Page<Reservation> list = reservationRepo.findByPetAndHospitalId(pageable, petId, hospitalId);
+		return new ResponseEntity<>(list, HttpStatus.OK);
+	}
 	
 }
