@@ -58,12 +58,13 @@
 	<script src="/js/fcm.js"></script>
 	<script src="/js/fcmsend.js"></script>
 	<script>
+	ready();
             function logout() {
                 localStorage.clear();
                 window.location.href = "/";
             }
             
-            document.addEventListener("DOMContentLoaded", function() {
+             function ready() {
                 const memberId = localStorage.getItem('MemberId');
                 const token = localStorage.getItem('token');
                 const loginLink = document.getElementById('login-link');
@@ -144,7 +145,7 @@
             	    });
         	    }
                 
-            });
+            }
             
             function responseCheck(response){
         		 const msg =response.getResponseHeader("msg");
