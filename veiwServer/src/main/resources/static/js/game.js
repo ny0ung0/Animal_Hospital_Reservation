@@ -40,9 +40,9 @@ function preload() {
 }
 
 function create() {
-  this.add.image(190, 300, 'background')
-
-  this.anims.create({
+  	this.add.image(190, 300, 'background')
+	this.cameras.main.setBackgroundColor('rgba(255, 160, 122,0.5)');
+  	this.anims.create({
     key: 'idle',
     frames: this.anims.generateFrameNumbers('pet_level_1', { frames: [0, 1, 2, 3] }),
     frameRate: 6,
