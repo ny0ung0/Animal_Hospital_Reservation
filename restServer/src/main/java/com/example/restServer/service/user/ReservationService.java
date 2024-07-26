@@ -100,7 +100,7 @@ public class ReservationService {
 
             UnavailableTime unavailTime = createUnavailableTime(formData, reservation, dateTime);
             unavailableTimeRepo.save(unavailTime);
-            return "";
+            return "success";
         } finally {
             reservationLock.unlock();
         }
@@ -128,7 +128,7 @@ public class ReservationService {
 
             UnavailableTime unavailTime = createUnavailableTime(formData, reservation, dateTime);
             unavailableTimeRepo.save(unavailTime);
-            return "";
+            return "success";
         } finally {
             reservationLock.unlock();
         }

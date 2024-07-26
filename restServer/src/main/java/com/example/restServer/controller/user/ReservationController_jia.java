@@ -60,7 +60,7 @@ public class ReservationController_jia {
 		Long userId = Long.parseLong(request.getHeader("MemberId"));
 		System.out.println(formData);
 		reservationService.makeReservation(formData, userId);
-		return ResponseEntity.ok("");
+		return ResponseEntity.ok("success");
 	}
 	
 	@GetMapping("/reservation/{id}")
@@ -81,7 +81,7 @@ public class ReservationController_jia {
 	public ResponseEntity<String> editReservation(@RequestBody Map<String, String> formData, HttpServletRequest request) throws ParseException{
 		Long userId = Long.parseLong(request.getHeader("MemberId"));
 		reservationService.editReservation(formData, userId);
-		return ResponseEntity.ok("");
+		return ResponseEntity.ok("success");
 	}
 	
 

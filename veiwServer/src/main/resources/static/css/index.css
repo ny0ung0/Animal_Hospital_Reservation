@@ -54,9 +54,13 @@
     margin-top: 5px;
 }
 
-.vet:hover {
+.vet-header button:hover {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     cursor: pointer;
+}
+
+.bookmark:hover {
+	cursor: pointer;
 }
 
 #mainGif {
