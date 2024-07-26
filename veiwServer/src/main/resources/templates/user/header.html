@@ -98,6 +98,7 @@
 <script src="/js/fcm.js"></script>
 <script src="/js/fcmsend.js"></script>
 <script>
+ready();
     function logout() {
         localStorage.clear();
         window.location.href = "/";
@@ -107,7 +108,7 @@
 //         window.location.href = "/user/my_info_edit";
 //     }
     
-    document.addEventListener("DOMContentLoaded", function() {
+     function ready(){
         const memberId = localStorage.getItem('MemberId');
         const role = localStorage.getItem('role');
         const loginLink = document.getElementById('login-link');
@@ -198,7 +199,7 @@
 	        //}
 	    //}
         
-    });
+    }
     
     const mobileMenu = document.querySelector("#mobileMenu");
 	const mobileMenuCloseBtn = document.querySelector("#mobileMenuCloseBtn");
