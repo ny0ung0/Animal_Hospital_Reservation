@@ -128,8 +128,8 @@ public class HospitalReservationController_js {
 		Reservation reservation = result.get();
 		reservation.setStatus(status);
 		Reservation reservation2 = reservationRepo.save(reservation);
-		System.out.println(reservation2);
-		if(status.equals("취소")) {
+		
+		if(status.equals("취소") && reservation2.getPointsUsed() !=null) {
 			Point point = new Point();
 			point.setUser(reservation.getUser());
 			point.setPointsAccumulated(reservation.getPointsUsed());
