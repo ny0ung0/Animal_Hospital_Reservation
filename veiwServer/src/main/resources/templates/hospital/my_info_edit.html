@@ -818,7 +818,7 @@
         	responseCheck(this);
             var result = this.responseText;
             alert(this.responseText);
-            window.location.href="/hospital/my_info_edit";
+            window.location.href="/hospital";
         }
         xhttp.open("put", "http://localhost:9001/api/v1/hospital/hospitalInfo");
         //xhttp.setRequestHeader("Content-type", "application/json");
@@ -939,7 +939,10 @@
 
     // 영업시간 복사하는 함수
     function copyCommonSchedule(checkbox, day) {
+    	document.querySelector(`input[name="week"][value="${day}"]`).checked = checkbox.checked;
+        toggleTimeSelectors(day);
         if (checkbox.checked) {
+        	
             const commonStartHour = document.querySelector('select[name="commonStartHour"]').value;
             const commonStartMinute = document.querySelector('select[name="commonStartMinute"]').value;
             const commonEndHour = document.querySelector('select[name="commonEndHour"]').value;
@@ -960,8 +963,10 @@
             document.querySelector(`select[name="lunchEndMinute_${day}"]`).value = commonLunchEndMinute;
             document.querySelector(`input[name="lunch_${day}"]`).checked = commonNoLunch;
             
-            document.querySelector(`input[name="week"][value="${day}"]`).checked = true;
-            toggleTimeSelectors(day);
+            toggleLunchTimeSelectors(day);
+            
+            
+            
         }
     }
 
@@ -972,6 +977,7 @@
         selects.forEach(select => {
             select.disabled = !isChecked;
         });
+        document.querySelector(`input[name="lunch_${day}"][value="no"]`).checked=false;
     }
     
   //예약 관련(받은정보 문자열로 반환)
@@ -993,7 +999,9 @@
 		      const lunchEndHour = accordionItem.querySelector(`select[name="lunchEndHour_${day}"]`).value;
 		      const lunchEndMinute = accordionItem.querySelector(`select[name="lunchEndMinute_${day}"]`).value;
 		      const noLunch = accordionItem.querySelector(`input[name="lunch_${day}"][value="no"]`).checked;
-		
+				if(endHour ==0){
+					endHour = "24";
+				}
 		      const start = `${startHour}:${startMinute}`;
 		      const end = `${endHour}:${endMinute}`;
 		      const lunchStart = `${lunchStartHour}:${lunchStartMinute}`;

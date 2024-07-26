@@ -759,6 +759,8 @@
 	<script>
 	readyAddress();
 	let loginRole =localStorage.getItem("role");
+
+	
 	if(loginRole){
 		alert("이미 로그인 상태입니다.");
 		if(loginRole=="ROLE_HOSPITAL"){
@@ -1000,7 +1002,7 @@
             document.getElementById('doctorNamesField').value = doctorNames;
         }
 		
-		//예약 관련
+		//예약 관련 
 		  function gatherFormData() {
     const days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun', 'hol'];
     const jsonData = {};
@@ -1024,7 +1026,9 @@
             const end = `${endHour}:${endMinute}`;
             const lunchStart = `${lunchStartHour}:${lunchStartMinute}`;
             const lunchEnd = `${lunchEndHour}:${lunchEndMinute}`;
-
+			if(endHour ==0){
+				endHour = "24";			
+			}
             const businessTime = `${start}//${end}`;
             const lunchTime = noLunch ? '점심시간 없음' : `${lunchStart}//${lunchEnd}`;
 
@@ -1041,15 +1045,18 @@
 		//병원 회원가입
 		function joinHospital(){
 			//alert("조인들어옴");
-			if (!hospitalValidateForm()) {
-                return;
-            }
+			console.log(endHourCheck);
+			
 			//alert(JSON.stringify(gatherFormData()));
 			
 			const frm = document.querySelector("#frmUser");
 			const formData = new FormData(frm);
 			//const data = JSON.stringify(frm_);
-			const businessHours = gatherFormData();
+			var businessHours = gatherFormData();
+			if (!hospitalValidateForm() ) {
+				
+                return;
+            }
        		formData.append('businessHours', JSON.stringify(businessHours));
        		
        		formData.append('address', frm.address1.value + "//" + frm.address2.value + "//" + frm.detailAddress.value);
@@ -1106,7 +1113,14 @@
             	alert("의사를 한명 이상 등록하세요.");
             	return false;
             }
-
+            
+            //사업자 번호 검사
+			let businessNumberResult =document.getElementById("businessNumberResult").innerText;
+            if(businessNumberResult.includes("등록되지 않은") || businessNumberResult==""){
+            	alert("등록된 사업자 번호가 아닙니다.다시 확인해 주세요.");
+            	document.querySelector("#business_number").focus();
+            	return false;
+            }
             
             const email = frm.email.value.trim();
             if (!validateEmail(email)) {
@@ -1166,6 +1180,9 @@
 
 		//영업시간 복사하는 함수
 		function copyCommonSchedule(checkbox, day) {
+			// 요일 체크박스 자동 체크
+		      document.querySelector(`input[name="week"][value="${day}"]`).checked = checkbox.checked;
+		      toggleTimeSelectors(day);
 		    if (checkbox.checked) {
 		      const commonStartHour = document.querySelector('select[name="commonStartHour"]').value;
 		      const commonStartMinute = document.querySelector('select[name="commonStartMinute"]').value;
@@ -1186,10 +1203,10 @@
 		      document.querySelector(`select[name="lunchEndHour_${day}"]`).value = commonLunchEndHour;
 		      document.querySelector(`select[name="lunchEndMinute_${day}"]`).value = commonLunchEndMinute;
 		      document.querySelector(`input[name="lunch_${day}"]`).checked = commonNoLunch;
+		      //alert(commonNoLunch);
+		      toggleLunchTimeSelectors(day);
 		      
-		      // 요일 체크박스 자동 체크
-		      document.querySelector(`input[name="week"][value="${day}"]`).checked = true;
-		      toggleTimeSelectors(day);
+		      
 		    }
 		}
         
@@ -1261,7 +1278,7 @@
 	  	    const commonStartMinute = parseInt(commonStartMinuteSelect.value);
 
 	  	    commonEndHourSelect.innerHTML = '';
-	  	    
+	  	   
 
 	  	    for (let hour = commonStartHour; hour <= 24; hour++) {
 	  	        const hourOption = document.createElement('option');
