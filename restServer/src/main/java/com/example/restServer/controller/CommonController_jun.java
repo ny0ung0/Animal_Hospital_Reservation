@@ -3,6 +3,7 @@ package com.example.restServer.controller;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.restServer.dto.JoinHospitalDto;
 import com.example.restServer.dto.MemberDto;
+import com.example.restServer.entity.Member;
+import com.example.restServer.repository.MemberRepository;
 import com.example.restServer.service.JoinService;
 import com.example.restServer.service.ValidationService;
 import com.fasterxml.jackson.core.exc.StreamReadException;
@@ -32,6 +35,9 @@ public class CommonController_jun {
 
 	@Autowired
 	JoinService joinService;
+	
+	@Autowired
+	MemberRepository memberRepository;
 	
 	@Autowired
 	ValidationService validationService;
@@ -134,7 +140,19 @@ public class CommonController_jun {
 	}
 	
 	
+	@PostMapping("/deletetoken/{MemberId}")
+	public String deleteToken(@PathVariable("MemberId") Long memberId) {
+		
+		Optional<Member> memberTK = memberRepository.findById(memberId);
+		
+		Member member = memberTK.get();
+		member.setToken(null);
+		
+		memberRepository.save(member);
+		
+		return "DB토큰 삭제 완료";
 	
+	}
 	
 	
 	

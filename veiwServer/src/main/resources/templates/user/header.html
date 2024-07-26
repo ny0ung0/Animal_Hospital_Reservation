@@ -99,10 +99,24 @@
 <script src="/js/fcmsend.js"></script>
 <script>
 ready();
-    function logout() {
-        localStorage.clear();
-        window.location.href = "/";
-    }
+const usedeleteID = localStorage.getItem('MemberId');
+const tokendeleteId = localStorage.getItem('token');
+        function logout() {
+        	fetch("http://localhost:9001/api/v1/common/deletetoken/" + usedeleteID, {
+		        method: "POST",
+		        headers: {
+		            'Authorization': tokendeleteId
+		        }
+		    })
+		    .then(data => {
+		    	console.log(data);
+		    	localStorage.clear();
+                window.location.href = "/";
+		    })
+		    .catch(error => console.log(error));
+        	
+            
+        }
     
 //     function mypage() {
 //         window.location.href = "/user/my_info_edit";
