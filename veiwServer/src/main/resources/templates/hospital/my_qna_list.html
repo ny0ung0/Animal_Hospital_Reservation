@@ -51,8 +51,7 @@ const xhttp = new XMLHttpRequest();
 xhttp.onload = function() {
   responseCheck(this);
   let data = JSON.parse(this.responseText)
-  console.log(data == null)
-  console.log(data.length == 0)
+
   if(data.length == 0){
 	  let info = document.querySelector(".info");
 	  info.classList = "info_container";

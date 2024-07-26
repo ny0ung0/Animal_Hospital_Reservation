@@ -1,10 +1,9 @@
 package com.example.restServer.controller.hospital;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,8 +22,8 @@ public class HospitalQnAListController_jia {
 	private SupportRepository supportRepo;
 	
 	@GetMapping("/qna")
-	public List<Support> getMyQnAList(HttpServletRequest request) {
+	public ResponseEntity<List<Support>> getMyQnAList(HttpServletRequest request) {
 		Long userId = Long.parseLong(request.getHeader("MemberId"));
-		return supportRepo.findAllByMemberId(userId);
+		return ResponseEntity.ok(supportRepo.findAllByMemberId(userId));
 	}
 }

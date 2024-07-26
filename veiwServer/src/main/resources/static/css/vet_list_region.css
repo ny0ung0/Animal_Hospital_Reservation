@@ -359,6 +359,15 @@
     background-color: #E3C3FF;
 }
 
+.vet-header button:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+}
+
+.bookmark:hover {
+	cursor: pointer;
+}
+
 .resultMsg{
 	font-family: "Jua", sans-serif;
 	padding:50px;
