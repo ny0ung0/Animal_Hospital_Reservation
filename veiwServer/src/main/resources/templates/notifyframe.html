@@ -36,7 +36,12 @@ function displayNotifications(notifications) {
     
 	
     if(notifications == 0){
-    	iframeContainer.innerHTML = '알림이 없습니다.';
+    	const nobody = document.createElement('div');
+    	nobody.style.backgroundColor = '#E3E3FF';
+    	nobody.style.padding = '3px';
+    	nobody.style.textAlign = 'center';
+    	nobody.textContent = '현재 알림이 없습니다.';
+    	iframeContainer.appendChild(nobody);
     }else{
     	iframeContainer.innerHTML = ''; // 초기화
     	notifications.forEach(notification => {
@@ -105,7 +110,12 @@ function checkalarm(notificationId) {
         .then(response => response.json())
         .then(count => {
         	if(count == 0){
-        		iframeContainer.innerHTML = '알림이 없습니다.';
+        		const nobody = document.createElement('div');
+            	nobody.style.backgroundColor = '#E3E3FF';
+            	nobody.style.padding = '3px';
+            	nobody.style.textAlign = 'center';
+            	nobody.textContent = '현재 알림이 없습니다.';
+            	iframeContainer.appendChild(nobody);
         	}
             // 부모 페이지로 메시지 전송
             window.parent.postMessage({
