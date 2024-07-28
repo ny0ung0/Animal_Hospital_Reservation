@@ -1,5 +1,7 @@
 package com.example.restServer.repository;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Date;
 import java.util.List;
 
@@ -7,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import com.example.restServer.entity.Member;
 import com.example.restServer.entity.UnavailableTime;
 
 public interface UnavailableTimeRepository extends JpaRepository<UnavailableTime, Long> {
@@ -21,5 +24,7 @@ public interface UnavailableTimeRepository extends JpaRepository<UnavailableTime
 
 	@Query(value="delete FROM unavailable_time WHERE doctor_id= :doctorId AND DATE=:date", nativeQuery=true)
 	void deleteAllByIdDate(@Param("doctorId")Long doctorId, @Param("date")Date date);
+	
+	List<UnavailableTime> findByHospitalAndDateAndTimeGreaterThanEqual(Member hospital, LocalDate date, LocalTime time);
 	
 }

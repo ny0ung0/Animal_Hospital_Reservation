@@ -1,3 +1,36 @@
+document.addEventListener('DOMContentLoaded', (event) => {
+    const hospitalList = document.getElementById('hospital-list');
+    const socket = new SockJS('http://localhost:9001/api/v1/ws');
+    const stompClient = Stomp.over(socket);
+
+    stompClient.connect({}, (frame) => {
+        console.log('Connected: ' + frame);
+        stompClient.subscribe('/topic/available-hospitals', (message) => {
+            const availableHospitals = JSON.parse(message.body);
+            hospitalList.innerHTML = '';
+            console.log(availableHospitals);
+            availableHospitals.forEach((hospital) => {
+                const listItem = document.createElement('li');
+                listItem.innerHTML = `<h2>${hospital.name}</h2>
+                                      <p>${hospital.address}</p>
+                                      <p>Rating: ${hospital.rating}</p>`;
+                hospitalList.appendChild(listItem);
+            });
+        });
+    }, (error) => {
+        console.error('WebSocket connection error:', error);
+    });
+
+    socket.onclose = () => {
+        console.log('WebSocket connection closed');
+    };
+
+    socket.onerror = (error) => {
+        console.error('WebSocket error:', error);
+    };
+});
+
+
 // EPSG 코드 정의
 proj4.defs("EPSG:2097", "+proj=tmerc +lat_0=38 +lon_0=127.0028902777778 +k=1 +x_0=200000 +y_0=500000 +ellps=bessel +towgs84=-146.43,507.89,681.46 +units=m +no_defs");
 proj4.defs("EPSG:4326", "+proj=longlat +datum=WGS84 +no_defs");

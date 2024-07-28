@@ -1,11 +1,15 @@
 package com.example.restServer.controller.user;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,16 +19,29 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.restServer.dto.MemVetDto;
+import com.example.restServer.entity.Member;
 import com.example.restServer.service.user.VetListService;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+
+@EnableScheduling
 @RestController
 @RequestMapping("/api/v1")
 public class VetListController_jia {
 
 	@Autowired
 	private VetListService vetListService;
+    @Autowired
+    private SimpMessagingTemplate template;
+    
+    
+	@Scheduled(fixedRate = 60000)
+    public void sendAvailableHospitals() {
+        LocalDateTime now = LocalDateTime.now();
+        List<Member> availableHospitals = vetListService.getAvailableHospitals(now);
+        template.convertAndSend("/topic/available-hospitals", availableHospitals);
+	}
 	
 	@GetMapping("/vet-list")
 	public ResponseEntity<List<MemVetDto>> vetList(@RequestParam Map<String, String> address, HttpServletRequest request) {

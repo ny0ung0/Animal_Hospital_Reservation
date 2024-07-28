@@ -1,8 +1,11 @@
 package com.example.restServer.service.user;
 
-import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,9 +13,11 @@ import org.springframework.stereotype.Service;
 import com.example.restServer.dto.MemVetDto;
 import com.example.restServer.entity.Bookmark;
 import com.example.restServer.entity.Member;
+import com.example.restServer.entity.UnavailableTime;
 import com.example.restServer.repository.BookmarkRepository;
 import com.example.restServer.repository.MemberRepository;
 import com.example.restServer.repository.ReservationRepository;
+import com.example.restServer.repository.UnavailableTimeRepository;
 import com.example.restServer.util.DateTimeUtil;
 
 @Service
@@ -24,7 +29,22 @@ public class VetListService {
     private ReservationRepository reserveRepo;
     @Autowired 
     private BookmarkRepository bookmarkRepo;
+    @Autowired
+    private UnavailableTimeRepository unavailableTimeRepo;
 
+    public List<Member> getAvailableHospitals(LocalDateTime now) {
+        LocalDate date = now.toLocalDate();
+        LocalTime time = now.toLocalTime();
+        List<Member> allHospitals = memRepo.findAll();
+
+        return allHospitals.stream()
+                .filter(hospital -> {
+                    List<UnavailableTime> unavailableTimes = unavailableTimeRepo.findByHospitalAndDateAndTimeGreaterThanEqual(hospital, date, time);
+                    return unavailableTimes.isEmpty();
+                })
+                .collect(Collectors.toList());
+    }
+    
     public List<MemVetDto> getMemberVetList(String address, Long userId) {
         List<Member> result = memRepo.findMemberVetList(address);
         return createMemVetDtoList(result, userId);
