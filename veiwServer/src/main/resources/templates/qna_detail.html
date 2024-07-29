@@ -317,7 +317,7 @@ $('#deleteBtn').on('click', function() {
 		        if (xhr.status === 200) {
 		            console.log("문의 삭제 성공!");
 		            alert("문의가 성공적으로 삭제되었습니다.");
-		            window.location.href = "/";
+		            window.location.href = "/user/myQnaList";
 		        } else {
 		            console.error("문의 삭제 실패");
 		            alert("문의 삭제에 실패했습니다.");

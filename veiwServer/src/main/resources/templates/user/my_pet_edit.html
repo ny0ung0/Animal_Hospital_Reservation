@@ -370,6 +370,7 @@ document.getElementById('editBtn').addEventListener('click', function() {
         success: function(response) {
             console.log("반려동물 정보 수정 성공!");
             alert("반려동물 정보가 성공적으로 수정되었습니다.");
+            window.location.href = "/user/myPetList";
         },
         error: function(xhr, status, error) {
             console.error("반려동물 등록 실패");

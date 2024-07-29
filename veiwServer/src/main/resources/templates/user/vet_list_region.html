@@ -132,7 +132,13 @@
 		crossorigin="anonymous"></script>
 	<script type="text/javascript" src="/js/vet_list_region.js"></script>
 	<script type="text/javascript" src="/js/modal.js"></script>
-
+	<script type="text/javascript">
+		function chat(e){
+			let hosId=e.target.closest("#exampleModal").querySelector("#exampleModalLabel").getAttribute("data-id");
+			console.log(e.target.closest("#exampleModal").querySelector("#exampleModalLabel").getAttribute("data-id"))
+			window.location.href = "/user/newChat/" + hosId;
+		}
+	</script>
 </body>
 
 </html>

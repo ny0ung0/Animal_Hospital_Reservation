@@ -25,9 +25,11 @@ import com.example.restServer.entity.Member;
 import com.example.restServer.entity.Pet;
 import com.example.restServer.repository.MemberRepository;
 import com.example.restServer.repository.PetRepository;
+import com.example.restServer.repository.ReservationRepository;
 import com.example.restServer.service.user.PetService;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 
 
 @RestController
@@ -43,6 +45,9 @@ public class MyPetController_songi {
 	
 	@Autowired
 	private MemberRepository memberRepo;
+	
+	@Autowired
+	private ReservationRepository reserveRepo;
 	
 	
 	@Value("${spring.servlet.multipart.location}")
@@ -185,8 +190,8 @@ public class MyPetController_songi {
 		
 	}
 	
-	
-	@DeleteMapping("/myPet/{id}")
+
+	@PutMapping("/myPetDelete/{id}")
 	public ResponseEntity<String> myPetDelte(@PathVariable("id")Long id, HttpServletRequest request) {
 	   String memberIdHeader = request.getHeader("MemberId");
 	   String authHeader = request.getHeader("Authorization");
@@ -200,10 +205,15 @@ public class MyPetController_songi {
 	   //Member member = memberRepo.findById(memberId).get();
 		
 		
+//	    reserveRepo.deleteByPetId(id);
+//		petRepository.deleteById(id);
+	   
+	   Pet pet = petRepository.findById(id).get();
+	   pet.setStatus("삭제");
+	   petRepository.save(pet);
+	   
 		
-		petRepository.deleteById(id);
-		
-		return ResponseEntity.ok("삭제 완료"); 
+		return ResponseEntity.ok("삭제가 완료되었습니다."); 
 		
 	}
 	
@@ -211,7 +221,9 @@ public class MyPetController_songi {
 	    public ResponseEntity<String> photoEdit(@RequestParam("petId") Long petId, @RequestParam("file") MultipartFile file, HttpServletRequest request) {
 	        String memberIdHeader = request.getHeader("MemberId");
 	        String authHeader = request.getHeader("Authorization");
-
+	        System.out.println("MemberId Header: " + memberIdHeader);
+	        System.out.println("Authorization Header: " + authHeader);
+	        
 	        if (memberIdHeader == null || authHeader == null) {
 	            String errorMessage = "MemberId 또는 Authorization 헤더가 없습니다.";
 	            return ResponseEntity.badRequest().body(errorMessage);
