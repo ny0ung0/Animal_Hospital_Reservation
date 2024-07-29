@@ -221,7 +221,9 @@ public class MyPetController_songi {
 	    public ResponseEntity<String> photoEdit(@RequestParam("petId") Long petId, @RequestParam("file") MultipartFile file, HttpServletRequest request) {
 	        String memberIdHeader = request.getHeader("MemberId");
 	        String authHeader = request.getHeader("Authorization");
-
+	        System.out.println("MemberId Header: " + memberIdHeader);
+	        System.out.println("Authorization Header: " + authHeader);
+	        
 	        if (memberIdHeader == null || authHeader == null) {
 	            String errorMessage = "MemberId 또는 Authorization 헤더가 없습니다.";
 	            return ResponseEntity.badRequest().body(errorMessage);
