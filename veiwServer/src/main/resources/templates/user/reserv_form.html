@@ -131,7 +131,7 @@ function submitForm(e){
 		 responseCheck(this);
 	     if (this.status == 200) { 
 	        alert("예약이 성공적으로 완료되었습니다");
-	        let title = '예약 알람';
+	        let title = '예약 알림';
 	        let reservedate = document.querySelector("input[type=date]").value;
 	        let body = `${reservedate}일 예약이 들어왔습니다.`;
 	        let receiverId = hosId;
