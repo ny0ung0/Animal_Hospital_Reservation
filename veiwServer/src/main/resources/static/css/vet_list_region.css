@@ -36,6 +36,9 @@
     gap: 10px;
     margin: 15px auto;
 }
+.guContainer{
+	min-width:380px;
+}
 
 .cities, .guEl {
     cursor: pointer;
@@ -78,8 +81,8 @@
 }
 
 .vet-header {
+	position:relative;
     display: flex;
-    justify-content: space-between;
 }
 
 .vet-header .pin {
@@ -87,7 +90,9 @@
 }
 
 .vet-header .bookmark {
-    margin-left: auto;
+    position:absolute;
+    top:0;
+    right:0;
 }
 
 .vet-body {
@@ -95,11 +100,6 @@
 }
 
 
-
-.vet:hover {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    cursor: pointer;
-}
 .modal-header {
     background-color: #f8f9fa;
     border-bottom: 1px solid #dee2e6;
@@ -354,8 +354,18 @@
 .result-item div{
 	font-family: "Jua", sans-serif;
 }
+
 .result-item:hover {
     background-color: #E3C3FF;
+}
+
+.vet-header button:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+}
+
+.bookmark:hover {
+	cursor: pointer;
 }
 
 .resultMsg{

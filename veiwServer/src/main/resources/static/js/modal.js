@@ -33,7 +33,8 @@ function showBusinessHour(basicHours) {
 
 // 모달에 해당 병원 상세정보 보여주기
 function showModal(e) {
-	
+	console.log("ccc");
+
 	//회원만 있는 병원 정보칸 가리기
 	document.querySelector(".modal-memVetInfo").style.display = "none";
 	
@@ -48,9 +49,9 @@ function showModal(e) {
 		phone = e.target.parentElement.querySelector(".phone").innerText;
 	} else {
 		//리스트의 버튼을 클릭하여 모달을 열 경우
-		hospitalName = e.target.parentElement.querySelector("button").innerText;
-		address = e.target.parentElement.parentElement.querySelector(".address").innerText;
-		phone = e.target.parentElement.parentElement.querySelector(".phone").innerText;
+		hospitalName = e.target.closest(".vet").querySelector("button").innerText;
+		address = e.target.closest(".vet").querySelector(".address").innerText;
+		phone = e.target.closest(".vet").querySelector(".phone").innerText;
 	}
 
 	// 기본 정보 설정
@@ -190,6 +191,7 @@ function checkBookmark(e){
 	let filled = "http://localhost:8093/images/bookmark_fill.png"
 	let empty = "http://localhost:8093/images/bookmark.png"
 	let isBookmarked;
+	let changeBookMark;
 	
 	if(!localStorage.getItem("MemberId")){
 		alert("로그인한 회원만 이용 가능한 서비스입니다. 로그인 후 이용해주세요");
@@ -209,15 +211,18 @@ function checkBookmark(e){
 			e.target.src = empty;
 			//북마크 취소 db에 업데이트해주기
 			isBookmarked=false;
+			changeBookMark = true;
 		}
 	}else{
 		if(confirm("이 병원을 즐겨찾기 목록에 추가하시겠습니까?")){
 			e.target.src = filled;
 			//북마크 구독 db에 업데이트해주기
 			isBookmarked=true;
+			changeBookMark = true;
 		}
 	}
-	 const xhttp = new XMLHttpRequest();
+	if(changeBookMark){
+		const xhttp = new XMLHttpRequest();
 	  xhttp.onload = function() {
 		responseCheck(this);
 	     alert("성공적으로 즐겨찾기목록이 업데이트 되었습니다.")
@@ -227,6 +232,7 @@ function checkBookmark(e){
 	  xhttp.setRequestHeader("Authorization", localStorage.getItem("token"));
 	  xhttp.setRequestHeader("role", localStorage.getItem("role"));
 	  xhttp.send();
+	}
 }
 
 function makeReservation(e){

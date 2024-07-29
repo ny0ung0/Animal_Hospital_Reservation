@@ -36,21 +36,27 @@ function displayNotifications(notifications) {
     
 	
     if(notifications == 0){
-    	iframeContainer.innerHTML = '알림이 없습니다.';
+    	const nobody = document.createElement('div');
+    	nobody.style.backgroundColor = '#E3E3FF';
+    	nobody.style.padding = '3px';
+    	nobody.style.textAlign = 'center';
+    	nobody.textContent = '현재 알림이 없습니다.';
+    	iframeContainer.appendChild(nobody);
     }else{
     	iframeContainer.innerHTML = ''; // 초기화
     	notifications.forEach(notification => {
             const card = document.createElement('div');
             card.className = 'card border-light w-100 mb-3';
             card.dataset.id = notification.id;
-
+	
             const cardBody = document.createElement('div');
             cardBody.className = 'card-body';
     		
-            const cardTitle = document.createElement('h5');
+            const cardTitle = document.createElement('p');
             cardTitle.className = 'card-title ';
             cardTitle.textContent = notification.title;
-
+            cardTitle.style.fontSize = '19px';
+            
             const closeButton = document.createElement('button');
             closeButton.className = 'btn';
             closeButton.onclick = () => checkalarm(notification.id);
@@ -59,6 +65,7 @@ function displayNotifications(notifications) {
             const cardText = document.createElement('p');
             cardText.className = 'card-text';
             cardText.textContent = notification.content;
+            cardText.style.fontSize = '16px';
 
             cardBody.appendChild(cardTitle);
             cardTitle.appendChild(closeButton);
@@ -103,7 +110,12 @@ function checkalarm(notificationId) {
         .then(response => response.json())
         .then(count => {
         	if(count == 0){
-        		iframeContainer.innerHTML = '알림이 없습니다.';
+        		const nobody = document.createElement('div');
+            	nobody.style.backgroundColor = '#E3E3FF';
+            	nobody.style.padding = '3px';
+            	nobody.style.textAlign = 'center';
+            	nobody.textContent = '현재 알림이 없습니다.';
+            	iframeContainer.appendChild(nobody);
         	}
             // 부모 페이지로 메시지 전송
             window.parent.postMessage({

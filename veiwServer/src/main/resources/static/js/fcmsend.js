@@ -17,7 +17,7 @@ function sendTokenToMessage(title, body) {
 }
 
 // FCM 대상자 지정 메세지 전송
-function sendTokenToMessageReceiver(title, body){
+function sendTokenToMessageReceiver(receiverId, title, body){
 	fetch(`http://localhost:9001/api/v1/fcm/message/${receiverId}`, {
         method: 'POST',
         headers: {

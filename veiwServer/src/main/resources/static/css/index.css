@@ -54,9 +54,13 @@
     margin-top: 5px;
 }
 
-.vet:hover {
+.vet-header button:hover {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     cursor: pointer;
+}
+
+.bookmark:hover {
+	cursor: pointer;
 }
 
 #mainGif {
@@ -78,13 +82,10 @@
 .mapContainer{
 	position:relative;
 	margin-top: 0px;
+	margin-bottom:100px;
 }
 .vet_list {
-    position: absolute;
-    top: 100px;
-    right: -100px;
-    width: 450px;
-    height: 530px;
+    height: 700px;
     background-color: white;
     border: 1px solid #ddd;
     border-radius: 5px;
@@ -105,17 +106,11 @@
     flex-grow: 1; /* 남은 공간 채우기 */
 }
 
-.map-header {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    margin-bottom:10px;
-}
 .point-partner {
     display: flex;
     align-items: center;
     justify-content: flex-end; /* 오른쪽 끝에 배치 */
-    margin-bottom: 0px;
+    margin-bottom: 10px;
 }
 
 .partner-icon {
@@ -133,7 +128,7 @@
 	width:40px;
 	height:40px;
 	position: absolute;
-    top: 50px;
+    top: 10px;
     right: 10px;
     animation: spinY 2s linear infinite; /* 애니메이션 추가 */
     z-index:99;
@@ -146,24 +141,13 @@
 	border:1px solid #4C5CB3;
 	color:white;
 	border-radius:50px;
-	top:60px;
-	right:600px;
+	top:50px;
+	right:40%;
 	font-family: "Jua", sans-serif;
 	padding:8px;
 }
 
-#searchAreaBtn:hover{
-	background-color: #E3C3FF;
-	position: absolute;
-	z-index:99;
-	color:black;
-	border:1px solid #E3C3FF;
-	border-radius:50px;
-	top:60px;
-	right:600px;
-	font-family: "Jua", sans-serif;
-	padding:8px;
-}
+
 /* 애니메이션 정의 */
 @keyframes spinY {
     from {

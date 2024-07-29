@@ -1,0 +1,17 @@
+@charset "UTF-8";
+
+.text-bg-waiting{
+	background-color: rgb(217, 109, 128) !important;
+}
+
+.text-bg-confirmed{
+	background-color: rgb(217, 109, 95) !important;
+}
+
+.text-bg-complete{
+	background-color: rgb(217, 197, 109) !important;
+}
+
+.text-bg-cancle{
+	background-color: rgb(100, 197, 158) !important;
+}

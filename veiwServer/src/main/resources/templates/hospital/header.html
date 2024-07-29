@@ -58,12 +58,27 @@
 	<script src="/js/fcm.js"></script>
 	<script src="/js/fcmsend.js"></script>
 	<script>
+	ready();
+	const usedeleteID = localStorage.getItem('MemberId');
+	const tokendeleteId = localStorage.getItem('token');
             function logout() {
-                localStorage.clear();
-                window.location.href = "/";
+            	fetch("http://localhost:9001/api/v1/common/deletetoken/" + usedeleteID, {
+    		        method: "POST",
+    		        headers: {
+    		            'Authorization': tokendeleteId
+    		        }
+    		    })
+    		    .then(data => {
+    		    	console.log(data);
+    		    	localStorage.clear();
+                    window.location.href = "/";
+    		    })
+    		    .catch(error => console.log(error));
+            	
+                
             }
             
-            document.addEventListener("DOMContentLoaded", function() {
+             function ready() {
                 const memberId = localStorage.getItem('MemberId');
                 const token = localStorage.getItem('token');
                 const loginLink = document.getElementById('login-link');
@@ -143,8 +158,19 @@
             	        }
             	    });
         	    }
+            	
+            	if (currentPath.includes('/hospital/customerDetail')) {
+        	        const parentMenuLink = document.querySelector('a[href="/hospital/customerList"]');
+        	        dropdownItems.forEach(function (item) {
+            	        if (item.getAttribute('href') === parentMenuLink.getAttribute('href')) {
+            	            item.classList.add('active-pet');
+            	            // 부모 드롭다운 링크에도 active 클래스 추가
+            	            item.closest('.dropdown').querySelector('.dropdown-toggle').classList.add('active-pet');
+            	        }
+            	    });
+        	    }
                 
-            });
+            }
             
             function responseCheck(response){
         		 const msg =response.getResponseHeader("msg");

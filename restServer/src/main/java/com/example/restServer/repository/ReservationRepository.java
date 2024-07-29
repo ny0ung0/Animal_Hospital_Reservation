@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.example.restServer.dto.UserReservationDto;
+import com.example.restServer.entity.Pet;
 import com.example.restServer.entity.Reservation;
 
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
@@ -49,8 +50,20 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 
 	List<Reservation> findByDoctorIdAndReservationDatetime(Long doctorId, LocalDateTime reservationDatetime);
 	
-	
-	void deleteByPetId(Long petId);
-	
+	@Query(value = "SELECT r.*\r\n"
+			+ "FROM reservation r\r\n"
+			+ "JOIN (\r\n"
+			+ "    SELECT pet_id, MAX(reservation_datetime) AS max_reservation_datetime\r\n"
+			+ "    FROM reservation\r\n"
+			+ "    WHERE hospital_id =:hospitalId\r\n"
+			+ "    GROUP BY pet_id\r\n"
+			+ ") latest_reservations\r\n"
+			+ "ON r.pet_id = latest_reservations.pet_id\r\n"
+			+ "AND r.reservation_datetime = latest_reservations.max_reservation_datetime\r\n"
+			+ "WHERE r.hospital_id =:hospitalId ORDER BY r.reservation_datetime desc", nativeQuery = true)
+	Page<Reservation> findByCustomerList(Pageable pageable, @Param("hospitalId")Long hospitalId);
+
+	@Query(value = "SELECT * FROM reservation WHERE pet_id =:petId AND hospital_id =:hospitalId ORDER BY reservation_datetime desc", nativeQuery = true)
+	Page<Reservation> findByPetAndHospitalId(Pageable pageable, @Param("petId")Long petId, @Param("hospitalId")Long hospitalId);
 	
 }

@@ -12,7 +12,7 @@ import com.example.restServer.entity.Pet;
 public interface PetRepository extends JpaRepository<Pet, Long> {
 	
 	
-	@Query(value="select * from pet where member_id=:memberId", nativeQuery=true)
+	@Query(value="select * from pet where member_id=:memberId and ISNULL(STATUS);", nativeQuery=true)
 	public List<Pet> findAllByMemberId(@Param("memberId") Long memberId);
 	
 	

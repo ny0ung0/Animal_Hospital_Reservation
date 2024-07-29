@@ -40,9 +40,9 @@ function preload() {
 }
 
 function create() {
-  this.add.image(190, 300, 'background')
-
-  this.anims.create({
+  	this.add.image(190, 300, 'background')
+	this.cameras.main.setBackgroundColor('rgba(255, 160, 122,0.5)');
+  	this.anims.create({
     key: 'idle',
     frames: this.anims.generateFrameNumbers('pet_level_1', { frames: [0, 1, 2, 3] }),
     frameRate: 6,
@@ -179,9 +179,9 @@ function checkAndGiveTickets() {
   const now = new Date()
   if (currentHour >= 7 && currentHour < 9) {
     if (lastGivenTimeMorning) {
-      const lastGivenDate = new Date(lastGivenTimeMorning)
+      const lastGivenDate = lastGivenTimeMorning[2];
       
-      if (lastGivenDate.getDate() === now.getDate()) {
+      if (lastGivenDate === now.getDate()) {
         return // 이미 현재 시간대에 티켓을 지급받았으므로 더 이상 처리하지 않음
       }
     }
@@ -189,10 +189,10 @@ function checkAndGiveTickets() {
     lastGivenTimeMorning = now.toISOString() // 마지막 지급 시간 업데이트
   } else if (currentHour >= 12 && currentHour < 15) {
     if (lastGivenTimeAfternoon) {
-      const lastGivenDate = new Date(lastGivenTimeAfternoon)
-      console.log(lastGivenDate.getDate)
-      console.log(now.getDate)
-      if (lastGivenDate.getDate() === now.getDate()) {
+      const lastGivenDate = lastGivenTimeAfternoon[2];
+      console.log(lastGivenTimeAfternoon[2])
+      console.log(now.getDate())
+      if (lastGivenDate === now.getDate()) {
         return // 이미 현재 시간대에 티켓을 지급받았으므로 더 이상 처리하지 않음
       }
     }
@@ -200,14 +200,14 @@ function checkAndGiveTickets() {
     lastGivenTimeAfternoon = now.toISOString() // 마지막 지급 시간 업데이트
   } else if (currentHour >= 18 && currentHour < 21) {
     if (lastGivenTimeEvening) {
-      const lastGivenDate = new Date(lastGivenTimeEvening)
-      if (lastGivenDate.getDate() === now.getDate()) {
+      const lastGivenDate = lastGivenTimeEvening[2];
+      if (lastGivenDate === now.getDate()) {
         return // 이미 현재 시간대에 티켓을 지급받았으므로 더 이상 처리하지 않음
       }
     }
     feedTickets++
     lastGivenTimeEvening = now.toISOString() // 마지막 지급 시간 업데이트
   }
-  updateText()
   saveData()
+  updateText()
 }
