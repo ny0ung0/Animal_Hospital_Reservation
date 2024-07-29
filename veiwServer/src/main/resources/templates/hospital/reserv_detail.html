@@ -175,7 +175,7 @@ function statusComplete(){
 	let status = "완료";
 	username = petname = document.getElementById("username").innerText;
 	petname = document.getElementById("petName").innerText;
-	title='예약 알람';
+	title='예약 알림';
 	body=`${username}님 ${petname}의 진료가 완료되었습니다. 감사합니다. 😄`;
 	receiverId= userid;
     sendTokenToMessageReceiver(receiverId, title, body);
@@ -198,7 +198,7 @@ function statusComplete(){
 function statusConfirmed(){
 	let status = "확정";
 	username = petname = document.getElementById("username").innerText;
-	title='예약 알람';
+	title='예약 알림';
 	body=`${username}님 예약 확정되었습니다. 😃`;
 	receiverId= userid;
     sendTokenToMessageReceiver(receiverId, title, body);
@@ -223,7 +223,7 @@ function statusConfirmed(){
 function statusCancle(){
 	let status = "취소";
 	username = petname = document.getElementById("username").innerText;
-	title='예약 알람';
+	title='예약 알림';
 	body=`${username}님 예약이 거절되었습니다. 다시 예약 해주시기 바랍니다. 😥`;
 	receiverId= userid;
     sendTokenToMessageReceiver(receiverId, title, body);
