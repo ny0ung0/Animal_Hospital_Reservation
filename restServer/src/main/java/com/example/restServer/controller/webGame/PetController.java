@@ -77,6 +77,7 @@ public class PetController {
 					existingPet.setLastGivenTimeMorning(data.getLastGivenTimeMorning());
 					existingPet.setLastGivenTimeAfternoon(data.getLastGivenTimeAfternoon());
 					existingPet.setLastGivenTimeEvening(data.getLastGivenTimeEvening());
+					existingPet.setLastGivenTimeDay(data.getLastGivenTimeDay());
 					return petGameRepository.save(existingPet);
 				}
 			} else {

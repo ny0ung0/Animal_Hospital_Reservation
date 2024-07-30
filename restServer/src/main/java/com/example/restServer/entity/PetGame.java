@@ -43,6 +43,6 @@ public class PetGame extends BaseEntity {
   private LocalDateTime lastGivenTimeMorning; // 마지막 지급 시간 (7~9시)
   private LocalDateTime lastGivenTimeAfternoon; // 마지막 지급 시간 (12~15시)
   private LocalDateTime lastGivenTimeEvening; // 마지막 지급 시간 (18~21시)
-
+  private LocalDateTime lastGivenTimeDay; // 일일 출석
   // Getters and Setters
 }

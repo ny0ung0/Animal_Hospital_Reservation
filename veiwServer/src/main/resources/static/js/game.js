@@ -28,6 +28,7 @@ let levelText
 let lastGivenTimeMorning
 let lastGivenTimeAfternoon
 let lastGivenTimeEvening
+let lastGivenTimeDay
 let isFullyGrown
 const token = localStorage.getItem("token");
 let userId = localStorage.getItem("MemberId")
@@ -132,6 +133,7 @@ function loadData() {
       lastGivenTimeMorning = data.lastGivenTimeMorning
       lastGivenTimeAfternoon = data.lastGivenTimeAfternoon
       lastGivenTimeEvening = data.lastGivenTimeEvening
+      lastGivenTimeDay = data.lastGivenTimeDay
       isFullyGrown = data.isFullyGrown
       updateText()
       checkAndGiveTickets() // 데이터를 로드한 후에 티켓 지급 확인
@@ -152,6 +154,7 @@ function saveData() {
     lastGivenTimeMorning: lastGivenTimeMorning,
     lastGivenTimeAfternoon: lastGivenTimeAfternoon,
     lastGivenTimeEvening: lastGivenTimeEvening,
+    lastGivenTimeDay: lastGivenTimeDay,
     isFullyGrown: isFullyGrown
   }
 
@@ -177,7 +180,17 @@ function saveData() {
 function checkAndGiveTickets() {
   const currentHour = new Date().getHours()
   const now = new Date()
-  if (currentHour >= 7 && currentHour < 9) {
+  if (currentHour >= 0 && currentHour <=24){
+	if(lastGivenTimeDay) {
+		const lastGivenDate = lastGivenTimeDay[2];
+		if (lastGivenDate === now.getDate()) {
+			return
+		}
+	}
+	
+	feedTickets++
+	lastGivenTimeDay = now.toISOString()
+  } else if (currentHour >= 7 && currentHour < 9) {
     if (lastGivenTimeMorning) {
       const lastGivenDate = lastGivenTimeMorning[2];
       
