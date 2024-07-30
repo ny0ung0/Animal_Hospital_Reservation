@@ -233,8 +233,8 @@ public class HospitalReservationController_js {
 		return new ResponseEntity<>("Ok", HttpStatus.OK);
 	}
 	
-	@GetMapping("/customer")
-	public ResponseEntity<Page<Reservation>> getCustomerList(@RequestParam(name = "page", defaultValue = "0") int page, HttpServletRequest request){
+	@GetMapping("/customer/{filter}")
+	public ResponseEntity<Page<Reservation>> getCustomerList(@PathVariable("filter")String filter, @RequestParam(name = "page", defaultValue = "0") int page, HttpServletRequest request){
 		String memberIdHeader = request.getHeader("memberId");
 	    String authHeader = request.getHeader("Authorization");
 
@@ -244,8 +244,43 @@ public class HospitalReservationController_js {
 	    int size = 10;
 	    Pageable pageable = PageRequest.of(page, size);
 	    Long memberId = Long.parseLong(memberIdHeader);
-	    Page<Reservation> list = reservationRepo.findByCustomerList(pageable, memberId);
-		return new ResponseEntity<>(list, HttpStatus.OK);
+	    System.out.println(filter);
+	    if(filter.equals("last-date")) {
+	    	Page<Reservation> list = reservationRepo.findByCustomerListLastDate(pageable, memberId);
+			return new ResponseEntity<>(list, HttpStatus.OK);
+	    }else if(filter.equals("user-name")) {
+	    	Page<Reservation> list = reservationRepo.findByCustomerListFilterByUserName(pageable, memberId);
+			return new ResponseEntity<>(list, HttpStatus.OK);
+	    }else {
+	    	Page<Reservation> list = reservationRepo.findByCustomerListFilterByName(pageable, memberId);
+			return new ResponseEntity<>(list, HttpStatus.OK);
+	    }
+	    
+	}
+	
+	@GetMapping("/customer/{filter}/{keyword}")
+	public ResponseEntity<Page<Reservation>> getCustomerListKeyword(@PathVariable("filter")String filter, @PathVariable("keyword")String keyword, @RequestParam(name = "page", defaultValue = "0") int page, HttpServletRequest request){
+		String memberIdHeader = request.getHeader("memberId");
+	    String authHeader = request.getHeader("Authorization");
+
+	    if (memberIdHeader == null || authHeader == null) {
+	        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+	    }
+	    int size = 10;
+	    Pageable pageable = PageRequest.of(page, size);
+	    Long memberId = Long.parseLong(memberIdHeader);
+	    System.out.println(filter);
+	    if(filter.equals("last-date")) {
+	    	Page<Reservation> list = reservationRepo.findByCustomerListLastDateKeyword(pageable, memberId, keyword);
+			return new ResponseEntity<>(list, HttpStatus.OK);
+	    }else if(filter.equals("user-name")) {
+	    	Page<Reservation> list = reservationRepo.findByCustomerListFilterByUserNameKeyword(pageable, memberId, keyword);
+			return new ResponseEntity<>(list, HttpStatus.OK);
+	    }else {
+	    	Page<Reservation> list = reservationRepo.findByCustomerListFilterByNameKeyword(pageable, memberId, keyword);
+			return new ResponseEntity<>(list, HttpStatus.OK);
+	    }
+	    
 	}
 	
 	@GetMapping("/pet/{petId}")
