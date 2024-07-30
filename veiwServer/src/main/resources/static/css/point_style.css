@@ -1,0 +1,9 @@
+@charset "UTF-8";
+
+#mypoint {
+	padding-left: 10px;
+	border-color: #E3C3FF;
+	border-radius: 10px;
+	background-color: white;
+	color: black;
+}
