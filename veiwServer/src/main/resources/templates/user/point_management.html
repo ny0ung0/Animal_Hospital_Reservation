@@ -42,9 +42,9 @@
 					<thead class="table-primary">
 						<tr>
 							<th>#</th>
-							<th>적립 및 사용 날짜</th>
 							<th>적립 및 사용처</th>
 							<th>포인트</th>
+							<th>적립 및 사용 날짜</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -60,6 +60,8 @@
 	<script>
 		const token = localStorage.getItem("token");
 		const MemberId = localStorage.getItem("MemberId");
+		
+		//포인트 정보 가져오기
 		fetch("http://localhost:9001/api/v1/user/pointresult/" + MemberId, {
 			method : "GET",
 			headers: {
@@ -68,15 +70,69 @@
 		})
 		.then(response => response.text())
 		.then(data => {
-			// Convert the received data to a number
+			// 받은 데이터를 숫자로 변환
 			const pointValue = Number(data);
 
-			// Format the number with commas as thousands separators
+			// 천 단위 구분 기호를 추가하여 포맷
 			const formattedValue = new Intl.NumberFormat().format(pointValue);
 
-			// Set the formatted value to the input field
+			// 포맷된 값을 입력 필드에 설정
 			document.getElementById("mypoint").value = formattedValue;
 		});
+		
+		//포인트 적립 및 사용내역 가져오기
+		fetch("http://localhost:9001/api/v1/user/pointList/" + MemberId, {
+			method : "GET",
+			headers: {
+		        'Authorization': token
+		    }
+		})
+		.then(response => response.text())
+		.then(data => {
+			let cnt = 1;
+			const tbody = document.querySelector("tbody");
+	        tbody.innerHTML = "";
+			const dataList = JSON.parse(data);
+	        if(dataList.length == 0){
+	        	
+	        	tbody.innerHTML += "<tr><td colspan='8'>포인트 내역이 없습니다.</td></tr>";
+	        }else{
+	        	dataList.forEach(dataList => {
+	        		console.log(dataList.pointsUsed)
+					const pointsUses = dataList.pointsUsed !== null ? dataList.pointsUsed : dataList.pointsAccumulated;
+	        		const pointDay = dataList.useDate !==null ? dataList.useDate : dataList.accumulationDate;
+	        		const pointValue = Number(pointsUses);
+	    			const formattedValue = new Intl.NumberFormat().format(pointValue);
+	    			const formattedDate = formatDate(pointDay);
+	    			const badgeClass = dataList.pointsUsed ? 'bg-danger text-light' : 'bg-success text-light';
+	    			const badgeText = dataList.pointsUsed ? '사용' : '적립';
+	        		tbody.innerHTML += `<tr><td>${cnt}</td><td>${dataList.comment}</td>`
+	        			+`<td>${formattedValue} <span class="badge ${badgeClass}">${badgeText}</span></td>`
+	        			+`<td>${formattedDate}</td>`
+	        		+ "</tr>";
+	        		cnt++
+	        	});
+	        }
+	        
+			});
+		
+		// 날짜 포맷 함수
+		function formatDate(dateString) {
+			// 날짜가 Unix 타임스탬프 형식일 경우
+			if (!isNaN(dateString) && Number(dateString) > 1000000000000) {
+				const date = new Date(Number(dateString));
+				return date.toLocaleString(); // 기본 포맷, 원하는 포맷으로 변경 가능
+			}
+			// 날짜가 ISO 문자열일 경우
+			else if (dateString && !isNaN(Date.parse(dateString))) {
+				const date = new Date(dateString);
+				return date.toLocaleString(); // 기본 포맷, 원하는 포맷으로 변경 가능
+			}
+			// 날짜가 유효하지 않은 경우
+			else {
+				return '정보 없음';
+			}
+		}
 		
 	</script>
 
