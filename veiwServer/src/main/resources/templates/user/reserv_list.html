@@ -77,12 +77,12 @@
       <div class="modal-body" id="detailInfoBody">
         
           <div class='modal-item'><span class="modal-sub-title"></span><span id="photo">사진</span></div>
-          <div class='modal-item'><span class="modal-sub-title">반려동물 </span><span id="pet_name">동물이름</span></div>
-          <div class='modal-item'><span class="modal-sub-title">진료유형 </span><span id="type">진료유형</span></div>
-          <div class='modal-item'><span class="modal-sub-title">수의사 </span><span id="doctor_name">수의사</span></div>
-          <div class='modal-item'><span class="modal-sub-title">메모 </span><span id="memo">메모</span></div>
-          <div class='modal-item'><span class="modal-sub-title">쿠폰 사용 </span><span id="coupon_name">쿠폰</span></div>
-          <div class='modal-item'><span class="modal-sub-title">포인트 사용 </span><span id="points_used">포인트</span></div>
+          <div class='modal-item'><span class="modal-sub-title fw-bolder">반려동물 </span><span id="pet_name">동물이름</span></div>
+          <div class='modal-item'><span class="modal-sub-title fw-bolder">진료유형 </span><span id="type">진료유형</span></div>
+          <div class='modal-item'><span class="modal-sub-title fw-bolder">수의사 </span><span id="doctor_name">수의사</span></div>
+          <div class='modal-item'><span class="modal-sub-title fw-bolder">메모 </span><span id="memo">메모</span></div>
+          <div class='modal-item'><span class="modal-sub-title fw-bolder">쿠폰 사용 </span><span id="coupon_name">쿠폰</span></div>
+          <div class='modal-item'><span class="modal-sub-title fw-bolder">포인트 사용 </span><span id="points_used">포인트</span></div>
       </div>
     </div>
   </div>
@@ -164,6 +164,8 @@ var completedList = [];
 var confirmedList = [];
 var cancelList = [];
 let hospitalId='';
+let btn = `[[${btn}]]`;
+//alert(btn);
 ready();
   function ready(){
     var reservList = document.querySelector("#tbody");
@@ -195,17 +197,8 @@ ready();
       //console.log(completedList);
       //console.log(confirmedList);
       });
-      if(confirmedList.length === 0){
-     	 reservList.innerHTML=`
-     	      <tr>
-     	        <td></td>
-     	        <td></td>
-     	        <td>해당하는 예약이 없습니다.</td>
-     	        <td></td>
-     	        <td></td>
-     	      </tr>`;
-     	 return;
-     }
+      
+     
       for(let i=0 ;i < confirmedList.length;i++ ){
        let reservation = confirmedList[i];
        for(let i=1 ; i<4; i++){
@@ -230,6 +223,32 @@ ready();
         </tr>`
       
       }
+      if(btn !=""){
+    	  if(btn=="cancel"){
+    		  cancelListView();
+    		  return;
+    	  }else if(btn=="wait"){
+    		  waitListView();
+    		  return;
+    	  }else if(btn=="complete"){
+    		  completeListView();
+    		  return;
+    	  }
+    	  
+      }
+      if(confirmedList.length === 0){
+      	 reservList.innerHTML=`
+      	      <tr>
+      	        <td></td>
+      	        <td></td>
+      	        <td>해당하는 예약이 없습니다.</td>
+      	        <td></td>
+      	        <td></td>
+      	      </tr>`;
+      	 return;
+      }
+      
+    	  
       
         
       
@@ -547,7 +566,7 @@ ready();
 			    body=`작성된 리뷰가 있습니다.`;
 			    receiverId=hospitalId;
 			    sendTokenToMessageReceiver(title, body);
-				window.location.href="/user/reserv_list";
+				window.location.href="/user/reserv_list?btn=complete";
 			}else{
 			var result = this.responseText;
 			alert(result);
@@ -576,7 +595,7 @@ ready();
 			//alert(this.responseText);
 			if(this.status==200){
 				alert("예약이 취소되었습니다.");
-				window.location.href="/user/reserv_list";
+				window.location.href="/user/reserv_list?btn=cancel";
 			}else{
 				var result = this.responseText;
 				alert(result);
