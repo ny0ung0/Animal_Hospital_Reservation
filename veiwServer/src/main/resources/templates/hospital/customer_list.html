@@ -15,7 +15,20 @@
 <body class="d-flex flex-column h-100">
 <div th:replace="~{hospital/header :: header}"></div>
 <div class="container-xl">
-	<h1 class="mt-3 mt-md-5 mb-3 mb-md-3">관리 고객 리스트</h1>
+	<h1 class="mt-3 mt-md-5 mb-3 mb-md-3">
+	관리 고객 리스트
+	</h1>
+	<div class="d-flex justify-items-center mb-3">
+		<select id="filter" class="form-select select-box" aria-label="Default select example">
+			  <option value="name" selected>동물 이름순</option>
+			  <option value="last-date">마지막 진료(예약)순</option>
+			  <option value="user-name">보호자 이름순</option>
+		</select>
+		<div class="input-group search-box ms-auto">
+		  <input id="keywordInput" type="text" class="form-control" placeholder="이름(동물, 보호자), 연락처를 입력하세요" aria-label="이름, 연락처 검색" aria-describedby="search-btn">
+		  <button class="btn btn-outline-secondary" type="button" id="search-btn">검색</button>
+		</div>
+	</div>
 	<table class="table table-hover text-center  align-middle">
 		<thead class="table-primary">
 			<tr>
@@ -33,7 +46,7 @@
 			
 		</tbody>
 	</table>
-	<nav aria-label="Page navigation example" id="waiting-pagination">
+	<nav aria-label="Page navigation example" id="list-pagination">
 	    <ul class="pagination justify-content-center">
 	        <li class="page-item prev-btn d-none"><a class="page-link" id="prev-btn" href="#">이전</a></li>
 	        <div id="page-numbers" class="pagination"></div> <!-- 페이지 번호 표시 -->
@@ -44,14 +57,30 @@
 <div th:replace="~{hospital/footer :: footer}"></div>
 
 <script type="text/javascript">
+document.addEventListener('DOMContentLoaded', function() {
 const token = localStorage.getItem("token");
 const memberId = localStorage.getItem("MemberId");
+const filter = document.querySelector("#filter");
+let keyword = "";
+
+let requestLink = "http://localhost:9001/api/v1/hospital/customer/name";
+
 let size = 10;
 let currentPage = 0;
 let totalPages = 0;
 
-function loadCustomers(page) {
-    fetch("http://localhost:9001/api/v1/hospital/customer", {
+function loadCustomers(page, keyword="") {
+	console.log("keyword", keyword);
+	let url = "";
+	if(keyword==""){
+		url = `${requestLink}?page=${page}`;
+	}else{
+		url = `${requestLink}/${keyword}?page=${page}`;
+	}
+	
+	console.log("Request URL:", url);
+    console.log("Token:", token);
+    fetch(url , {
         method: "GET",
         headers: {
             'Authorization': `${token}`,
@@ -59,18 +88,20 @@ function loadCustomers(page) {
         }
     })
     .then(response => {
-        fetchResponseCheck(response);
+        //fetchResponseCheck(response);
         return response.text();
     })
     .then(data => {
         const dataList = JSON.parse(data);
         console.log(dataList);
         totalPages = dataList.totalPages;
+        console.log(totalPages);
         const tbody = document.querySelector("tbody");
         tbody.innerHTML = "";
 
         if (dataList.content.length === 0) {
-            tbody.innerHTML = "<tr><td colspan='8'>관리중인 고객이 없습니다.</td></tr>";
+            tbody.innerHTML = "<tr><td colspan='8'>해당되는 고객이 없습니다.</td></tr>";
+            document.querySelector("#list-pagination").classList.add("d-none");
         } else {
             let cnt = 1 + (currentPage * size);
             dataList.content.forEach(obj => {
@@ -117,8 +148,9 @@ function loadCustomers(page) {
                     </tr>`;
                 cnt++;
             });
+            document.querySelector("#list-pagination").classList.remove("d-none");
         }
-
+        
         updatePagination();
     })
     .catch(error => console.log('Error:', error));
@@ -132,7 +164,7 @@ function updatePagination() {
     for (let i = 0; i < totalPages; i++) {
         const pageItem = document.createElement("li");
         pageItem.className = "page-item";
-        pageItem.innerHTML = `<a class="page-link" href="#" data-page="${i}">${i + 1}</a>`;
+        pageItem.innerHTML = `<a class="page-link rounded-0" href="#" data-page="${i}">${i + 1}</a>`;
         pageNumbersContainer.appendChild(pageItem);
 
         // 현재 페이지가 클릭된 페이지 번호일 경우 강조 표시
@@ -149,8 +181,8 @@ function updatePagination() {
     }
 
     // 이전 및 다음 버튼의 표시 상태 업데이트
-    document.getElementById("prev-btn").classList.toggle("d-none", currentPage === 0);
-    document.getElementById("next-btn").classList.toggle("d-none", currentPage === totalPages - 1);
+    document.getElementById("prev-btn").parentElement.classList.toggle("d-none", currentPage === 0);
+    document.getElementById("next-btn").parentElement.classList.toggle("d-none", currentPage === totalPages - 1);
 }
 
 document.getElementById("prev-btn").addEventListener("click", function() {
@@ -167,12 +199,25 @@ document.getElementById("next-btn").addEventListener("click", function() {
     }
 });
 
+document.querySelector("#search-btn").addEventListener("click", function(){
+	keyword = document.querySelector("#keywordInput").value;
+	console.log("keyword", keyword);
+    loadCustomers(currentPage, keyword);
+});
+
+filter.addEventListener("change", function() {
+    requestLink = `http://localhost:9001/api/v1/hospital/customer/${filter.value}`;
+    console.log("keyword", keyword);
+    loadCustomers(currentPage, keyword);
+});
+
+loadCustomers(currentPage);
+
 function notification(reservationId) {
     window.location.href = `/api/v1/common/notification?id=${reservationId}`;
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-    loadCustomers(currentPage);
+
 });
 </script>
 
