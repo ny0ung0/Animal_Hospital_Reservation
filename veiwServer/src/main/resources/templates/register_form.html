@@ -92,15 +92,15 @@
 						</div>
 						<input type="text" name="nickname" id="nickname"
 							class="form-control"  oninput="nicknameCheckReset()">
+							
 					</div>
 				</div>
+				<div id="nicknameResult"></div>
 				<input type="hidden" name="role" value="ROLE_USER"> <input
 					type="button" value="회원가입" class="btn btn-main"
 					onclick="joinUser()">
-				<div id="nicknameResult"></div>
-				<br> <a href="/login_form">로그인</a>
 			</div>
-
+			<br>
 
 			<div id="hospital" style="display: none;">
 
@@ -700,10 +700,12 @@
 				
 				  <div class="mb-3">
             <div class="inputBox">
-                <div class="d-flex">
-                    <label class="form-label">수의사 이름</label> 
+                <div class="mb-3">
+                    <label class="form-label">수의사 이름</label>
+                    <div class="d-flex">
                     <input type="text" class="form-control" name="doctorName">
                     <input type="button" class="btn btn-main ms-auto" onclick="addDoctor()" value="추가">
+                    </div>
                 </div>
                 <div id="doctorResult"></div>
             </div>
@@ -729,15 +731,18 @@
 			<div class="mb-3">
 				<label class="form-label">로고 이미지</label> 
 				<input type="file" name="file" class="form-control">
+				
 			</div>
 			
 
-				<div class="mb-3"></div>
-				 <input
+				<div class="mb-3">
+				<input
 					type="button" value="회원가입" class="btn btn-main" id="hospitalJoinButton"
-					onclick="joinHospital()">
-				<div id="nicknameResult"></div>
-				<br> <a href="/login_form">로그인</a>
+					onclick="joinHospital()"><br>
+				</div>
+				 
+				
+				
 			</div>
 		</form>
 
