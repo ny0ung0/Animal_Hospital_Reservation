@@ -70,6 +70,7 @@
 			<div class="mb-3">
 				<label class="form-label">전화번호</label> <input type="text"
 					name="phone" class="form-control">
+					<div>전화번호는 숫자와 "-"만 이용해 주세요</div>
 			</div>
 			<div class="mb-3">
 				<label class="form-label">이메일</label> <input type="text"
@@ -967,6 +968,31 @@
 	                frm.password.focus();
 	                return false;
 	            }
+	            //전화번호 유효성 검사
+	            let phone =frm.phone.value.trim();
+	            phone = phone.replace(/\s+/g, '');
+	            const pCheck = /^[0-9-]+$/;
+	           	const result =pCheck.test(phone);
+	            //alert("phone:" + phone);
+	            if(phone.includes("-")){
+	            	if((!result) || phone.length<11 || phone.length>13 ||(phone.length==11 && !phone.startsWith("02"))){
+		            	alert("전화번호가 잘못입력 되었습니다.");
+		            	return false;
+		            }else if(phone.startsWith("02") && phone.length>12){
+		            	alert("전화번호가 잘못입력 되었습니다.");
+		            	return false;
+		            }
+	            }else{
+	            	if((!result) || phone.length<9 || phone.length>11 ||(phone.length==9 && !phone.startsWith("02"))){
+		            	alert("전화번호가 잘못입력 되었습니다.");
+		            	return false;
+		            }else if(phone.startsWith("02") && phone.length>10){
+		            	alert("전화번호가 잘못입력 되었습니다.");
+		            	return false;
+		            }
+	            }
+	            
+	            
 	            
 	            
 	            return true;
@@ -1045,7 +1071,7 @@
 		//병원 회원가입
 		function joinHospital(){
 			//alert("조인들어옴");
-			console.log(endHourCheck);
+			//console.log(endHourCheck);
 			
 			//alert(JSON.stringify(gatherFormData()));
 			
@@ -1141,7 +1167,29 @@
                 
                 return false;
             }
-            
+            //전화번호 유효성 검사
+            let phone =frm.phone.value.trim();
+            phone = phone.replace(/\s+/g, '');
+            const pCheck = /^[0-9-]+$/;
+           	const result =pCheck.test(phone);
+            //alert("phone:" + phone);
+            if(phone.includes("-")){
+            	if((!result) || phone.length<11 || phone.length>13 ||(phone.length==11 && !phone.startsWith("02"))){
+	            	alert("전화번호가 잘못입력 되었습니다.");
+	            	return false;
+	            }else if(phone.startsWith("02") && phone.length>12){
+	            	alert("전화번호가 잘못입력 되었습니다.");
+	            	return false;
+	            }
+            }else{
+            	if((!result) || phone.length<9 || phone.length>11 ||(phone.length==9 && !phone.startsWith("02"))){
+	            	alert("전화번호가 잘못입력 되었습니다.");
+	            	return false;
+	            }else if(phone.startsWith("02") && phone.length>10){
+	            	alert("전화번호가 잘못입력 되었습니다.");
+	            	return false;
+	            }
+            }
             
             return true;
         }
