@@ -43,7 +43,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 			+ "ON re.coupon_id = c.id\r\n"
 			+ "LEFT JOIN doctor d\r\n"
 			+ "ON re.doctor_id = d.id\r\n"
-			+ "WHERE re.user_id = :userId order by re.reservation_datetime desc;", nativeQuery = true )
+			+ "WHERE re.user_id = :userId order by re.id desc;", nativeQuery = true )
 	List<UserReservationDto> findReserListByUserId(@Param("userId")Long userId);
 
 	List<Reservation> findByHospitalId(Long memberId);
