@@ -171,6 +171,10 @@ function saveData() {
 		.then(response => response.json())
 		.then(data => {
 			if (isFullyGrown) {
+				alertMessage = `펫 성장이 완료되어 500포인트를 지급합니다 !`;
+				if (alertMessage) {
+					setTimeout(() => alert(alertMessage), 100); // 100ms 지연 후 알림 표시
+				}
 				loadData() // 새로운 펫 데이터를 로드
 			} else {
 				console.log(data)
@@ -196,10 +200,10 @@ function checkAndDailyTickets() {
 		lastGivenTimeDay = now.toISOString()
 		alertMessage = `일일 출석 티켓을 얻었습니다!`;
 		saveData()
-	updateText()
-	if (alertMessage) {
-		setTimeout(() => alert(alertMessage), 100); // 100ms 지연 후 알림 표시
-	}
+		updateText()
+		if (alertMessage) {
+			setTimeout(() => alert(alertMessage), 100); // 100ms 지연 후 알림 표시
+		}
 	};
 }
 function checkAndGiveTickets() {
