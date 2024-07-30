@@ -624,9 +624,10 @@
                         <input type="button" class="btn btn-main ms-auto" onclick="addDoctor()" value="추가">
                     </div>
                     <div id="doctorResult"></div>
+                    <input type="text" id="doctorNamesField" name="doctorNamesField">
                 </div>
             </div>
-            <input type="hidden" id="doctorNamesField" name="doctorNamesField">
+            
             <div class="mb-3">
                 <label class="form-label">제휴포인트 사용 여부</label><br> 
                 <input type="radio" th:name="partnership" id="partnershipTrue" th:value="true"><label for="partnershipTrue">포인트 사용 제휴 가입</label><br>
