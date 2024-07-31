@@ -55,8 +55,8 @@ document.addEventListener('DOMContentLoaded', function() {
                                 daysOfWeek: [dayMap[day]],
                                 allDay: true,
                                 display: 'background',
-                                backgroundColor: '#cccccc', // Gray color for non-working days
-                                textColor: '#ffffff' // White text color
+                                backgroundColor: '#cccccc',
+                                textColor: '#ffffff' 
                             });
                             continue;
                         }
@@ -108,7 +108,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     const doctorName = document.querySelector("#doctorName").value;
                     var calendarEl = document.getElementById('calendar');
                     var calendar = new FullCalendar.Calendar(calendarEl, {
-                        // Tool Bar 목록 document : https://fullcalendar.io/docs/toolbar
+                        
                         headerToolbar: {
                             left: 'prevYear,prev,next,nextYear today',
                             center: 'title',
@@ -116,9 +116,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         },
                         locale: "ko",
                         events: events,
-                        //selectable: true,
-                        //selectMirror: true,
-
+                        
                         // 날짜 클릭 이벤트 설정
                         dateClick: function(info) {
                             var clickedDate = new Date(info.dateStr); // 클릭한 날짜
