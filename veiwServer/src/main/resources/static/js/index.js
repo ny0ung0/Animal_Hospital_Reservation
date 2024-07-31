@@ -153,6 +153,8 @@ xhttp.setRequestHeader("Authorization", localStorage.getItem("token"));
 xhttp.setRequestHeader("role", localStorage.getItem("role"));
 xhttp.send();
 
+let vetToSearch={};
+
 function searchHospitals(center, hospitals, map) {
     // 기존 마커와 병원 리스트 초기화
     markers.forEach(marker => marker.setMap(null));
@@ -186,8 +188,7 @@ function searchHospitals(center, hospitals, map) {
         return;
     }
 
-    // 필터링된 병원 마커 추가 및 params 설정
-    let params = new URLSearchParams();
+    // 필터링된 병원 마커 추가 및 검색해야할 병원데이터 json에 담기 설정
     Promise.all(nearbyHospitals.map(hospital => {
         return new Promise((resolve, reject) => {
             let x = parseFloat(hospital["좌표정보(x)"]);
@@ -207,19 +208,20 @@ function searchHospitals(center, hospitals, map) {
                 var result = response.v2; // 검색 결과의 컨테이너
                 var addrs = result.address.jibunAddress.split(" ");
                 var addr = addrs[0] + "//" + addrs[1];
-                params.append(hospital["사업장명"], addr);
+                vetToSearch[hospital["사업장명"]] = addr;
+                
                 resolve();
             });
         });
     })).then(() => {
         // All reverse geocodes are done
-        getMemVetList(params, map, center);
+        getMemVetList(map, center);
     }).catch(error => {
         console.error('Reverse geocoding error:', error);
     });
 }
 
-function getMemVetList(params, map, currentPos) {
+function getMemVetList(map, currentPos) {
     const xhttp = new XMLHttpRequest();
     xhttp.onload = function() {
 		responseCheck(this);
@@ -249,12 +251,13 @@ function getMemVetList(params, map, currentPos) {
         }
         addHospitalToList(map, currentPos);
     };
-    const url = "http://localhost:9001/api/v1/near-vet-list?" + params.toString();
-    xhttp.open("GET", url, true);
+    const url = "http://localhost:9001/api/v1/near-vet-list";
+    xhttp.open("POST", url, true);
     xhttp.setRequestHeader("MemberId", localStorage.getItem("MemberId"));
     xhttp.setRequestHeader("Authorization", localStorage.getItem("token"));
     xhttp.setRequestHeader("role", localStorage.getItem("role"));
-    xhttp.send();
+    xhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    xhttp.send(JSON.stringify(vetToSearch));
 }
 
 function addHospitalToList(map, currentPos) {

@@ -34,12 +34,16 @@ public class VetListController_jia {
 	private VetListService vetListService;
     @Autowired
     private SimpMessagingTemplate template;
+    List<Member> mem = new ArrayList<>();
     
-    
-	@Scheduled(fixedRate = 60000)
+	//@Scheduled(fixedRate = 10000)
     public void sendAvailableHospitals() {
+		System.out.println("스케줄러 입장,,,");
         LocalDateTime now = LocalDateTime.now();
-        List<Member> availableHospitals = vetListService.getAvailableHospitals(now);
+        System.out.println(mem);
+        List<Member> availableHospitals = vetListService.getAvailableHospitals(mem, now);
+        
+        System.out.println(availableHospitals);
         template.convertAndSend("/topic/available-hospitals", availableHospitals);
 	}
 	
@@ -59,8 +63,8 @@ public class VetListController_jia {
 		return ResponseEntity.ok(memList);
 	}
 	
-	@GetMapping("/near-vet-list")
-	public ResponseEntity<List<MemVetDto>> nearVetList(@RequestParam Map<String, String> hosList, HttpServletRequest request) {
+	@PostMapping("/near-vet-list")
+	public ResponseEntity<List<MemVetDto>> nearVetList(@RequestBody Map<String, String> hosList, HttpServletRequest request) {
 		List<MemVetDto> memList = this.convertingAddrs(hosList, this.getUserId(request), vetListService, true);
 		
 		return ResponseEntity.ok(memList);
@@ -68,8 +72,6 @@ public class VetListController_jia {
 	
 	@PostMapping("/keyword-vet-list")
 	public ResponseEntity<List<MemVetDto>> keywordVetList(@RequestBody Map<String, String> hosList, HttpServletRequest request) {
-		System.out.println("컨트롤러 입장");
-		System.out.println(hosList);
 		List<MemVetDto> memList = this.convertingAddrs(hosList, this.getUserId(request), vetListService, false);
 		
 		return ResponseEntity.ok(memList);
@@ -105,11 +107,12 @@ public class VetListController_jia {
 
         hosList.forEach((key, value) -> {
             if (isNearVet) {
-            System.out.println("주변병원");
                 List<MemVetDto> list = vetListService.getMemberVetList(value + "%", userId);
+                List<Member> list1 = vetListService.getMemberVetList1(value + "%", userId);
                 memList.addAll(list);
+                mem.addAll(list1);
+                
             } else {
-            	System.out.println("키워드검색병원");
             	System.out.println(key + "    " + value );
                 List<MemVetDto> list = vetListService.getMemberVet(key, value.split("//")[0] + "//" + value.split("//")[1] + "%", userId);
                 memList.addAll(list);

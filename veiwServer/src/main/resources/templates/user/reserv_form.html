@@ -136,7 +136,7 @@ function submitForm(e){
 	        let body = `${reservedate}일 예약이 들어왔습니다.`;
 	        let receiverId = hosId;
 	        sendTokenToMessageReceiver(receiverId, title, body);
-	        location.href = "/user/reserv_list";
+	        location.href = "/user/reserv_list?btn=wait";
 	     }else if(this.status == 409){
  			 //배경색 다시 바꿔주기
  			 document.querySelector("span[value='" + selectedTime + "']").style.backgroundColor = ""; 

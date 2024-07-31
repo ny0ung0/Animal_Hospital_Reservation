@@ -32,13 +32,22 @@ public class VetListService {
     @Autowired
     private UnavailableTimeRepository unavailableTimeRepo;
 
-    public List<Member> getAvailableHospitals(LocalDateTime now) {
+
+    public List<Member> getAvailableHospitals(List<Member> mem, LocalDateTime now) {
         LocalDate date = now.toLocalDate();
         LocalTime time = now.toLocalTime();
-        List<Member> allHospitals = memRepo.findAll();
-
-        return allHospitals.stream()
+        System.out.println("가능한 병원에서 시간만 빼주기 입장,,,");
+        
+        System.out.println(mem.size());
+//        mem.forEach(hospital->{
+//        	System.out.println(i +" -> "+ DateTimeUtil.getBusinessHours(hospital.getBusinessHours()));
+//        	i++;
+//        });
+        
+        return mem.stream()
                 .filter(hospital -> {
+                	
+                	System.out.println();
                     List<UnavailableTime> unavailableTimes = unavailableTimeRepo.findByHospitalAndDateAndTimeGreaterThanEqual(hospital, date, time);
                     return unavailableTimes.isEmpty();
                 })
@@ -48,6 +57,11 @@ public class VetListService {
     public List<MemVetDto> getMemberVetList(String address, Long userId) {
         List<Member> result = memRepo.findMemberVetList(address);
         return createMemVetDtoList(result, userId);
+    }
+    
+    public List<Member> getMemberVetList1(String address, Long userId) {
+        List<Member> result = memRepo.findMemberVetList(address);
+        return result;
     }
 
     public String isBookmarked(Long hosId, Long userId, Boolean isBookmarked) {
