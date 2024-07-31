@@ -1,3 +1,36 @@
+document.addEventListener('DOMContentLoaded', (event) => {
+    const hospitalList = document.getElementById('hospital-list');
+    const socket = new SockJS('http://localhost:9001/api/v1/ws');
+    const stompClient = Stomp.over(socket);
+
+    stompClient.connect({}, (frame) => {
+        console.log('Connected: ' + frame);
+        stompClient.subscribe('/topic/available-hospitals', (message) => {
+            const availableHospitals = JSON.parse(message.body);
+            hospitalList.innerHTML = '';
+            console.log(availableHospitals);
+            availableHospitals.forEach((hospital) => {
+                const listItem = document.createElement('li');
+                listItem.innerHTML = `<h2>${hospital.name}</h2>
+                                      <p>${hospital.address}</p>
+                                      <p>Rating: ${hospital.rating}</p>`;
+                hospitalList.appendChild(listItem);
+            });
+        });
+    }, (error) => {
+        console.error('WebSocket connection error:', error);
+    });
+
+    socket.onclose = () => {
+        console.log('WebSocket connection closed');
+    };
+
+    socket.onerror = (error) => {
+        console.error('WebSocket error:', error);
+    };
+});
+
+
 // EPSG 코드 정의
 proj4.defs("EPSG:2097", "+proj=tmerc +lat_0=38 +lon_0=127.0028902777778 +k=1 +x_0=200000 +y_0=500000 +ellps=bessel +towgs84=-146.43,507.89,681.46 +units=m +no_defs");
 proj4.defs("EPSG:4326", "+proj=longlat +datum=WGS84 +no_defs");
@@ -120,6 +153,8 @@ xhttp.setRequestHeader("Authorization", localStorage.getItem("token"));
 xhttp.setRequestHeader("role", localStorage.getItem("role"));
 xhttp.send();
 
+let vetToSearch={};
+
 function searchHospitals(center, hospitals, map) {
     // 기존 마커와 병원 리스트 초기화
     markers.forEach(marker => marker.setMap(null));
@@ -153,8 +188,7 @@ function searchHospitals(center, hospitals, map) {
         return;
     }
 
-    // 필터링된 병원 마커 추가 및 params 설정
-    let params = new URLSearchParams();
+    // 필터링된 병원 마커 추가 및 검색해야할 병원데이터 json에 담기 설정
     Promise.all(nearbyHospitals.map(hospital => {
         return new Promise((resolve, reject) => {
             let x = parseFloat(hospital["좌표정보(x)"]);
@@ -174,19 +208,20 @@ function searchHospitals(center, hospitals, map) {
                 var result = response.v2; // 검색 결과의 컨테이너
                 var addrs = result.address.jibunAddress.split(" ");
                 var addr = addrs[0] + "//" + addrs[1];
-                params.append(hospital["사업장명"], addr);
+                vetToSearch[hospital["사업장명"]] = addr;
+                
                 resolve();
             });
         });
     })).then(() => {
         // All reverse geocodes are done
-        getMemVetList(params, map, center);
+        getMemVetList(map, center);
     }).catch(error => {
         console.error('Reverse geocoding error:', error);
     });
 }
 
-function getMemVetList(params, map, currentPos) {
+function getMemVetList(map, currentPos) {
     const xhttp = new XMLHttpRequest();
     xhttp.onload = function() {
 		responseCheck(this);
@@ -216,12 +251,13 @@ function getMemVetList(params, map, currentPos) {
         }
         addHospitalToList(map, currentPos);
     };
-    const url = "http://localhost:9001/api/v1/near-vet-list?" + params.toString();
-    xhttp.open("GET", url, true);
+    const url = "http://localhost:9001/api/v1/near-vet-list";
+    xhttp.open("POST", url, true);
     xhttp.setRequestHeader("MemberId", localStorage.getItem("MemberId"));
     xhttp.setRequestHeader("Authorization", localStorage.getItem("token"));
     xhttp.setRequestHeader("role", localStorage.getItem("role"));
-    xhttp.send();
+    xhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    xhttp.send(JSON.stringify(vetToSearch));
 }
 
 function addHospitalToList(map, currentPos) {
