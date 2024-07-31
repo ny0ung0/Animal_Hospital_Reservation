@@ -15,3 +15,11 @@
 .text-bg-cancle{
 	background-color: rgb(100, 197, 158) !important;
 }
+
+.select-box{
+	width:180px;
+}
+
+.search-box{
+	width:320px;
+}

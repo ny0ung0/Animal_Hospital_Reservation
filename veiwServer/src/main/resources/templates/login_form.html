@@ -19,25 +19,34 @@
 </head>
 <body class="d-flex flex-column h-100">
 	<div th:replace="~{user/header :: header}"></div>
-	<div class="container-xl">
-		<h1>로그인</h1>
-		<div id="user">
-			<form id="frmUser">
-				<input type="hidden" name="role" value="ROLE_USER">
-				<div class="mb-3">
-					<label class="form-label">아이디</label>
-					<input type="text" name="username" class="form-control">
-				</div>
-				<div class="mb-3">
-					<label class="form-label">비밀번호</label> 
-					<input type="password" name="password" class="form-control" onkeydown="if (event.key === 'Enter') loginUser()">
-				</div>
-				
-				
-				<input type="button" value="로그인" class="btn btn-main" onclick="loginUser()">
-				<br><a href="/register_form" >회원가입</a>
-			</form>
+	<div class="container-xl ">
+	<div >
+		<div style='max-width: 600px;  margin:0 auto;' >
+		
+			<h1 class="mt-3">로그인</h1>
+			<div id="user" >
+				<form id="frmUser">
+					<input type="hidden" name="role" value="ROLE_USER">
+					<div class="mb-3">
+						<label class="form-label">아이디</label>
+						<input type="text" name="username" class="form-control">
+					</div>
+					<div class="mb-3">
+						<label class="form-label">비밀번호</label> 
+						<input type="password" name="password" class="form-control" onkeydown="if (event.key === 'Enter') loginUser()">
+					</div>
+					
+					
+					<br>
+					<div class="d-grid gap-2">
+					<input type="button" value="로그인" class="btn btn-main" onclick="loginUser()">
+					</div>
+					
+					<br><a href="/register_form" class="fw-bolder link-dark link-offset-2 link-underline link-underline-opacity-0">회원가입</a>
+				</form>
+			</div>
 		</div>
+	</div>
 	</div>
 	<div id="result"></div>
 	<button onclick="tokenTest()" style="display : none;">토큰테스트</button>

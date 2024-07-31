@@ -1,52 +1,22 @@
-<!DOCTYPE html>
-<html class="h-100" xmlns:th="http://www.thymeleaf.org">
-<head>
-<meta charset="UTF-8">
-<title>견강할고양</title>
-<meta name="viewport"
-	content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
-<script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-<link href="/css/style.css" rel="stylesheet">
-<link href="/css/chatroom.css" rel="stylesheet">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Jua&display=swap" rel="stylesheet">
-</head>
-
-<body class="d-flex flex-column h-100">
-<div th:replace="~{hospital/header :: header}"></div>
-
-<div class="container-xl d-flex flex-row">
-    <div id="chatList" class="col-md-4 list-group"></div>
-    <div id="chatRoom" class="col-md-8">
-        <h1 id="hospitalName" class="mt-3 mt-md-5 mb-3 mb-md-3">00동물병원 채팅방</h1>
-        <hr>
-        <div id="chat-container" class="d-flex flex-column">
-            <div id="chat-box">
-            </div>
-            <form id="chat-form">
-                <div id="inputBox" class="form-group">
-                    <input type="text" id="inputMsg" class="form-control" placeholder="메시지를 입력하세요...">
-                    <div class="input-group-append">
-                        <button type="submit" class="btn btn-outline-secondary">💬</button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-
-<div th:replace="~{user/footer :: footer}"></div>
-<script src="https://momentjs.com/downloads/moment.js"></script>
-<script th:inline="javascript">
+    //기존 코드
+    
     const chatRoomId = "[[${chatRoomId}]]";
     const token = localStorage.getItem("token");
     const MemberId = localStorage.getItem("MemberId");
-    var receiver = null; 
+    var receiver = "[[${hospitalId}]]"; 
 
+    console.log("병원 id 출력 : " + receiver);
+    console.log("챗룸 id 출력 : " + chatRoomId);
+	
 
+    //const isNewChat = !chatRoomId || chatRoomId === "null";
+	
+	//새로운 채팅인지 기존 채팅내역이 있는지 확인하는 코드
+    if (receiver != null && receiver !== "null") {
+        console.log("새로운 채팅입니다. 웹소켓을 바로 연결합니다.");
+        connectWebSocket(receiver);
+    } else {
+    	console.log("새로운 채팅이 아닙니다. 기존 채팅 내역을 불러옵니다.");
         $(document).ready(function() {
             $.ajax({
                 url: 'http://localhost:9001/chat/' + chatRoomId,
@@ -57,44 +27,44 @@
                     'MemberId': MemberId
                 },
                 success: function(response) {
-                	const hospitalName = response[0].chatRoom.user.name;
-                    $('#hospitalName').text(hospitalName + " 고객님");
+//                     const receivedContainer = $('.received-container');
+//                     const sentContainer = $('.sent-container');
+//                     receivedContainer.empty();
+//                     sentContainer.empty();
+					const hospitalName = response[0].chatRoom.hospital.hospitalName;
+                    $('#hospitalName').text(hospitalName);
 					const chatBox = $('#chat-box');
-
+					
                     // 메시지들을 날짜 순으로 정렬
                     response.sort((a, b) => {
 		                const dateA = new Date(a.sendDate[0], a.sendDate[1] - 1, a.sendDate[2], a.sendDate[3], a.sendDate[4], a.sendDate[5], a.sendDate[6] / 1000);
 		                const dateB = new Date(b.sendDate[0], b.sendDate[1] - 1, b.sendDate[2], b.sendDate[3], b.sendDate[4], b.sendDate[5], b.sendDate[6] / 1000);
 		                return dateA - dateB; // 오래된 것이 위로 오도록 오름차순 정렬
 		            });
-                    
-                    console.log("서버 응답 데이터:", response);
-                    
-              
+					
                     let finalReceiver = null;
                     const chatRoomInfo = response[0]; 
                     console.log("chatroominfo : " + chatRoomInfo.sender.id + chatRoomInfo.receiver.id);
-
-
                     
-					
                     if (MemberId == chatRoomInfo.receiver.id) {
                         finalReceiver = chatRoomInfo.sender.id;
                     } else {
                         finalReceiver = chatRoomInfo.receiver.id;
                     }
-
+                    
+                    
                     response.forEach(chat => {
                         if (chat.message === "채팅이 연결되었습니다.") {
                             return;
                         }
-
+						
+                                                
                         const messageBox = $('<div class="messageBox"></div>');
-                        const messageElement = $('<div class="text-message"></div>');
                         const metaContainer = $('<div class="meta-container"></div>');
+                        const messageElement = $('<div class="text-message"></div>');
                         const timestampElement = $('<div class="timestamp"></div>');
                         const isReadElement = $('<div class="is-read"></div>');
-
+                        
                         const receiveImage = $('<img src="/images/chat_cat2-removebg-preview.png" class="receiveImage">');
 
                         var sendDateArray = chat.sendDate;
@@ -134,25 +104,23 @@
      
                         timestampElement.text(formattedDate);
 
+ 
                         if (chat.isRead === false) {
                             isReadElement.text("1");
                         }else{
                         	isReadElement.text(" ");
                         }
+                        
 
                         metaContainer.append(timestampElement);
                         metaContainer.append(isReadElement);
+                        
                         messageElement.text(chat.message);
 
-                        //receiver = chat.sender.id; 
-                        
-                        /* if (chat.sender.id !== MemberId) {
-                            receiver = chat.sender.id;
-                        }
-                        console.log("receiver 출력: " + receiver);       */           
-   
+                        //receiver = chat.receiver.id; // AJAX 응답에서 receiver를 설정합니다.
 
-                        
+                        //console.log("receiver 출력: " + receiver);
+
                         if (chat.sender.id == MemberId || chat.sender.id === null) {
                             messageElement.addClass('sentMsg');
                             messageBox.addClass('sentBox');
@@ -172,7 +140,7 @@
 
                     $('#chat-box').scrollTop($('#chat-box').prop("scrollHeight"));
 
-                    
+                    // 웹소켓 연결을 여기서 설정합니다.
                     connectWebSocket(finalReceiver);
                 },
                 error: function(xhr, status, error) {
@@ -182,69 +150,71 @@
                     responseCheck(jqXHR);
                 } 
             });
-            
-            $.ajax({
-                url: 'http://localhost:9001/chatList',
-                type: 'GET',
-                headers: {
-                    'Authorization': token,
-                    'MemberId': MemberId
-                },
-                success: function(response) {
-                    console.log(response);
-                    var chatList = $("#chatList");
-                    chatList.empty();  // 기존 내용을 비웁니다.
+        });
+        
+        $.ajax({
+            url: 'http://localhost:9001/chatList',
+            type: 'GET',
+            headers: {
+                'Authorization': token,
+                'MemberId': MemberId
+            },
+            success: function(response) {
+                console.log(response);
+                var chatList = $("#chatList");
+                chatList.empty();  // 기존 내용을 비웁니다.
 
-                    if (response.length > 0) {
-                        // lastMessageSendDate를 기준으로 정렬 (최신순)
-                        response.sort((a, b) => {
-                            return new Date(b.lastMessageSendDate) - new Date(a.lastMessageSendDate);
-                        });
+                if (response.length > 0) {
+                    // lastMessageSendDate를 기준으로 정렬 (최신순)
+                    response.sort((a, b) => {
+                        return new Date(b.lastMessageSendDate) - new Date(a.lastMessageSendDate);
+                    });
 
-                        for (var i = 0; i < response.length; i++) {
-                            var chat = response[i];
+                    for (var i = 0; i < response.length; i++) {
+                        var chat = response[i];
 
-                            // moment.js를 사용하여 날짜 형식을 변환합니다.
-                            var formattedDate = moment(chat.lastMessageSendDate).format('YYYY-MM-DD A hh:mm');
+                        // moment.js를 사용하여 날짜 형식을 변환합니다.
+                        var formattedDate = moment(chat.lastMessageSendDate).format('YYYY-MM-DD A hh:mm');
 
-                            var listItem = `
-                                <div class="chatListItem list-group-item list-group-item-action">
-                                    <div class="d-flex w-100 justify-content-between">
-                                        <span class="mb-1">🐾 ${chat.userName} 고객님</span>
-                                        <small class="text-muted">마지막 채팅시간 <br> ${formattedDate}</small>
-                                    </div>
-                                    <span class="mb-1" style="text-align: left; display: block;">${chat.lastMessage}</span>
-                                    <button class="btn btn-outline-primary" onclick="chatLink(${chat.chatRoomId})">채팅하기</button>
+                        var listItem = `
+                            <div class="chatListItem list-group-item list-group-item-action">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <span class="mb-1">🏥 ${chat.hospitalName}</span>
+                                    <small class="text-muted">마지막 채팅시간 <br> ${formattedDate}</small>
                                 </div>
-                            `;
-                            chatList.append(listItem);
-
-                        }
+                                <span class="mb-1" style="text-align: left; display: block;">${chat.lastMessage}</span>
+                                <button class="btn btn-outline-primary" onclick="chatLink(${chat.chatRoomId})">채팅하기</button>
+                            </div>
+                        `;
+                        chatList.append(listItem);
                     }
-                },
-                error: function(xhr, status, error) {
-                    console.error('채팅목록 불러오기 에러발생', error);
-                },
-                complete: function(jqXHR, textStatus) {
-                    responseCheck(jqXHR);
-                } 
-            });
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('채팅목록 불러오기 에러발생', error);
+            },
+            complete: function(jqXHR, textStatus) {
+                responseCheck(jqXHR);
+            } 
         });
+    }
     
-        function chatLink(chatRoomId) {
-        	  
-            localStorage.setItem('refreshNeeded', 'true');
-            window.location.href = '/user/chat/' + chatRoomId;
+    
+    function chatLink(chatRoomId) {
+  
+        localStorage.setItem('refreshNeeded', 'true');
+        window.location.href = '/user/chat/' + chatRoomId;
+    }
+    document.addEventListener('DOMContentLoaded', (event) => {
+    
+        if (localStorage.getItem('refreshNeeded') === 'true') {
+            localStorage.removeItem('refreshNeeded');
+            location.reload();
         }
-        document.addEventListener('DOMContentLoaded', (event) => {
-        
-            if (localStorage.getItem('refreshNeeded') === 'true') {
-                localStorage.removeItem('refreshNeeded');
-                location.reload();
-            }
-        });
-        
-        
+    });
+	
+	
+	//웹소켓 연결 함수
     function connectWebSocket(receiver) {
         const sender = localStorage.getItem('MemberId');
         const socket = new WebSocket("ws://localhost:9001/ws/chat");
@@ -263,8 +233,8 @@
 
         socket.onmessage = function(event) {
             const chatBox = $('#chat-box');
+            
             const message = JSON.parse(event.data);
-
             const messageBox = $('<div class="messageBox"></div>');
             const messageElement = $('<div class="text-message"></div>');
             const metaContainer = $('<div class="meta-container"></div>');
@@ -277,14 +247,14 @@
             );
 
             const timestamp = !isNaN(localDate) ? localDate.toLocaleString('ko-KR') : 'Invalid Date';
-            timestampElement.text(timestamp); // jQuery의 text() 메서드 사용
+            timestampElement.text(timestamp);
 
-            messageElement.text(message.message); // jQuery의 text() 메서드 사용
-            metaContainer.append(timestampElement); // jQuery의 append() 메서드 사용
+            messageElement.text(message.message);
+            metaContainer.append(timestampElement);
 
             if (message.isRead === false) {
                 isReadElement.text("1");
-                metaContainer.append(isReadElement); // jQuery의 append() 메서드 사용
+                metaContainer.append(isReadElement);
             }
 
             if (message.sender.id == sender) {
@@ -292,22 +262,35 @@
                 messageBox.addClass('sentBox');
                 messageBox.append(messageElement);
                 messageBox.append(metaContainer);
-                chatBox.append(messageBox);  // jQuery의 append() 메서드 사용
+                chatBox.append(messageBox);  // jQuery append 사용
             } else {
                 messageElement.addClass('receivedMsg');
                 messageBox.addClass('receivedBox');
                 messageBox.append(messageElement);
                 messageBox.append(metaContainer);
-                chatBox.append(messageBox);  // jQuery의 append() 메서드 사용
+                chatBox.append(messageBox);  // jQuery append 사용
             }
 
             chatBox.scrollTop(chatBox.prop("scrollHeight"));
-            console.log(message.sender.id + " : " + message.message);
         };
 
         socket.onclose = function() {
             console.log("서버 연결 해제");
         };
+        
+        
+        function enterChatRoom(chatRoomId, userId) {
+            if (socket.readyState === WebSocket.OPEN) {
+                socket.send(JSON.stringify({
+                    type: 'read',
+                    chatRoomId: chatRoomId,
+                    MemberId: MemberId
+                }));
+            } else {
+                console.error('WebSocket 연결이 아직 열려 있지 않습니다.');
+            }
+        }
+        
 
         document.getElementById('chat-form').addEventListener('submit', function(event) {
             event.preventDefault();
@@ -321,8 +304,3 @@
             document.getElementById('inputMsg').value = '';
         });
     }
-</script>
-    
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-</body>
-</html>

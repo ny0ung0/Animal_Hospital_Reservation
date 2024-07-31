@@ -46,7 +46,10 @@ public class JoinService {
 		
 		member.setName(memberDto.getName());
 		member.setAddress(memberDto.getAddress());
-		member.setPhone(memberDto.getPhone());
+		String pNum = memberDto.getPhone();
+		String pNumNew= phoneCheck(pNum);
+		member.setPhone(pNumNew);
+	
 		member.setNickname(memberDto.getNickname());
 		member.setRole(memberDto.getRole());
 		member.setEmail(memberDto.getEmail());
@@ -77,7 +80,10 @@ public class JoinService {
 	public void joinHospital(JoinHospitalDto joinHospitalDto) {
 		Member member = new Member();
 		member.setAddress(joinHospitalDto.getAddress());
-		member.setPhone(joinHospitalDto.getPhone());
+		String pNum = joinHospitalDto.getPhone();
+		String pNumNew= phoneCheck(pNum);
+		member.setPhone(pNumNew);
+		
 		member.setBusinessNumber(joinHospitalDto.getBusinessNumber());
 		member.setHospitalName(joinHospitalDto.getHospitalName());
 		member.setRepresentative(joinHospitalDto.getRepresentative());
@@ -160,7 +166,10 @@ public class JoinService {
 		}
 		Member member = memberRepository.findById(memberEditDto.getMemberId()).get();
 		member.setAddress(memberEditDto.getAddress());
-		member.setPhone(memberEditDto.getPhone());
+		String pNum = memberEditDto.getPhone();
+		String pNumNew= phoneCheck(pNum);
+		member.setPhone(pNumNew);
+		
 		member.setEmail(memberEditDto.getEmail());
 		member.setName(memberEditDto.getName());
 		member.setNickname(memberEditDto.getNickname());
@@ -188,7 +197,10 @@ public class JoinService {
 				//비밀번호 잘 바뀌는지 확인 해야함!!!!!!!!
 			}
 			Member member = memberRepository.findById(memberEditDto.getMemberId()).get();
-			member.setPhone(memberEditDto.getPhone());
+			String pNum = memberEditDto.getPhone();
+			String pNumNew= phoneCheck(pNum);
+			member.setPhone(pNumNew);
+			
 			member.setEmail(memberEditDto.getEmail());
 			member.setRepresentative(memberEditDto.getRepresentative());
 			member.setBusinessHours(memberEditDto.getBusinessHours());
@@ -241,6 +253,33 @@ public class JoinService {
 			//List<String> newDoctors = memberEditDto.getDoctorNamesField().
 			
 			
+		}
+		
+		//전화번호 변환 함수
+		public String phoneCheck(String pNum) {
+			String pNumNew=pNum; 
+			if(!pNum.contains("-")) {
+				System.out.println("전화번호 이프 들어옴");
+				if(pNum.length()==11) {
+					String part1 = pNum.substring(0, 3);  // "010"
+			        String part2 = pNum.substring(3, 7);  // "1111"
+			        String part3 = pNum.substring(7);     // "2222"
+			        pNumNew=part1 + "-" + part2 + "-" +part3;
+				}else if(pNum.length() <11) {
+					if(pNum.startsWith("02")) {
+						String part1 = pNum.substring(0, 2);  // "02"
+				        String part2 = pNum.substring(2, 5);  // "111"
+				        String part3 = pNum.substring(5);     // "2222"
+				        pNumNew=part1 + "-" + part2 + "-" +part3;
+					}else {
+						String part1 = pNum.substring(0, 3);  // "051"
+				        String part2 = pNum.substring(3, 6);  // "111"
+				        String part3 = pNum.substring(6);     // "2222"
+				        pNumNew=part1 + "-" + part2 + "-" +part3;
+					}
+				}
+			}
+			return pNumNew;
 		}
 	
 

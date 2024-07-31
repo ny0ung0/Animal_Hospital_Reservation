@@ -43,14 +43,14 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 			+ "ON re.coupon_id = c.id\r\n"
 			+ "LEFT JOIN doctor d\r\n"
 			+ "ON re.doctor_id = d.id\r\n"
-			+ "WHERE re.user_id = :userId order by re.reservation_datetime desc;", nativeQuery = true )
+			+ "WHERE re.user_id = :userId order by re.id desc;", nativeQuery = true )
 	List<UserReservationDto> findReserListByUserId(@Param("userId")Long userId);
 
 	List<Reservation> findByHospitalId(Long memberId);
 
 	List<Reservation> findByDoctorIdAndReservationDatetime(Long doctorId, LocalDateTime reservationDatetime);
 	
-	@Query(value = "SELECT r.*\r\n"
+	@Query(value = "SELECT r.id, r.created_at, r.updated_at, r.memo, r.points_used, r.rating, r.reservation_datetime, r.review, r.status, r.type, r.coupon_id, r.doctor_id, r.hospital_id, r.pet_id, r.user_id\r\n"
 			+ "FROM reservation r\r\n"
 			+ "JOIN (\r\n"
 			+ "    SELECT pet_id, MAX(reservation_datetime) AS max_reservation_datetime\r\n"
@@ -60,10 +60,90 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 			+ ") latest_reservations\r\n"
 			+ "ON r.pet_id = latest_reservations.pet_id\r\n"
 			+ "AND r.reservation_datetime = latest_reservations.max_reservation_datetime\r\n"
-			+ "WHERE r.hospital_id =:hospitalId ORDER BY r.reservation_datetime desc", nativeQuery = true)
-	Page<Reservation> findByCustomerList(Pageable pageable, @Param("hospitalId")Long hospitalId);
+			+ "ORDER BY r.reservation_datetime DESC", nativeQuery = true)
+	Page<Reservation> findByCustomerListLastDate(Pageable pageable, @Param("hospitalId")Long hospitalId);
 
 	@Query(value = "SELECT * FROM reservation WHERE pet_id =:petId AND hospital_id =:hospitalId ORDER BY reservation_datetime desc", nativeQuery = true)
 	Page<Reservation> findByPetAndHospitalId(Pageable pageable, @Param("petId")Long petId, @Param("hospitalId")Long hospitalId);
+	
+	
+	
+	@Query(value = "SELECT r.id, r.created_at, r.updated_at, r.memo, r.points_used, r.rating, r.reservation_datetime, r.review, r.status, r.type, r.coupon_id, r.doctor_id, r.hospital_id, r.pet_id, r.user_id\r\n"
+			+ "FROM reservation r\r\n"
+			+ "JOIN (\r\n"
+			+ "    SELECT pet_id, MAX(reservation_datetime) AS max_reservation_datetime\r\n"
+			+ "    FROM reservation\r\n"
+			+ "    WHERE hospital_id =:hospitalId\r\n"
+			+ "    GROUP BY pet_id\r\n"
+			+ ") latest_reservations\r\n"
+			+ "ON r.pet_id = latest_reservations.pet_id\r\n"
+			+ "AND r.reservation_datetime = latest_reservations.max_reservation_datetime\r\n"
+			+ "JOIN member m ON r.user_id = m.id\r\n"
+			+ "JOIN pet p ON r.pet_id = p.id\r\n"
+			+ "ORDER BY p.name ASC;", nativeQuery = true)
+	Page<Reservation> findByCustomerListFilterByName(Pageable pageable, @Param("hospitalId")Long hospitalId);
+	
+	@Query(value = "SELECT r.id, r.created_at, r.updated_at, r.memo, r.points_used, r.rating, r.reservation_datetime, r.review, r.status, r.type, r.coupon_id, r.doctor_id, r.hospital_id, r.pet_id, r.user_id\r\n"
+			+ "FROM reservation r\r\n"
+			+ "JOIN (\r\n"
+			+ "    SELECT pet_id, MAX(reservation_datetime) AS max_reservation_datetime\r\n"
+			+ "    FROM reservation\r\n"
+			+ "    WHERE hospital_id =:hospitalId\r\n"
+			+ "    GROUP BY pet_id\r\n"
+			+ ") latest_reservations\r\n"
+			+ "ON r.pet_id = latest_reservations.pet_id\r\n"
+			+ "AND r.reservation_datetime = latest_reservations.max_reservation_datetime\r\n"
+			+ "JOIN member m ON r.user_id = m.id\r\n"
+			+ "JOIN pet p ON r.pet_id = p.id\r\n"
+			+ "WHERE m.name LIKE %:keyword% OR m.phone LIKE %:keyword% OR p.name LIKE %:keyword%\r\n"
+			+ "ORDER BY p.name ASC", nativeQuery = true)
+	Page<Reservation> findByCustomerListFilterByNameKeyword(Pageable pageable, @Param("hospitalId")Long hospitalId, @Param("keyword") String keyword);
+	
+	@Query(value = "SELECT r.id, r.created_at, r.updated_at, r.memo, r.points_used, r.rating, r.reservation_datetime, r.review, r.status, r.type, r.coupon_id, r.doctor_id, r.hospital_id, r.pet_id, r.user_id\r\n"
+			+ "FROM reservation r\r\n"
+			+ "JOIN (\r\n"
+			+ "    SELECT pet_id, MAX(reservation_datetime) AS max_reservation_datetime\r\n"
+			+ "    FROM reservation\r\n"
+			+ "    WHERE hospital_id =:hospitalId\r\n"
+			+ "    GROUP BY pet_id\r\n"
+			+ ") latest_reservations\r\n"
+			+ "ON r.pet_id = latest_reservations.pet_id\r\n"
+			+ "AND r.reservation_datetime = latest_reservations.max_reservation_datetime\r\n"
+			+ "JOIN member m ON r.user_id = m.id\r\n"
+			+ "ORDER BY m.name ASC", nativeQuery = true)
+	Page<Reservation> findByCustomerListFilterByUserName(Pageable pageable, @Param("hospitalId")Long hospitalId);
+	
+	@Query(value = "SELECT r.id, r.created_at, r.updated_at, r.memo, r.points_used, r.rating, r.reservation_datetime, r.review, r.status, r.type, r.coupon_id, r.doctor_id, r.hospital_id, r.pet_id, r.user_id\r\n"
+			+ "FROM reservation r\r\n"
+			+ "JOIN (\r\n"
+			+ "    SELECT pet_id, MAX(reservation_datetime) AS max_reservation_datetime\r\n"
+			+ "    FROM reservation\r\n"
+			+ "    WHERE hospital_id =:hospitalId\r\n"
+			+ "    GROUP BY pet_id\r\n"
+			+ ") latest_reservations\r\n"
+			+ "ON r.pet_id = latest_reservations.pet_id\r\n"
+			+ "AND r.reservation_datetime = latest_reservations.max_reservation_datetime\r\n"
+			+ "JOIN member m ON r.user_id = m.id\r\n"
+			+ "JOIN pet p ON r.pet_id = p.id\r\n"
+			+ "WHERE m.name LIKE %:keyword% OR m.phone LIKE %:keyword% OR p.name LIKE %:keyword%\r\n"
+			+ "ORDER BY m.name ASC", nativeQuery = true)
+	Page<Reservation> findByCustomerListFilterByUserNameKeyword(Pageable pageable, @Param("hospitalId")Long hospitalId, @Param("keyword") String keyword);
+	
+	@Query(value = "SELECT r.id, r.created_at, r.updated_at, r.memo, r.points_used, r.rating, r.reservation_datetime, r.review, r.status, r.type, r.coupon_id, r.doctor_id, r.hospital_id, r.pet_id, r.user_id\r\n"
+			+ "FROM reservation r\r\n"
+			+ "JOIN (\r\n"
+			+ "    SELECT pet_id, MAX(reservation_datetime) AS max_reservation_datetime\r\n"
+			+ "    FROM reservation\r\n"
+			+ "    WHERE hospital_id =:hospitalId\r\n"
+			+ "    GROUP BY pet_id\r\n"
+			+ ") latest_reservations\r\n"
+			+ "ON r.pet_id = latest_reservations.pet_id\r\n"
+			+ "AND r.reservation_datetime = latest_reservations.max_reservation_datetime\r\n"
+			+ "JOIN member m ON r.user_id = m.id\r\n"
+			+ "JOIN pet p ON r.pet_id = p.id\r\n"
+			+ "WHERE m.name LIKE %:keyword% OR m.phone LIKE %:keyword% OR p.name LIKE %:keyword%\r\n"
+			+ "ORDER BY r.reservation_datetime DESC", nativeQuery = true)
+	Page<Reservation> findByCustomerListLastDateKeyword(Pageable pageable, @Param("hospitalId")Long hospitalId, @Param("keyword") String keyword);
+	
 	
 }
