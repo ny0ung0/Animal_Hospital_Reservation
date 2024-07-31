@@ -135,10 +135,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
 
                 function renderCalendar(events) {
-                   	//let id = 1;
                     var calendarEl = document.getElementById('calendar');
                     var calendar = new FullCalendar.Calendar(calendarEl, {
-                        // Tool Bar 목록 document : https://fullcalendar.io/docs/toolbar
+                      
                         headerToolbar: {
                             left: 'prevYear,prev,next,nextYear today',
                             center: 'title',
@@ -146,25 +145,16 @@ document.addEventListener('DOMContentLoaded', function() {
                         },
                         locale: "ko",
                         events: events,
-                        //selectable: true,
-                        //selectMirror: true,
 
                         // 날짜 클릭 이벤트 설정
-                        dateClick: function(info) {
-                           // var clickedDate = new Date(info.dateStr); // 클릭한 날짜
-                            var today = new Date();
-                            today.setHours(0, 0, 0, 0); // 시간 부분을 제거하여 날짜만 비교
+                        //dateClick: function(info) {
+                           // var today = new Date();
+                            //today.setHours(0, 0, 0, 0); // 시간 부분을 제거하여 날짜만 비교
 
-                            //if (clickedDate < today) {
-                            //    alert('과거 날짜는 선택할 수 없습니다.');
-                            //    return;
-                           // }
-
-                            var dayEvents = calendar.getEvents().filter(event => 
-                                event.startStr.split('T')[0] === info.dateStr && event.title === '영업 안함'
-                            );
-                            
-                        }
+                            //var dayEvents = calendar.getEvents().filter(event => 
+                            //    event.startStr.split('T')[0] === info.dateStr && event.title === '영업 안함'
+                            //);
+                       // }
                     });
 
                     calendar.render();

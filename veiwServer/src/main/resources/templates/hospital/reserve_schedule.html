@@ -206,7 +206,7 @@
     const token = localStorage.getItem("token");
     document.addEventListener('DOMContentLoaded', function () {
        
-    	let todayLastTime = [];
+    	
     	function formatDate(date) {
     	    const year = date.getFullYear();
     	    const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -217,6 +217,7 @@
     	    return `${year}-${month}-${day} ${hours}:${minutes}`;
     	}
 
+    	let todayLastTime = [];
     	let todayTime = new Date();
     	let formattedDate = formatDate(todayTime);
 
@@ -245,16 +246,16 @@
         	return response.json();
         })
         .then(data => {
-        	//console.log("data ", data);
+        	console.log("data ", data);
             data.forEach(unavTime => {
             	
                 // 서버에서 받은 UTC 시간을 Date 객체로 변환
 		        const utcDate = new Date(unavTime.date);
-               // console.log("utcDate", utcDate);
+               console.log("utcDate", utcDate);
 		        
 		        // UTC 시간을 로컬 시간대로 변환
 		        const localDate = new Date(utcDate.getTime() - new Date().getTimezoneOffset() * 60000);
-		        //console.log("localDate", localDate);
+		        console.log("localDate", localDate);
 		        
 		        // 로컬 날짜를 ISO 포맷의 문자열로 변환하여 날짜 부분만 추출
 		        const unavDate = localDate.toISOString().split('T')[0];
@@ -476,41 +477,41 @@
             });
         }
 
-        function saveUnavailableTime() {
-            const unavailableTimeComment = document.querySelector("#unavailableTimeCommentInput").value;
-            const checkedTimes = [];
-            const checkedElements = document.querySelectorAll(".btn-check:checked");
+//         function saveUnavailableTime() {
+//             const unavailableTimeComment = document.querySelector("#unavailableTimeCommentInput").value;
+//             const checkedTimes = [];
+//             const checkedElements = document.querySelectorAll(".btn-check:checked");
 
-            checkedElements.forEach(element => {
-                const time = element.dataset.time;
-                checkedTimes.push(time);
-            });
+//             checkedElements.forEach(element => {
+//                 const time = element.dataset.time;
+//                 checkedTimes.push(time);
+//             });
 
-            console.log("unavailableTimeComment " + unavailableTimeComment);
-            const timeData = {
-                comment: unavailableTimeComment,
-                date: selectedDate,
-                time: checkedTimes,
-                doctorId: doctorId,
-                hospitalId: memberId,
-            }
-            // 객체를 json으로 변경하기
-            const sendData = JSON.stringify(timeData);
-            console.log(sendData);
-            fetch("http://localhost:9001/api/v1/hospital/doctor/unavailable-time", {
-                method: "POST",
-                headers: {
-                    'Authorization': `${token}`,
-                    "Content-type": "application/json"
-                },
-                body: sendData
-            })
-            .then(response => response.text())
-            .then(data => {
-                console.log(data);
-            })
-            .catch(error => console.log(error));
-        }
+//             console.log("unavailableTimeComment " + unavailableTimeComment);
+//             const timeData = {
+//                 comment: unavailableTimeComment,
+//                 date: selectedDate,
+//                 time: checkedTimes,
+//                 doctorId: doctorId,
+//                 hospitalId: memberId,
+//             }
+//             // 객체를 json으로 변경하기
+//             const sendData = JSON.stringify(timeData);
+//             console.log(sendData);
+//             fetch("http://localhost:9001/api/v1/hospital/doctor/unavailable-time", {
+//                 method: "POST",
+//                 headers: {
+//                     'Authorization': `${token}`,
+//                     "Content-type": "application/json"
+//                 },
+//                 body: sendData
+//             })
+//             .then(response => response.text())
+//             .then(data => {
+//                 console.log(data);
+//             })
+//             .catch(error => console.log(error));
+//         }
     });
 
     function saveUnavailableTime() {
@@ -549,7 +550,6 @@
 
             })
             .catch(error => console.log(error));
-
     }
     
     function goBack(){

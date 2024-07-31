@@ -35,6 +35,28 @@
 				<canvas id="hospitalTypeChart"></canvas>
 			</div>
 		</div>
+		
+		<div class="col-12 mb-5">
+		<h5 class="mb-2 fw-bold">병원 가입 승인 대기 내역</h5>
+		<table class="table table-hover manager-table align-middle">
+			<thead>
+				<tr>
+					<td>#</td>
+					<td>아이디</td>
+					<td>병원명</td>
+					<td>주소</td>
+					<td>전화번호</td>
+					<td>사업자번호</td>
+					<td>포인트제휴여부</td>
+					<td>승인</td>
+				</tr>
+			</thead>
+			<tbody id="tbody-permit">
+				
+			</tbody>
+		</table>
+	</div>
+	
 	<div class="col-12">
 		<h5 class="mb-2 fw-bold">미답변 문의 내역</h5>
 		<table class="table table-hover manager-table align-middle">
@@ -92,6 +114,92 @@ function allList(){
 		
 	})
 	.catch(error => console.log(error));
+}
+
+
+fetch("http://localhost:9001/api/v1/manager/permit", {
+	method : "GET",
+	headers: {
+        'Authorization': `${token}`
+    }
+})
+.then(response =>{
+	fetchResponseCheck(response);
+	return response.text();
+})
+.then(data => {
+	const objs = JSON.parse(data);
+	//console.log(objs);
+	if(objs.length === 0){
+		document.querySelector("#tbody-permit").innerHTML = '<tr><td colspan="8">데이터가 없습니다.</td></tr>';
+	}else{
+	
+		let cnt = 1;
+		objs.forEach(obj =>{
+			let partnership = obj.partnership ? "Y" : "N"; 
+			
+			let address = obj.address.replace(/\/\//g, " ");
+			document.getElementById("tbody-permit").innerHTML += 
+				'<tr>'
+					+ '<td>' + cnt + '</td>'
+					+ '<td>' + obj.username + '</td>'
+					+ '<td>' + obj.hospitalName + '</td>'
+					+ '<td>' + address + '</td>'
+					+ '<td>' + obj.phone + '</td>'
+					+ '<td>' + obj.businessNumber + '</td>'
+					+ '<td>' + partnership + '</td>'
+					+ '<td>'
+						+ '<button class="btn btn-primary me-1" onclick="permitOk(event, ' + obj.id + ')">승인</button>'
+						+ '<button class="btn btn-danger" onclick="permitNo(event, ' + obj.id + ')">반려</button>'
+					+ '</td>'
+				+ '</tr>';
+				cnt++;
+		});
+	}
+	
+})
+.catch(error => console.log(error));
+
+function permitOk(event, id){
+	if(confirm("승인하시겠습니까?")){
+		fetch("http://localhost:9001/api/v1/manager/permit/" + id,{
+			method : "PUT",
+			headers: {
+		        'Authorization': `${token}`
+		    }
+		})
+		.then(response => response.text())
+		.then(data =>{
+			console.log(data);
+			alert("승인되었습니다.");
+			location.reload();
+		})
+		.catch(error => console.log(error));
+	}else{
+		alert("승인이 취소되었습니다.");
+	}
+	
+}
+
+function permitNo(event, id){
+	if(confirm("반려하시겠습니까?")){
+		fetch("http://localhost:9001/api/v1/manager/permit/" + id,{
+			method : "DELETE",
+			headers: {
+		        'Authorization': `${token}`
+		    }
+		})
+		.then(response => response.text())
+		.then(data =>{
+			console.log(data);
+			alert("반려되었습니다.");
+			location.reload();
+		})
+		.catch(error => console.log(error));
+	}else{
+		alert("반려가 취소되었습니다.");
+	}
+	
 }
 
 
