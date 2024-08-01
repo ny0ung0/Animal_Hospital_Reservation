@@ -16,6 +16,8 @@ import com.example.restServer.entity.Point;
 import com.example.restServer.entity.Reservation;
 import com.example.restServer.repository.PointRepository;
 import com.example.restServer.repository.ReservationRepository;
+import com.example.restServer.service.user.ReservationService;
+import com.example.restServer.util.DateTimeUtil;
 
 @RestController
 @RequestMapping("/api/v1/user")
@@ -26,6 +28,9 @@ public class ReservationListController_jun {
 	
 	@Autowired
 	private PointRepository pointRepository;
+	
+	@Autowired
+	private ReservationService reservService;
 	
 	@GetMapping("/reservationList/{memberId}")
 	public ResponseEntity<?> reservationList(@PathVariable("memberId")Long memeberId){
@@ -53,6 +58,16 @@ public class ReservationListController_jun {
 		
 		
 		reservationRepository.save(reservation);
+		
+		//코커런트 해시맵에서 락객체 삭제
+		String slotKey = reservService.getSlotKey(Long.toString(reservation.getDoctor().getId()), DateTimeUtil.formatDate(reservation.getReservationDatetime()), DateTimeUtil.formatTime1(reservation.getReservationDatetime()));
+		
+		reservService.slotLocks.forEach((key, lockInfo) -> {
+			System.out.println(key.equals(slotKey));
+            if (key.equals(slotKey)) {
+            	reservService.slotLocks.computeIfPresent(key, (k, v) -> null);
+            }
+        });
 		return ResponseEntity.ok().body("");
 	}
 }

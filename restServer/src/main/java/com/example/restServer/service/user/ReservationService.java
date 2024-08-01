@@ -16,14 +16,12 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.example.restServer.entity.Coupon;
 import com.example.restServer.entity.Doctor;
 import com.example.restServer.entity.Member;
 import com.example.restServer.entity.Pet;
 import com.example.restServer.entity.Point;
 import com.example.restServer.entity.Reservation;
 import com.example.restServer.entity.UnavailableTime;
-import com.example.restServer.repository.CouponRepository;
 import com.example.restServer.repository.DoctorRepository;
 import com.example.restServer.repository.MemberRepository;
 import com.example.restServer.repository.PetRepository;
@@ -42,14 +40,12 @@ public class ReservationService {
     @Autowired 
     private PetRepository petRepo;
     @Autowired 
-    private CouponRepository couponRepo;
-    @Autowired 
     private DoctorRepository doctorRepo;
     @Autowired 
     private UnavailableTimeRepository unavailableTimeRepo;
     @Autowired 
     private PointRepository pointRepo;
-    private final Map<String, LockInfo> slotLocks = new ConcurrentHashMap<>();
+    public static final Map<String, LockInfo> slotLocks = new ConcurrentHashMap<>();
     private final long LOCK_EXPIRATION_TIME = TimeUnit.MINUTES.toMillis(30);
 
     
@@ -66,7 +62,7 @@ public class ReservationService {
 	}
 	
 	
-    private static class LockInfo {
+    public static class LockInfo {
         ReentrantLock lock = new ReentrantLock();
         long timestamp = System.currentTimeMillis();
     }
@@ -78,8 +74,8 @@ public class ReservationService {
         return lockInfo.lock;
     }
 
-    // 메서드 내에서 호출
-    private String getSlotKey(String doctorId, String date, String timeSlot) {
+    
+    public static String getSlotKey(String doctorId, String date, String timeSlot) {
         return doctorId + "-" + date + "-" + timeSlot;
     }
     
@@ -87,14 +83,12 @@ public class ReservationService {
     public Map<String, Object> getPetInfo(Long userId, Long hospitalId) {
         Member user = memRepo.findById(userId).get();
         List<Pet> petList = petRepo.findAllByMemberId(userId);
-        List<Coupon> couponList = couponRepo.findCouponByUserAndHospital(userId, hospitalId);
         Integer point = pointRepo.findByUserIdRemainingPoints(userId);
         List<Integer> pointList = new ArrayList<>();
         pointList.add(point);
         Map<String, Object> map = new HashMap<>();
         map.put("user", user);
         map.put("petList", petList);
-        map.put("couponList", couponList);
         map.put("pointList", pointList);
         return map;
     }
@@ -209,7 +203,6 @@ public class ReservationService {
         reservation.setReservationDatetime(dateTime);
 
         setReservationPoints(formData, reservation, userId, now);
-        setReservationCoupon(formData, reservation, now);
 
         return reservation;
     }
@@ -227,15 +220,6 @@ public class ReservationService {
         }
     }
 
-    private void setReservationCoupon(Map<String, String> formData, Reservation reservation, Date now) {
-        if (!formData.get("coupon").equals("쿠폰사용 안함")) {
-            Coupon coupon = couponRepo.findById(Long.parseLong(formData.get("coupon"))).get();
-            coupon.setIsUsed(true);
-            coupon.setUseDate(now);
-            reservation.setCoupon(coupon);
-            couponRepo.save(coupon);
-        }
-    }
 
     private UnavailableTime createUnavailableTime(Map<String, String> formData, Reservation reservation, LocalDateTime dateTime) throws ParseException {
         UnavailableTime unavailTime = new UnavailableTime();
@@ -261,7 +245,6 @@ public class ReservationService {
         }
 
         updateReservationPoints(formData, reservation, now);
-        updateReservationCoupon(formData, reservation, now);
     }
 
     private void updateReservationPoints(Map<String, String> formData, Reservation reservation, Date now) {
@@ -295,27 +278,5 @@ public class ReservationService {
         }
     }
 
-    private void updateReservationCoupon(Map<String, String> formData, Reservation reservation, Date now) {
-        if (formData.get("coupon").equals("쿠폰사용 안함")) {
-            if (reservation.getCoupon() != null) {
-                Coupon cp = reservation.getCoupon();
-                cp.setIsUsed(false);
-                cp.setUseDate(null);
-                couponRepo.save(cp);
-            }
-            reservation.setCoupon(null);
-        } else {
-            if (reservation.getCoupon() != null) {
-                Coupon cp = reservation.getCoupon();
-                cp.setIsUsed(false);
-                cp.setUseDate(null);
-                couponRepo.save(cp);
-            }
-            Coupon coupon = couponRepo.findById(Long.parseLong(formData.get("coupon"))).get();
-            coupon.setIsUsed(true);
-            coupon.setUseDate(now);
-            reservation.setCoupon(coupon);
-            couponRepo.save(coupon);
-        }
-    }
+  
 }
