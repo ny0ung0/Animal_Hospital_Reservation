@@ -2,6 +2,7 @@ package com.example.restServer.repository;
 
 import java.util.List;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -14,4 +15,6 @@ public interface PointRepository extends JpaRepository<Point, Long> {
 	public Integer findByUserIdRemainingPoints(@Param("userId")Long userId);
 
 	public List<Point> findAllByUserId(Long id);
+	
+	public List<Point> findAllByUserId(Long id, Sort sort);
 }

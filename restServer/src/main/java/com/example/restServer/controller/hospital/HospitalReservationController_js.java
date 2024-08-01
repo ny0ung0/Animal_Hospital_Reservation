@@ -212,7 +212,7 @@ public class HospitalReservationController_js {
 		}
 		Doctor doctor = doctorRepo.findById(unavailableTimeDto.getDoctorId()).get();
 		Member member = memberRepo.findById(unavailableTimeDto.getHospitalId()).get();
-		System.out.println("date" + date);
+		System.out.println("date " + unavailableTimeDto.getTime());
 		unavailableTimeRepo.deleteAllByIdDate(unavailableTimeDto.getDoctorId(), date);
 		List<String> times =  unavailableTimeDto.getTime();
 		for(int i = 0 ; i < times.size(); i++) {

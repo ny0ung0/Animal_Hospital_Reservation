@@ -6,7 +6,7 @@ const config = {
 	scene: {
 		preload: preload,
 		create: create,
-		update: update
+		update: updateText
 	}
 }
 
@@ -43,7 +43,7 @@ function preload() {
 
 function create() {
 	this.add.image(190, 300, 'background')
-	this.cameras.main.setBackgroundColor('rgba(255, 160, 122,0.5)');
+	this.cameras.main.setBackgroundColor('rgba(12, 66, 111)');
 	this.anims.create({
 		key: 'idle',
 		frames: this.anims.generateFrameNumbers('pet_level_1', { frames: [0, 1, 2, 3] }),
@@ -106,9 +106,7 @@ function create() {
 	loadData()
 }
 
-function update() {
-	// 업데이트 로직 (필요한 경우)
-}
+
 
 function updateText() {
 	feedText.setText(`${feedTickets}`)
@@ -137,13 +135,11 @@ function loadData() {
 			lastGivenTimeDay = data.lastGivenTimeDay
 			isFullyGrown = data.isFullyGrown
 			updateText()
-			checkAndGiveTickets() // 데이터를 로드한 후에 티켓 지급 확인
+			checkAndGiveTickets() // 데이터를 로드한 후에 시간대별 티켓 지급 확인
 			checkAndDailyTickets() //데일리 티켓
 		})
 		.catch(error => console.error('Error:', error))
 }
-
-
 
 function saveData() {
 	const data = {
@@ -182,7 +178,6 @@ function saveData() {
 		})
 		.catch(error => console.error('Error:', error))
 }
-
 
 function checkAndDailyTickets() {
 	const currentHour = new Date().getHours()
