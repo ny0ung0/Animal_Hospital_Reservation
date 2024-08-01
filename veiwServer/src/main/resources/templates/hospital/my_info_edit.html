@@ -702,8 +702,11 @@
             
             //의사관련
             doctors.forEach(function(doc) {
-            	var dName= doc.name;
-            	readyAddDoctor(dName);
+            	if(!doc.status=="퇴사"||doc.status==null){
+            		var dName= doc.name;
+                	readyAddDoctor(dName);
+            	}
+            	
             });
         }
         xhttp.open("get", "http://localhost:9001/api/v1/hospital/doctorInfo/" + localStorage.getItem("MemberId"));

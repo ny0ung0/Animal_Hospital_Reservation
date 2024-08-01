@@ -118,6 +118,7 @@ public class Securityconfig  {
 	}
 	
 	
+	// 요청에 대한 인증이 안된경우 불려지는AuthenticationEntryPoint을 빈에 등록하는 메서드(토큰이 없거나 만료된경우)
 	
 	@Bean
     public AuthenticationEntryPoint authenticationEntryPoint() {
