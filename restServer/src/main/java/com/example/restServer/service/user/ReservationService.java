@@ -12,6 +12,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -51,6 +52,20 @@ public class ReservationService {
     private final Map<String, LockInfo> slotLocks = new ConcurrentHashMap<>();
     private final long LOCK_EXPIRATION_TIME = TimeUnit.MINUTES.toMillis(30);
 
+    
+    //오래된 슬롯 삭제
+	@Scheduled(fixedRate = 300000)
+    private void clearOldSlot() {
+        slotLocks.forEach((key, lockInfo) -> {
+            if (System.currentTimeMillis() - lockInfo.timestamp > LOCK_EXPIRATION_TIME) {
+                System.out.println(slotLocks);
+                slotLocks.computeIfPresent(key, (k, v) -> null);
+                System.out.println(slotLocks);
+            }
+        });
+	}
+	
+	
     private static class LockInfo {
         ReentrantLock lock = new ReentrantLock();
         long timestamp = System.currentTimeMillis();
@@ -59,14 +74,6 @@ public class ReservationService {
     private ReentrantLock getLockForSlot(String doctorId, String date, String timeSlot) {
         String key = getSlotKey(doctorId, date, timeSlot);
         LockInfo lockInfo = slotLocks.computeIfAbsent(key, k -> new LockInfo());
-
-        // 락이 오래된 경우 제거
-        if (System.currentTimeMillis() - lockInfo.timestamp > LOCK_EXPIRATION_TIME) {
-            slotLocks.remove(key);
-            lockInfo = new LockInfo();
-            slotLocks.put(key, lockInfo);
-        }
-
         lockInfo.timestamp = System.currentTimeMillis();
         return lockInfo.lock;
     }

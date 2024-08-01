@@ -214,6 +214,7 @@ function searchHospitals(center, hospitals, map) {
             });
         });
     })).then(() => {
+		console.log(vetToSearch)
         // All reverse geocodes are done
         getMemVetList(map, center);
     }).catch(error => {

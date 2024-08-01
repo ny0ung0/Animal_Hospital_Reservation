@@ -8,7 +8,8 @@ function showBusinessHour(basicHours) {
         let endTime = day[1];
         let lunchStart = day[2];
         let lunchEnd = day[3];
-
+console.log(lunchStart)
+console.log(day)
         let listItem = document.createElement("div");
         listItem.innerHTML = "<span class='modal-sub-title'>" + week[i] + "</span> <span class='workHour'>" + startTime + " ~ " + endTime
             + "</span> <span class='modal-sub-title del'>|| 점심시간 </span> <span class='lunchHour'>" + lunchStart + " ~ " + lunchEnd + "</span>";
@@ -22,7 +23,8 @@ function showBusinessHour(basicHours) {
             if (lunchStart === "0") {
                 listItem.querySelector(".lunchHour").innerHTML = "";
             }
-        } else if (lunchStart === "0") {
+        } else if (lunchStart === "0" || lunchStart === "0:00") {
+			
             listItem.querySelector(".lunchHour").innerHTML = "-";
         }
 
