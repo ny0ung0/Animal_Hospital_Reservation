@@ -69,6 +69,7 @@ public class ChatController_songi {
     @GetMapping("/chat/{chatRoomId}")
     public ResponseEntity<List<Chat>> getChatMessages(@PathVariable("chatRoomId") Long chatRoomId) {
         List<Chat> chats = chatService.getMessages(chatRoomId);
+        
         System.out.println("채팅내역 출력 : " + chats);
         return ResponseEntity.ok(chats);
     }

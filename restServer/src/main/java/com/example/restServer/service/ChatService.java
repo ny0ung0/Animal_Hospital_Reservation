@@ -153,7 +153,7 @@ public class ChatService {
 	}
 	
 	//채팅방 생성 OR 채팅방 불러오기 
-	private ChatRoom getOrCreateChatRoom(Member sender, Member receiver) {
+	public ChatRoom getOrCreateChatRoom(Member sender, Member receiver) {
 
 	    ChatRoom chatRoom = chatroomRepo.findByMembers(sender, receiver);
         if (chatRoom != null) {
@@ -163,7 +163,8 @@ public class ChatService {
             ChatRoom newChatRoom = new ChatRoom();
             newChatRoom.setUser(sender);
             newChatRoom.setHospital(receiver);
-            return chatroomRepo.save(newChatRoom);
+            chatroomRepo.save(newChatRoom);
+            return chatRoom;
         }
 	}
 	
