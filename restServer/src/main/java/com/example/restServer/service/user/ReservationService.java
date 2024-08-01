@@ -192,6 +192,7 @@ public class ReservationService {
 
     private Reservation createReservation(Map<String, String> formData, Long userId, LocalDateTime dateTime) {
         Date now = new Date();
+
         Reservation reservation = new Reservation();
         reservation.setUser(memRepo.findById(userId).get());
         reservation.setHospital(memRepo.findById(Long.parseLong(formData.get("hospitalId"))).get());
