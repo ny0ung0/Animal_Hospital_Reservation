@@ -68,6 +68,7 @@ public class ReservationListController_jun {
             	reservService.slotLocks.computeIfPresent(key, (k, v) -> null);
             }
         });
+		
 		return ResponseEntity.ok().body("");
 	}
 }

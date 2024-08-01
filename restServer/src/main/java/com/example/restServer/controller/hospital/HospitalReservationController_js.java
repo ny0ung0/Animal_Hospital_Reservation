@@ -2,6 +2,8 @@ package com.example.restServer.controller.hospital;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
@@ -37,6 +39,8 @@ import com.example.restServer.repository.PetRepository;
 import com.example.restServer.repository.PointRepository;
 import com.example.restServer.repository.ReservationRepository;
 import com.example.restServer.repository.UnavailableTimeRepository;
+import com.example.restServer.service.user.ReservationService;
+import com.example.restServer.util.DateTimeUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -62,6 +66,9 @@ public class HospitalReservationController_js {
 	
 	@Autowired
 	PetRepository petRepo;
+	
+	@Autowired
+	ReservationService reservService;
 	
 	@GetMapping("/reservation/status/{status}")
 	public ResponseEntity<Page<Reservation>> getWaitingReservation(@RequestParam(name = "page", defaultValue = "0") int page, HttpServletRequest request, @PathVariable("status")String status){
@@ -132,14 +139,36 @@ public class HospitalReservationController_js {
 		Reservation reservation = result.get();
 		reservation.setStatus(status);
 		Reservation reservation2 = reservationRepo.save(reservation);
+		if(status.equals("취소")) {
+			LocalDateTime reservationDatetime =  reservation2.getReservationDatetime();
+		     LocalDate date = reservationDatetime.toLocalDate();
+		     String datestr = date.toString();
+		     System.out.println(datestr);
+		     LocalTime time = reservationDatetime.toLocalTime();
+		     String timestr = time.toString();
+		     System.out.println(timestr);
+		     UnavailableTime unavailableTime = unavailableTimeRepo.findTimeByDoctorIdNDatetime(reservation2.getDoctor().getId(), datestr, timestr);
+		     unavailableTimeRepo.deleteById(unavailableTime.getId());
+			 
+			//코커런트 해시맵에서 락객체 삭제
+		      String slotKey = reservService.getSlotKey(Long.toString(reservation2.getDoctor().getId()), DateTimeUtil.formatDate(reservation2.getReservationDatetime()), DateTimeUtil.formatTime1(reservation2.getReservationDatetime()));
+		      
+		      reservService.slotLocks.forEach((key, lockInfo) -> {
+		         System.out.println(key.equals(slotKey));
+		            if (key.equals(slotKey)) {
+		               reservService.slotLocks.computeIfPresent(key, (k, v) -> null);
+		            }
+		        });
+		}
 		
+	     
 		if(status.equals("취소") && reservation2.getPointsUsed() !=null) {
 			Point point = new Point();
 			point.setUser(reservation.getUser());
 			point.setPointsAccumulated(reservation.getPointsUsed());
 			point.setComment("예약 취소 포인트 반환");
 			point.setAccumulationDate(new Date());
-			pointRepo.save(point);
+			pointRepo.save(point); 
 		}
 		return new ResponseEntity<>(reservation2, HttpStatus.OK);
 	}
