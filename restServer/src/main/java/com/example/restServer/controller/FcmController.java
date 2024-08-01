@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -97,7 +98,7 @@ public class FcmController {
 	@GetMapping("/notifyList/{memberId}")
 	public List<Notification> getMynotifyList(@PathVariable(value = "memberId") Long memberId) {
 		
-		return notificationRepository.findByReceiverIdAndIsReadFalse(memberId);
+		return notificationRepository.findByReceiverIdAndIsReadFalse(memberId, Sort.by(Sort.Order.desc("createdAt")));
 	}
 	
 	@GetMapping("/notifyCount/{memberId}")
