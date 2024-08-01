@@ -248,7 +248,45 @@ public class JoinService {
 			
 			//동물병원의사 처리
 			List<Doctor> doctors = doctorRepository.findAllByHospitalId(memberEditDto.getMemberId());
-			
+			String[] newDoctors =memberEditDto.getDoctorNamesField().split("//");
+			int newDoctorsCnt =newDoctors.length;
+			 int doctorCnt = doctors.size();
+			 System.out.println("기존 의사수 :"+ doctorCnt);
+			 System.out.println("수정 의사수 :"+ newDoctorsCnt);
+			boolean[] working = new boolean[doctorCnt];
+			boolean[] newD = new boolean[newDoctorsCnt];
+			for(int i= 0;i<doctorCnt;i++) {
+				for(int j =0 ; j<newDoctorsCnt ;j++) {
+					System.out.println(doctors.get(i).getName());
+					System.out.println(newDoctors[j]);
+					if(doctors.get(i).getName().equals(newDoctors[j])) {
+						System.out.println("같은 이름 :"+newDoctors[j]);
+						System.out.println(doctors.get(i));
+						if(doctors.get(i).getStatus()==null || !doctors.get(i).getStatus().equals("퇴사")) {
+							
+							working[i]=true;
+							newD[j]=true;
+						}
+						
+					
+					}
+				}
+			}
+			for(int i= 0;i<working.length;i++) {
+				System.out.println(working[i]);
+				if(!working[i]) {
+					doctors.get(i).setStatus("퇴사");
+					doctorRepository.save(doctors.get(i));
+				}
+			}
+			for(int i= 0;i<newD.length;i++) {
+				if(!newD[i]) {
+					Doctor doc = new Doctor();
+					doc.setHospital(member);
+					doc.setName(newDoctors[i]);
+					doctorRepository.save(doc);
+				}
+			}
 			
 			//List<String> newDoctors = memberEditDto.getDoctorNamesField().
 			

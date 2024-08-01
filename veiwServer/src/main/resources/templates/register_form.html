@@ -46,16 +46,17 @@
 				</div>
 				<div id="usernameResult"></div>
 			</div>
+			
 			<div class="mb-3">
-				<div class="d-flex">
-				<label class="form-label">비밀번호</label> 
-				<input type="button" class="btn btn-main ms-auto" onclick="checkPassword()" value="비밀번호확인">
-				</div>
-				<input type="password"
-					name="password" id="password" class="form-control" oninput="passwordCheckReset()">
-				<div>비밀번호는 5자 이상, 15자 이하, 영어, 숫자, 특수문자를 포함해야 합니다.</div>
+			<label class="form-label">비밀번호</label> 
+					<input type="password"
+						name="password" id="password" class="form-control" oninput="passwordCheckReset()">
+					<div>비밀번호는 5자 이상, 15자 이하, 영어, 숫자, 특수문자를 포함해야 합니다.</div>
 				<br>
-				<label class="form-label">비밀번호 확인</label>
+				<div class="d-flex">
+					<label class="form-label">비밀번호 확인</label>
+					<input type="button" class="btn btn-main ms-auto" onclick="checkPassword()" value="비밀번호일치">
+				</div>
 				<input type="password"
 					name="password2" id="password2" class="form-control">
 					<div id="passwordResult"></div>
