@@ -31,7 +31,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
 @RequestMapping("/api/v1/common")
-public class CommonController_jun {
+public class JoinController_jun {
 
 	@Autowired
 	JoinService joinService;

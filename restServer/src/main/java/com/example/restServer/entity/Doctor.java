@@ -26,6 +26,8 @@ public class Doctor extends BaseEntity {
     private Member hospital;
 
     private String name;
+    
+    private String status;
 
     // Getters and Setters
 }
