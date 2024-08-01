@@ -141,7 +141,6 @@ fetch("http://localhost:9001/api/v1/hospital/reservation/" + reservId, {
 	document.getElementById("username").innerHTML = obj.user.name;
 	document.getElementById("type").innerHTML = obj.type;
 	document.getElementById("memo").innerHTML = obj.memo;
-	document.getElementById("couponname").innerHTML = couponeChek;
 	document.getElementById("point").innerHTML = obj.pointsUsed == null ? 0 : obj.pointsUsed;
 	if(obj.pet.photo == null){
 		document.getElementById("petPhoto").setAttribute("src", "/images/no_image.jpg");
