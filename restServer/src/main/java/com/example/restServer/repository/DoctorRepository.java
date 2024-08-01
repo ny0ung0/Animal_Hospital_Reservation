@@ -13,6 +13,7 @@ import jakarta.transaction.Transactional;
 
 public interface DoctorRepository extends JpaRepository<Doctor, Long> {
 
+	@Query(value="Select * from Doctor where id = :hospitalId and status !='퇴사'", nativeQuery=true)
 	List<Doctor> findAllByHospitalId(@Param("hospitalId")long hospitalId);
 	
 	 @Modifying
