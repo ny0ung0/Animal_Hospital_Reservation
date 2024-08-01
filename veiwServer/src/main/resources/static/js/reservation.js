@@ -51,14 +51,6 @@ function loadBasicInfo(data){
 	  }
 	  
 	  
-	  //쿠폰 정보 넣기
-	  for(let i = 0; i < userInfo.couponList.length; i++){
-		  let coupon = userInfo.couponList[i];
-		  let listItem = document.createElement("option");
-		  listItem.setAttribute("value", coupon.id);
-		  listItem.innerHTML = coupon.name + ', 발행날짜' + convertTimestamp(coupon.issueDate) + ', 만료날짜' + convertTimestamp(coupon.expiryDate);
-		  document.querySelector("#coupon").appendChild(listItem);
-	  }
 	  //반려동물정보넣기
 	  for(let i = 0; i < userInfo.petList.length; i++){
 		  let pet = userInfo.petList[i];
